@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Exercise Motivation Inventory-2</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+    }
+    .hidden {
+      display: none;
+    }
+    label {
+      font-weight: bold;
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    input[type="radio"] {
+      transform: scale(1.5);
+      margin-right: 5px;
+    }
+    .question label:first-child {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="formPage">
+    <h1>Exercise Motivation Inventory-2</h1>
+    <p>
+      Please read the statements carefully and circle the appropriate number that reflects whether each
+      statement is true for you personally or would be true if you exercised.<br>
+      Use '0' if the statement is not true for you at all and '5' if it is very true. For partly true statements,
+      choose '1', '2', '3', or '4' based on your feelings.
+    </p>
+    <form id="emiForm"></form>
+    <button type="button" id="nextButton">Next</button>
+  </div>
+
+  <div id="resultsPage" class="hidden">
+    <h1>EMI-2 Subscale Results</h1>
+    <table id="resultsTable" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th>Subscale</th>
+          <th>Average Score</th>
+        </tr>
+      </thead>
+      <tbody id="results"></tbody>
+    </table>
+    <br>
+    <button onclick="downloadResultsImage()">Download Results as Image</button>
+    <button onclick="location.reload()">Start Over</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const questions = [
+      "To stay slim", "To avoid ill-health", "Because it makes me feel good", "To help me look younger",
+      "To show my worth to others", "To give me space to think", "To have a healthy body", "To build up my strength",
+      "Because I enjoy the feeling of exerting myself", "To spend time with friends", "Because my doctor advised me to exercise",
+      "Because I like trying to win in physical activities", "To stay/become more agile", "To give me goals to work towards",
+      "To lose weight", "To prevent health problems", "Because I find exercise invigorating", "To have a good body",
+      "To compare my abilities with other peoples’", "Because it helps to reduce tension", "Because I want to maintain good health",
+      "To increase my endurance", "Because I find exercising satisfying in and of itself", "To enjoy the social aspects of exercising",
+      "To help prevent an illness that runs in my family", "Because I enjoy competing", "To maintain flexibility",
+      "To give me personal challenges to face", "To help control my weight", "To avoid heart disease", "To recharge my batteries",
+      "To improve my appearance", "To gain recognition for my accomplishments", "To help manage stress", "To feel more healthy",
+      "To get stronger", "For enjoyment of the experience of exercising", "To have fun being active with other people",
+      "To help recover from an illness/injury", "Because I enjoy physical competition", "To stay/become flexible",
+      "To develop personal skills", "Because exercise helps me to burn calories", "To look more attractive",
+      "To accomplish things that others are incapable of", "To release tension", "To develop my muscles",
+      "Because I feel at my best when exercising", "To make new friends", "Because I find physical activities fun, especially when competition is involved",
+      "To measure myself against personal standards"
+    ];
+
+    const subscales = {
+      "Stress Management": [6, 20, 34, 46],
+      "Revitalization": [3, 17, 31],
+      "Enjoyment": [9, 23, 37, 48],
+      "Challenge": [14, 28, 42, 51],
+      "Social Recognition": [5, 19, 33, 45],
+      "Affiliation": [10, 24, 38, 49],
+      "Competition": [12, 26, 40, 50],
+      "Health Pressures": [11, 25, 39],
+      "Ill-health Avoidance": [2, 16, 30],
+      "Positive Health": [7, 21, 35],
+      "Weight Management": [1, 15, 29, 43],
+      "Appearance": [4, 18, 32, 44],
+      "Strength and Endurance": [8, 22, 36, 47],
+      "Nimbleness": [13, 27, 41]
+    };
+
+    const form = document.getElementById('emiForm');
+    questions.forEach((q, i) => {
+      const div = document.createElement('div');
+      div.className = 'question';
+
+      const label = document.createElement('label');
+      label.textContent = `${i + 1}. ${q}`;
+      div.appendChild(label);
+      div.appendChild(document.createElement('br'));
+
+      for (let j = 0; j <= 5; j++) {
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = `q${i + 1}`;
+        radio.value = j;
+        radio.id = `q${i + 1}_${j}`;
+
+        const radioLabel = document.createElement('label');
+        radioLabel.setAttribute('for', radio.id);
+        radioLabel.textContent = j;
+
+        div.appendChild(radio);
+        div.appendChild(radioLabel);
+        div.appendChild(document.createTextNode(' '));
+      }
+
+      form.appendChild(div);
+    });
+
+    document.getElementById('nextButton').onclick = () => {
+      const scores = questions.map((_, i) => {
+        const radios = document.getElementsByName(`q${i + 1}`);
+        for (const radio of radios) {
+          if (radio.checked) return parseInt(radio.value);
+        }
+        return 0;
+      });
+      showResults(scores);
+    };
+
+    function showResults(scores) {
+      document.getElementById('formPage').classList.add('hidden');
+      document.getElementById('resultsPage').classList.remove('hidden');
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '';
+
+      const resultsArray = [];
+      for (const [label, indices] of Object.entries(subscales)) {
+        const values = indices.map(i => scores[i - 1]);
+        const average = (values.reduce((a, b) => a + b, 0) / values.length);
+        resultsArray.push({ label, average });
+      }
+
+      resultsArray.sort((a, b) => {
+        if (b.average !== a.average) return b.average - a.average;
+        return a.label.localeCompare(b.label);
+      });
+
+      resultsArray.forEach(({ label, average }) => {
+        const row = document.createElement('tr');
+        const cell1 = document.createElement('td');
+        const cell2 = document.createElement('td');
+        cell1.textContent = label;
+        cell2.textContent = average.toFixed(2);
+        row.appendChild(cell1);
+        row.appendChild(cell2);
+        resultsDiv.appendChild(row);
+      });
+    }
+
+    function downloadResultsImage() {
+      const table = document.getElementById('resultsTable');
+      html2canvas(table).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'emi2_results.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>
