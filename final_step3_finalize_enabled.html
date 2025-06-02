@@ -1,37 +1,120 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Motiva Values Sort - Step 1 & 2</title>
+  <title>Motiva Values Sort</title>
+  <!-- === Load Poppins from Google Fonts === -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; text-align: center; padding: 20px; }
-    .hidden { display: none; }
-    .card-grid, .drop-zone {
+    /* === Brand Color Variables === */
+    :root {
+      --dark-teal:      #0A484A;
+      --mint-green:     #83BCAC;
+      --gray-bg:        #E9EDF4;
+      --blue-bg:        #A5BAE0;
+      --pink-bg:        #FFAAAA;
+
+      --text-white:     #FFFFFF;
+      --text-dark:      #222222;
+    }
+
+    /* === Global Reset & Typography (Poppins) === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--text-dark);
+      background-color: var(--gray-bg);
+      text-align: center;
+      padding: 20px;
+    }
+    h1, h2, h3 {
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+      font-weight: 700;
+      color: var(--dark-teal);
+    }
+    p {
+      margin-bottom: 1rem;
+      font-weight: 400;
+      color: var(--text-dark);
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .container {
+      width: min(90%, 900px);
+      margin: 0 auto;
+      padding: 2rem 0;
+    }
+
+    /* === Header === */
+    header {
+      background-color: var(--dark-teal);
+      color: var(--text-white);
+      margin-bottom: 2rem;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2rem;
+    }
+    .header-title {
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    /* === Step Sections === */
+    .step-section {
+      background-color: var(--text-white);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .hidden {
+      display: none;
+    }
+
+    /* === Card Grid & Cards === */
+    .card-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       justify-content: center;
+      margin-bottom: 1.5rem;
     }
     .card, .short-card {
       width: 220px;
       padding: 10px;
-      background: white;
+      background: #fff;
       border: 2px solid #ccc;
       border-radius: 8px;
       box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
       cursor: pointer;
       text-align: center;
+      font-weight: 400;
     }
     .card.selected {
-      border-color: #00796b;
-      background-color: #e0f2f1;
+      border-color: var(--mint-green);
+      background-color: var(--blue-bg);
     }
     .card h3 {
       margin: 5px 0;
       font-size: 16px;
       text-transform: uppercase;
-      color: #00796b;
+      color: var(--dark-teal);
+      font-weight: 600;
     }
     .card p {
       margin: 0;
@@ -39,289 +122,15 @@
       color: #333;
     }
     .short-card {
-      font-weight: bold;
+      font-weight: 600;
       text-transform: uppercase;
       font-size: 14px;
       height: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: var(--gray-bg);
     }
-    .column {
-      border: 2px dashed #bbb;
-      background: #fafafa;
-      padding: 10px;
-      min-height: 320px;
-      width: 220px;
-      border-radius: 8px;
-    }
-    .btn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background: #00796b;
-      color: white;
-      font-size: 16px;
-      border: none;
-      cursor: pointer;
-    }
-    .btn:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-  </style>
-</head>
-<body>
 
+    /* === Drop Zon*
 
-<div id="step1">
-  <h2>Step 1: Select 10–15 Personal Values</h2>
-  <div class="card-grid" id="cardGrid"></div>
-  <button class="btn" id="toStep2" disabled onclick="goToStep2()">Next</button>
-</div>
-
-
-<div id="step2" class="hidden">
-  <h2>Step 2: Sort Your Selected Values</h2>
-  <p>Drag up to 5 values into each box. You must assign 5 to both to continue.</p>
-  <div class="card-grid" id="pool" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-  <div class="drop-zone">
-    <div class="column" id="top5" ondrop="drop(event)" ondragover="allowDrop(event)">
-      <strong>TOP 1–5</strong>
-    </div>
-    <div class="column" id="next5" ondrop="drop(event)" ondragover="allowDrop(event)">
-      <strong>TOP 6–10</strong>
-    </div>
-  </div>
-  <button class="btn" id="toStep3" onclick="goToStep3()" disabled>Next</button>
-</div>
-
-<script>
-const values = [
-  ["Acceptance", "to be accepted as I am"],
-  ["Accuracy", "to be accurate in my opinions and beliefs"],
-  ["Achievement", "to have important accomplishments"],
-  ["Adventure", "to have new and exciting experiences"],
-  ["Authority", "to be in charge of and responsible for others"],
-  ["Autonomy", "to be self-determined and independent"],
-  ["Caring", "to take care of others"],
-  ["Challenge", "to take on difficult tasks and problems"],
-  ["Change", "to have a life full of change and variety"],
-  ["Comfort", "to have a pleasant and comfortable life"],
-  ["Compassion", "to feel and act on concern for others"],
-  ["Contribution", "to make a lasting contribution in the world"],
-  ["Creativity", "to have new and original ideas"],
-  ["Dependability", "to be reliable and trustworthy"],
-  ["Faithfulness", "to be loyal and true in relationships"]
-];
-
-const cardGrid = document.getElementById("cardGrid");
-const toStep2Btn = document.getElementById("toStep2");
-const pool = document.getElementById("pool");
-const toStep3Btn = document.getElementById("toStep3");
-
-values.forEach(([title, definition]) => {
-  const card = document.createElement("div");
-  card.className = "card";
-  const titleEl = document.createElement("h3");
-  titleEl.textContent = title.toUpperCase();
-  const defEl = document.createElement("p");
-  defEl.textContent = definition;
-  card.appendChild(titleEl);
-  card.appendChild(defEl);
-  card.onclick = () => {
-    card.classList.toggle("selected");
-    const selected = document.querySelectorAll(".card.selected").length;
-    toStep2Btn.disabled = !(selected >= 10 && selected <= 15);
-  };
-  cardGrid.appendChild(card);
-});
-
-function goToStep2() {
-  const selected = document.querySelectorAll(".card.selected h3");
-  selected.forEach(h3 => {
-    const div = document.createElement("div");
-    div.className = "short-card";
-    div.draggable = true;
-    div.ondragstart = drag;
-    div.id = "card-" + h3.textContent;
-    div.textContent = h3.textContent;
-    pool.appendChild(div);
-  });
-  document.getElementById("step1").classList.add("hidden");
-  document.getElementById("step2").classList.remove("hidden");
-}
-
-function allowDrop(ev) { ev.preventDefault(); }
-
-function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
-
-
-function drop(ev) {
-  ev.preventDefault();
-  const data = ev.dataTransfer.getData("text");
-  const card = document.getElementById(data);
-  const target = ev.target.closest('.column, #pool');
-
-  if (!target || !card) return;
-
-  const isPool = target.id === "pool";
-  const isTop5 = target.id === "top5";
-  const isNext5 = target.id === "next5";
-
-  const count = target.querySelectorAll('.short-card').length;
-
-  if (!isPool) {
-    if (isTop5 && count >= 5 && !target.contains(card)) {
-      alert("Top 5 box can only hold 5 values.");
-      return;
-    }
-    if (isNext5 && count >= 5 && !target.contains(card)) {
-      alert("Next 5 box can only hold 5 values.");
-      return;
-    }
-  }
-
-  target.appendChild(card);
-  checkStep2Completion();
-}
-
-
-function checkStep2Completion() {
-  const topCount = document.querySelectorAll('#top5 .short-card').length;
-  const nextCount = document.querySelectorAll('#next5 .short-card').length;
-  toStep3Btn.disabled = !(topCount === 5 && nextCount === 5);
-}
-
-function goToStep3() {
-  const top5 = document.querySelectorAll('#top5 .short-card');
-  if (top5.length !== 5) {
-    alert("You must place exactly 5 values in the Top 1–5 box.");
-    return;
-  }
-  document.getElementById("step2").classList.add("hidden");
-  document.body.insertAdjacentHTML("beforeend", `
-    <div id="step3">
-      <h2>Step 3: Order Your Top 5 Values</h2>
-      <p>Drag values into the numbered boxes above to finalize their rank.</p>
-      <div class="vertical-list" id="rankingSlots" style="display: flex; flex-direction: column; align-items: center;">
-        <div class="short-card" id="slot1" ondrop="dropSlot(event)" ondragover="allowDrop(event)">1</div>
-        <div class="short-card" id="slot2" ondrop="dropSlot(event)" ondragover="allowDrop(event)">2</div>
-        <div class="short-card" id="slot3" ondrop="dropSlot(event)" ondragover="allowDrop(event)">3</div>
-        <div class="short-card" id="slot4" ondrop="dropSlot(event)" ondragover="allowDrop(event)">4</div>
-        <div class="short-card" id="slot5" ondrop="dropSlot(event)" ondragover="allowDrop(event)">5</div>
-      </div>
-      <div class="card-grid" id="rankPool" ondrop="dropSlot(event)" ondragover="allowDrop(event)"></div>
-      <button class="btn" id="finalizeBtn" onclick="generateImage()" disabled>Finalize</button>
-      <canvas id="outputImage" width="800" height="400"></canvas>
-    </div>
-  `);
-
-  const pool = document.getElementById("rankPool");
-  top5.forEach(card => {
-    const div = document.createElement("div");
-    div.className = "short-card";
-    div.draggable = true;
-    div.ondragstart = drag;
-    div.id = "rank-" + card.textContent;
-    div.textContent = card.textContent;
-    pool.appendChild(div);
-  });
-}
-
-
-function dropSlot(ev) {
-  ev.preventDefault();
-  const data = ev.dataTransfer.getData("text");
-  const card = document.getElementById(data);
-  const target = ev.target.closest('.short-card, #rankPool');
-
-  if (!target || !card) return;
-
-  if (target.id.startsWith("slot") && target.children.length > 0) return;
-
-  target.appendChild(card);
-  checkFinalizeReady();
-}
-
-
-
-function checkFinalizeReady() {
-  const filled = ['slot1','slot2','slot3','slot4','slot5'].every(id => {
-    const slot = document.getElementById(id);
-    return slot && slot.querySelector('.short-card');
-  });
-  document.getElementById("finalizeBtn").disabled = !filled;
-}
-
-
-function generateImage() {
-  const canvas = document.getElementById("outputImage");
-  const ctx = canvas.getContext("2d");
-
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  const logo = new Image();
-  logo.src = "A066523F-2D0E-4900-8A64-11EF3E7B7F1F.png"; // user-provided Motiva logo
-  logo.onload = () => {
-    ctx.drawImage(logo, 500, 60, 250, 250);
-    ctx.fillStyle = "black";
-    ctx.font = "28px Arial";
-    ctx.fillText("My Top Five Values", 50, 60);
-
-    ctx.font = "20px Arial";
-    const slots = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5'];
-    slots.forEach((slotId, i) => {
-      const val = document.getElementById(slotId).textContent.trim();
-      ctx.fillText(`${i + 1}. ${val}`, 50, 110 + (i * 40));
-    });
-
-    const link = document.createElement('a');
-    link.download = 'my_top_five_values.png';
-    link.href = canvas.toDataURL();
-    link.click();
-  };
-}
-
-</script>
-
-
-<script>
-const values = [
-  ["Acceptance", "to be accepted as I am"],
-  ["Accuracy", "to be accurate in my opinions and beliefs"],
-  ["Achievement", "to have important accomplishments"],
-  ["Adventure", "to have new and exciting experiences"],
-  ["Authority", "to be in charge of and responsible for others"],
-  ["Autonomy", "to be self-determined and independent"],
-  ["Caring", "to take care of others"],
-  ["Challenge", "to take on difficult tasks and problems"],
-  ["Change", "to have a life full of change and variety"],
-  ["Comfort", "to have a pleasant and comfortable life"]
-];
-
-window.addEventListener("load", function () {
-  const cardGrid = document.getElementById("cardGrid");
-  const toStep2Btn = document.getElementById("toStep2");
-
-  values.forEach(([title, definition]) => {
-    const card = document.createElement("div");
-    card.className = "card";
-    const titleEl = document.createElement("h3");
-    titleEl.textContent = title.toUpperCase();
-    const defEl = document.createElement("p");
-    defEl.textContent = definition;
-    card.appendChild(titleEl);
-    card.appendChild(defEl);
-    card.onclick = () => {
-      card.classList.toggle("selected");
-      const selected = document.querySelectorAll(".card.selected").length;
-      toStep2Btn.disabled = !(selected >= 10 && selected <= 15);
-    };
-    cardGrid.appendChild(card);
-  });
-});
-</script>
-
-</body>
-</html>
