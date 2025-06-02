@@ -94,7 +94,7 @@
       justify-content: center;
       margin-bottom: 1.5rem;
     }
-    .card, .short-card {
+    .card {
       width: 220px;
       padding: 10px;
       background: #fff;
@@ -122,15 +122,140 @@
       color: #333;
     }
     .short-card {
+      width: 220px;
+      padding: 10px;
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+      cursor: move;
+      text-align: center;
       font-weight: 600;
       text-transform: uppercase;
       font-size: 14px;
+    }
+
+    /* === Drop Zones / Columns === */
+    .column {
+      border: 2px dashed #bbb;
+      background: #fafafa;
+      padding: 10px;
+      min-height: 320px;
+      width: 220px;
+      border-radius: 8px;
+    }
+    .drop-zone {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    /* === Ranking Slots === */
+    .vertical-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    .vertical-list .short-card {
+      width: 100px;
       height: 50px;
+      background: var(--gray-bg);
+      border: 2px dashed #bbb;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--gray-bg);
+      font-weight: 600;
     }
 
-    /* === Drop Zon*
+    /* === Buttons & Feedback Text === */
+    .btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: var(--mint-green);
+      color: var(--text-white);
+      font-size: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .btn:hover:not(:disabled) {
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <!-- ========== Header ========== -->
+  <header>
+    <div class="header-inner">
+      <div class="header-title">Motiva Values Sort</div>
+    </div>
+  </header>
 
+  <div class="container">
+    <!-- ========== Step 1: Select Values ========== -->
+    <div id="step1" class="step-section">
+      <h2>Step 1: Select 10–15 Personal Values</h2>
+      <div class="card-grid" id="cardGrid"></div>
+      <button class="btn" id="toStep2" disabled onclick="goToStep2()">Next</button>
+    </div>
+
+    <!-- ========== Step 2: Sort Selected Values ========== -->
+    <div id="step2" class="step-section hidden">
+      <h2>Step 2: Sort Your Selected Values</h2>
+      <p>Drag up to 5 values into each box. You must assign 5 to both to continue.</p>
+      <div class="card-grid" id="pool" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div class="drop-zone">
+        <div class="column" id="top5" ondrop="drop(event)" ondragover="allowDrop(event)">
+          <strong>TOP 1–5</strong>
+        </div>
+        <div class="column" id="next5" ondrop="drop(event)" ondragover="allowDrop(event)">
+          <strong>TOP 6–10</strong>
+        </div>
+      </div>
+      <button class="btn" id="toStep3" onclick="goToStep3()" disabled>Next</button>
+    </div>
+
+    <!-- ========== Step 3: Order Top 5 Values ========== -->
+    <!-- This section will be injected dynamically when moving to Step 3 -->
+  </div>
+
+  <!-- html2canvas CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    // --------------------------------------
+    // 1. Define the available values
+    // --------------------------------------
+    const values = [
+      ["Acceptance", "to be accepted as I am"],
+      ["Accuracy", "to be accurate in my opinions and beliefs"],
+      ["Achievement", "to have important accomplishments"],
+      ["Adventure", "to have new and exciting experiences"],
+      ["Authority", "to be in charge of and responsible for others"],
+      ["Autonomy", "to be self-determined and independent"],
+      ["Caring", "to take care of others"],
+      ["Challenge", "to take on difficult tasks and problems"],
+      ["Change", "to have a life full of change and variety"],
+      ["Comfort", "to have a pleasant and comfortable life"],
+      ["Compassion", "to feel and act on concern for others"],
+      ["Contribution", "to make a lasting contribution in the world"],
+      ["Creativity", "to have new and original ideas"],
+      ["Dependability", "to be reliable and trustworthy"],
+      ["Faithfulness", "to be loyal and true in relationships"]
+    ];
+
+    // --------------------------------------
+    // 2. Populate Step 1 cards
+    // --------------------------------------
+    const cardGrid = document.getElementB
