@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karaktererősség Teszt</title>
+  <style>
+    /* --------------------------
+       Global reset and typography
+       -------------------------- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 20px;
+      line-height: 1.5;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    p.instruction {
+      font-size: 1.125rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    /* --------------------------
+       Question list & cards
+       -------------------------- */
+    #questionsContainer {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .question-card {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+    .question-card label {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .rating-group {
+      display: flex;
+      justify-content: space-between;
+    }
+    .rating-group input[type="radio"] {
+      transform: scale(2.5);
+      margin-right: 0.25rem;
+    }
+
+    /* --------------------------
+       Buttons & feedback text
+       -------------------------- */
+    button {
+      margin-top: 1rem;
+      font-size: 1.125rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.375rem;
+      background-color: #007acc;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    .error-text {
+      color: #d00000;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+
+    /* --------------------------
+       Results box
+       -------------------------- */
+    #results {
+      display: none;
+      margin-top: 2rem;
+      text-align: center;
+    }
+    #downloadArea {
+      display: inline-block;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+    }
+    #downloadArea h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    #topTraits {
+      list-style-type: decimal;
+      text-align: left;
+      margin: 0 auto 1rem auto;
+      max-width: 300px;
+      padding-left: 1.25rem;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Karaktererősség Teszt</h1>
+  <p class="instruction">
+    Kérjük, minősítse az alábbi állításokat 1 és 5 között, ahol 1 = Egyáltalán nem jellemző, 5 = Teljes mértékben jellemző.
+  </p>
+
+  <form id="quizForm">
+    <div id="questionsContainer">
+      <!-- A 24 kérdés dinamikusan ide kerül betöltésre -->
+    </div>
+    <div id="validationError" class="error-text" style="display: none;">
+      Kérjük, minden kérdésre adjon választ!
+    </div>
+    <div style="text-align: center;">
+      <button type="button" id="submitBtn">Lássuk az eredményeket</button>
+    </div>
+  </form>
+
+  <div id="results">
+    <div id="downloadArea">
+      <h2>A legfőbb erősségeim:</h2>
+      <ol id="topTraits"></ol>
+      <button type="button" id="downloadBtn">Eredmények letöltése</button>
+    </div>
+  </div>
+
+  <!-- html2canvas CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    (() => {
+      // --------------------------------------
+      // 1. A kérdések és jellemzők tömbje (24 elem)
+      // --------------------------------------
+      // Minden elem: [id, kérdés szövege, jellemző név]
+      // * ID nem használódik a későbbi logikában, de megtartjuk az eredeti struktúrát
+      const items = [
+        [0,  "Gyakran találok ki új és szokatlan megoldásokat problémákra.",                                      "Kreativitás"],
+        [1,  "Örömmel bővítem tudásomat különböző területeken.",                                                   "Tanulás szeretete"],
+        [2,  "Gyorsan észreveszem mások érzelmeit, és érzékeny vagyok rájuk.",                                       "Empátia"],
+        [3,  "Megőrzöm nyugalmamat még stresszes helyzetekben is.",                                               "Bátorság"],
+        [4,  "Képes vagyok előre tervezni és végigvinni hosszú távú célokat.",                                       "Kitartás"],
+        [5,  "Gyakran veszek részt új kihívásokban, amelyek félelmet keltenek bennem.",                             "Bátorság"],
+        [6,  "Hatékonyan szervezem az időmet és a feladataimat.",                                                   "Önkontroll"],
+        [7,  "Szívesen dolgozom csapatban, és könnyen találok közös hangot másokkal.",                             "Szociális intelligencia"],
+        [8,  "Örömmel segítek másoknak, amikor erre szükségük van.",                                                "Empátia"],
+        [9,  "Fontos számomra, hogy őszinte és tiszta legyek másokkal.",                                             "Őszinteség"],
+        [10, "Nyitott vagyok más kultúrák és nézőpontok iránt.",                                                     "Nyitottság"],
+        [11, "Könnyen hozzáigazodok a változó körülményekhez.",                                                      "Alkalmazkodás"],
+        [12, "Átgondolt döntéseket hozok, mielőtt cselekszem.",                                                       "Megfontoltság"],
+        [13, "Szeretem, ha világos és egyértelmű célokkal rendelkezem minden területen.",                            "Rend és rendületlenség"],
+        [14, "Sok energiát fektetek abba, amit szeretek csinálni.",                                                   "Szenvedély"],
+        [15, "Meg tudom hallgatni a kritikát és építően kezelem.",                                                   "Alázat"],
+        [16, "Fontosnak tartom mások sikereit is ünnepelni.",                                                        "Közösségépítés"],
+        [17, "Felelősségteljesen járok el a rám bízott feladatokban.",                                               "Felelősség"],
+        [18, "Könnyen kifejezem a gondolataimat, és jól kommunikálok.",                                              "Kommunikációs készség"],
+        [19, "Kitartóan dolgozom a nehéz feladatok megoldásán.",                                                      "Kitartás"],
+        [20, "Gyorsan tanulok új készségeket és alkalmazom azokat.",                                                 "Tanulás szeretete"],
+        [21, "Szívesen vállalok vezető szerepet, ha a helyzet úgy kívánja.",                                        "Vezetői készség"],
+        [22, "Őszintén kifejezem a hálámat és elismerésem mások iránt.",                                              "Hála"],
+        [23, "Másokkal együttműködve könnyebben érem el a céljaimat.",                                              "Szociális intelligencia"]
+      ];
+
+      // --------------------------------------
+      // 2. Segédfüggvény: Tömb összekeverése (Fisher–Yates)
+      // --------------------------------------
+      function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+      }
+
+      // --------------------------------------
+      // 3. Dinamikus kérdésmegjelenítés
+      // --------------------------------------
+      const container = document.getElementById("questionsContainer");
+      shuffleArray(items);
+
+      items.forEach(([id, text, trait], index) => {
+        // 3a. Kérdés-kártya elem létrehozása
+        const card = document.createElement("div");
+        card.className = "question-card";
+        card.dataset.trait = trait;
+
+        // 3b. Kérdés szövegének hozzáadása
+        const label = document.createElement("label");
+        label.setAttribute("for", `q-${index}`);
+        label.textContent = text;
+        card.appendChild(label);
+
+        // 3c. Rádiógombok (1–5) létrehozása
+        const ratingGroup = document.createElement("div");
+        ratingGroup.className = "rating-group";
+        for (let score = 1; score <= 5; score++) {
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = `q-${index}`;
+          radio.value = score;
+          radio.id = `q-${index}-${score}`;
+          ratingGroup.appendChild(radio);
+        }
+        card.appendChild(ratingGroup);
+
+        container.appendChild(card);
+      });
+
+      // --------------------------------------
+      // 4. Értékelés és validáció kezelése
+      // --------------------------------------
+      const submitBtn = document.getElementById("submitBtn");
+      const validationError = document.getElementById("validationError");
+      submitBtn.addEventListener("click", () => {
+        // 4a. Minden kérdésre való válasz ellenőrzése
+        const unansweredIndices = [];
+        items.forEach((_, idx) => {
+          const checked = document.querySelector(`input[name="q-${idx}"]:checked`);
+          if (!checked) {
+            unansweredIndices.push(idx);
+          }
+        });
+
+        if (unansweredIndices.length > 0) {
+          // 4b. Hibajelzés megjelenítése
+          validationError.style.display = "block";
+          // Az adott kérdés címkéjéhez piros csillag hozzáadása
+          unansweredIndices.forEach((idx) => {
+            const card = container.children[idx];
+            const existingAsterisk = card.querySelector(".required-asterisk");
+            if (!existingAsterisk) {
+              const star = document.createElement("span");
+              star.textContent = " *";
+              star.className = "required-asterisk";
+              star.style.color = "#d00000";
+              card.querySelector("label").appendChild(star);
+            }
+          });
+          return;
+        } else {
+          validationError.style.display = "none";
+        }
+
+        // 4c. Számítás: Trait-összesítők inicializálása
+        const traitSums = {};
+        const traitCounts = {};
+
+        items.forEach(([, , trait], idx) => {
+          const score = parseInt(
+            document.querySelector(`input[name="q-${idx}"]:checked`).value,
+            10
+          );
+          if (!(trait in traitSums)) {
+            traitSums[trait] = 0;
+            traitCounts[trait] = 0;
+          }
+          traitSums[trait] += score;
+          traitCounts[trait] += 1;
+        });
+
+        // 4d. Átlagok kiszámítása és rendezése
+        const avgScores = Object.keys(traitSums).map((traitName) => {
+          return {
+            name: traitName,
+            average: traitSums[traitName] / traitCounts[traitName]
+          };
+        });
+        avgScores.sort((a, b) => b.average - a.average);
+
+        // 4e. Top 5 kiválogatása
+        const topFive = avgScores.slice(0, 5);
+
+        // 4f. Eredmények megjelenítése
+        showResults(topFive);
+      });
+
+      // --------------------------------------
+      // 5. Eredmények megjelenítése
+      // --------------------------------------
+      function showResults(topFive) {
+        // 5a. Elrejtjük a formot és instrukciót
+        document.getElementById("quizForm").style.display = "none";
+        document.querySelector("p.instruction").style.display = "none";
+
+        // 5b. Felsoroljuk a top 5 erősséget
+        const topTraitsList = document.getElementById("topTraits");
+        topTraitsList.innerHTML = ""; // Ürítjük
+        topFive.forEach((item) => {
+          const li = document.createElement("li");
+          li.textContent = item.name;
+          topTraitsList.appendChild(li);
+        });
+
+        // 5c. Megjelenítjük a letöltés gombot és a blokkot
+        document.getElementById("results").style.display = "block";
+      }
+
+      // --------------------------------------
+      // 6. Képkészítés és letöltés (html2canvas)
+      // --------------------------------------
+      const downloadBtn = document.getElementById("downloadBtn");
+      downloadBtn.addEventListener("click", () => {
+        const area = document.getElementById("downloadArea");
+        html2canvas(area).then((canvas) => {
+          const link = document.createElement("a");
+          link.download = "legfobb_erossegeim.png";
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
