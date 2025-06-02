@@ -4,102 +4,172 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Karaktererősség Teszt</title>
+
+  <!-- === Load Poppins from Google Fonts === -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
   <style>
-    /* --------------------------
-       Global reset and typography
-       -------------------------- */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      font-family: system-ui, sans-serif;
-      padding: 20px;
-      line-height: 1.5;
-      background-color: #f9f9f9;
-    }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      text-align: center;
-    }
-    p.instruction {
-      font-size: 1.125rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
+    /* === Brand Color Variables === */
+    :root {
+      --dark-teal:      #0A484A;
+      --mint-green:     #83BCAC;
+      --gray-bg:        #E9EDF4;
+      --blue-bg:        #A5BAE0;
+      --pink-bg:        #FFAAAA;
+
+      --text-white:     #FFFFFF;
+      --text-dark:      #222222;
     }
 
-    /* --------------------------
-       Question list & cards
-       -------------------------- */
+    /* === Global Reset & Typography (Poppins) === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--text-dark);
+      background-color: var(--gray-bg);
+    }
+    h1, h2, h3 {
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+      font-weight: 700;
+      color: var(--dark-teal);
+    }
+    p {
+      margin-bottom: 1rem;
+      font-weight: 400;
+      color: var(--text-dark);
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .container {
+      width: min(90%, 900px);
+      margin: 0 auto;
+      padding: 2rem 0;
+    }
+
+    /* === Header === */
+    header {
+      background-color: var(--dark-teal);
+      color: var(--text-white);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2rem;
+    }
+    .header-title {
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    /* === Form Section === */
+    #formPage {
+      background-color: var(--text-white);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    #formPage h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+    }
+    #formPage p {
+      font-size: 1rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
     #questionsContainer {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 1rem;
       margin-bottom: 1.5rem;
     }
     .question-card {
-      background: #fff;
+      background: var(--gray-bg);
       padding: 1rem;
-      border-radius: 0.5rem;
+      border-radius: 8px;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     }
-    .question-card label {
+    .question-card label.question-text {
       display: block;
-      font-size: 1rem;
-      margin-bottom: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--dark-teal);
     }
     .rating-group {
       display: flex;
       justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
     .rating-group input[type="radio"] {
-      transform: scale(2.5);
+      transform: scale(1.4);
       margin-right: 0.25rem;
     }
-
-    /* --------------------------
-       Buttons & feedback text
-       -------------------------- */
-    button {
-      margin-top: 1rem;
-      font-size: 1.125rem;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 0.375rem;
-      background-color: #007acc;
-      color: #fff;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-    button:hover {
-      background-color: #005fa3;
+    .required-asterisk {
+      color: #d00000;
+      margin-left: 0.25rem;
+      font-weight: 700;
     }
     .error-text {
       color: #d00000;
       font-size: 0.95rem;
       margin-top: 0.5rem;
+      text-align: center;
+    }
+    .button-wrapper {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--mint-green);
+      color: var(--text-white);
+      font-weight: 600;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn:hover {
+      opacity: 0.85;
     }
 
-    /* --------------------------
-       Results box
-       -------------------------- */
-    #results {
+    /* === Results Section === */
+    #resultsPage {
       display: none;
-      margin-top: 2rem;
+      background-color: var(--text-white);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
       text-align: center;
+    }
+    #resultsPage h2 {
+      margin-bottom: 1rem;
+      font-size: 2rem;
     }
     #downloadArea {
       display: inline-block;
-      background: #fff;
+      background: var(--blue-bg);
       padding: 1.5rem;
-      border-radius: 0.5rem;
+      border-radius: 8px;
       box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
-    }
-    #downloadArea h2 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
     }
     #topTraits {
       list-style-type: decimal;
@@ -107,33 +177,68 @@
       margin: 0 auto 1rem auto;
       max-width: 300px;
       padding-left: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .results-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .results-buttons button {
+      padding: 0.5rem 1.25rem;
+      background-color: var(--mint-green);
+      color: var(--text-white);
+      font-weight: 600;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .results-buttons button:hover {
+      opacity: 0.85;
     }
   </style>
 </head>
-
 <body>
-  <h1>Karaktererősség Teszt</h1>
-  <p class="instruction">
-    Kérjük, minősítse az alábbi állításokat 1 és 5 között, ahol 1 = Egyáltalán nem jellemző, 5 = Teljes mértékben jellemző.
-  </p>
+  <!-- ========== Header ========== -->
+  <header>
+    <div class="header-inner">
+      <div class="header-title">Karaktererősség Teszt</div>
+    </div>
+  </header>
 
-  <form id="quizForm">
-    <div id="questionsContainer">
-      <!-- A 24 kérdés dinamikusan ide kerül betöltésre -->
+  <div class="container">
+    <!-- ========== Form Section ========== -->
+    <div id="formPage">
+      <h1>Karaktererősség Teszt</h1>
+      <p>
+        Kérjük, minősítse az alábbi állításokat 1 és 5 között, ahol 1 = Egyáltalán nem jellemző, 5 = Teljes mértékben jellemző.
+      </p>
+      <form id="quizForm">
+        <div id="questionsContainer">
+          <!-- A dinamikusan generált 24 kérdés ide kerül -->
+        </div>
+        <div id="validationError" class="error-text" style="display: none;">
+          Kérjük, minden kérdésre adjon választ!
+        </div>
+        <div class="button-wrapper">
+          <button type="button" id="submitBtn" class="btn">Lássuk az eredményeket</button>
+        </div>
+      </form>
     </div>
-    <div id="validationError" class="error-text" style="display: none;">
-      Kérjük, minden kérdésre adjon választ!
-    </div>
-    <div style="text-align: center;">
-      <button type="button" id="submitBtn">Lássuk az eredményeket</button>
-    </div>
-  </form>
 
-  <div id="results">
-    <div id="downloadArea">
+    <!-- ========== Results Section ========== -->
+    <div id="resultsPage">
       <h2>A legfőbb erősségeim:</h2>
-      <ol id="topTraits"></ol>
-      <button type="button" id="downloadBtn">Eredmények letöltése</button>
+      <div id="downloadArea">
+        <ol id="topTraits"></ol>
+      </div>
+      <div class="results-buttons">
+        <button type="button" id="downloadBtn">Letöltés képként</button>
+        <button type="button" onclick="location.reload()">Új teszt</button>
+      </div>
     </div>
   </div>
 
@@ -144,33 +249,31 @@
       // --------------------------------------
       // 1. A kérdések és jellemzők tömbje (24 elem)
       // --------------------------------------
-      // Minden elem: [id, kérdés szövege, jellemző név]
-      // * ID nem használódik a későbbi logikában, de megtartjuk az eredeti struktúrát
       const items = [
-        [0,  "Gyakran találok ki új és szokatlan megoldásokat problémákra.",                                      "Kreativitás"],
-        [1,  "Örömmel bővítem tudásomat különböző területeken.",                                                   "Tanulás szeretete"],
-        [2,  "Gyorsan észreveszem mások érzelmeit, és érzékeny vagyok rájuk.",                                       "Empátia"],
-        [3,  "Megőrzöm nyugalmamat még stresszes helyzetekben is.",                                               "Bátorság"],
-        [4,  "Képes vagyok előre tervezni és végigvinni hosszú távú célokat.",                                       "Kitartás"],
-        [5,  "Gyakran veszek részt új kihívásokban, amelyek félelmet keltenek bennem.",                             "Bátorság"],
-        [6,  "Hatékonyan szervezem az időmet és a feladataimat.",                                                   "Önkontroll"],
-        [7,  "Szívesen dolgozom csapatban, és könnyen találok közös hangot másokkal.",                             "Szociális intelligencia"],
-        [8,  "Örömmel segítek másoknak, amikor erre szükségük van.",                                                "Empátia"],
-        [9,  "Fontos számomra, hogy őszinte és tiszta legyek másokkal.",                                             "Őszinteség"],
-        [10, "Nyitott vagyok más kultúrák és nézőpontok iránt.",                                                     "Nyitottság"],
-        [11, "Könnyen hozzáigazodok a változó körülményekhez.",                                                      "Alkalmazkodás"],
-        [12, "Átgondolt döntéseket hozok, mielőtt cselekszem.",                                                       "Megfontoltság"],
-        [13, "Szeretem, ha világos és egyértelmű célokkal rendelkezem minden területen.",                            "Rend és rendületlenség"],
-        [14, "Sok energiát fektetek abba, amit szeretek csinálni.",                                                   "Szenvedély"],
-        [15, "Meg tudom hallgatni a kritikát és építően kezelem.",                                                   "Alázat"],
-        [16, "Fontosnak tartom mások sikereit is ünnepelni.",                                                        "Közösségépítés"],
-        [17, "Felelősségteljesen járok el a rám bízott feladatokban.",                                               "Felelősség"],
-        [18, "Könnyen kifejezem a gondolataimat, és jól kommunikálok.",                                              "Kommunikációs készség"],
-        [19, "Kitartóan dolgozom a nehéz feladatok megoldásán.",                                                      "Kitartás"],
-        [20, "Gyorsan tanulok új készségeket és alkalmazom azokat.",                                                 "Tanulás szeretete"],
-        [21, "Szívesen vállalok vezető szerepet, ha a helyzet úgy kívánja.",                                        "Vezetői készség"],
-        [22, "Őszintén kifejezem a hálámat és elismerésem mások iránt.",                                              "Hála"],
-        [23, "Másokkal együttműködve könnyebben érem el a céljaimat.",                                              "Szociális intelligencia"]
+        [0,  "Gyakran találok ki új és szokatlan megoldásokat problémákra.",            "Kreativitás"],
+        [1,  "Örömmel bővítem tudásomat különböző területeken.",                           "Tanulás szeretete"],
+        [2,  "Gyorsan észreveszem mások érzelmeit, és érzékeny vagyok rájuk.",               "Empátia"],
+        [3,  "Megőrzöm nyugalmamat még stresszes helyzetekben is.",                       "Bátorság"],
+        [4,  "Képes vagyok előre tervezni és végigvinni hosszú távú célokat.",                 "Kitartás"],
+        [5,  "Gyakran veszek részt új kihívásokban, amelyek félelmet keltenek bennem.",     "Bátorság"],
+        [6,  "Hatékonyan szervezem az időmet és a feladataimat.",                         "Önkontroll"],
+        [7,  "Szívesen dolgozom csapatban, és könnyen találok közös hangot másokkal.",       "Szociális intelligencia"],
+        [8,  "Örömmel segítek másoknak, amikor erre szükségük van.",                        "Empátia"],
+        [9,  "Fontos számomra, hogy őszinte és tiszta legyek másokkal.",                     "Őszinteség"],
+        [10, "Nyitott vagyok más kultúrák és nézőpontok iránt.",                           "Nyitottság"],
+        [11, "Könnyen hozzáigazodok a változó körülményekhez.",                              "Alkalmazkodás"],
+        [12, "Átgondolt döntéseket hozok, mielőtt cselekszem.",                             "Megfontoltság"],
+        [13, "Szeretem, ha világos és egyértelmű célokkal rendelkezem minden területen.",     "Rend és rendületlenség"],
+        [14, "Sok energiát fektetek abba, amit szeretek csinálni.",                       "Szenvedély"],
+        [15, "Meg tudom hallgatni a kritikát és építően kezelem.",                           "Alázat"],
+        [16, "Fontosnak tartom mások sikereit is ünnepelni.",                              "Közösségépítés"],
+        [17, "Felelősségteljesen járok el a rám bízott feladatokban.",                     "Felelősség"],
+        [18, "Könnyen kifejezem a gondolataimat, és jól kommunikálok.",                    "Kommunikációs készség"],
+        [19, "Kitartóan dolgozom a nehéz feladatok megoldásán.",                            "Kitartás"],
+        [20, "Gyorsan tanulok új készségeket és alkalmazom azokat.",                       "Tanulás szeretete"],
+        [21, "Szívesen vállalok vezető szerepet, ha a helyzet úgy kívánja.",               "Vezetői készség"],
+        [22, "Őszintén kifejezem a hálámat és elismerésem mások iránt.",                    "Hála"],
+        [23, "Másokkal együttműködve könnyebben érem el a céljaimat.",                      "Szociális intelligencia"]
       ];
 
       // --------------------------------------
@@ -190,18 +293,16 @@
       shuffleArray(items);
 
       items.forEach(([id, text, trait], index) => {
-        // 3a. Kérdés-kártya elem létrehozása
-        const card = document.createElement("div");
-        card.className = "question-card";
-        card.dataset.trait = trait;
+        const questionDiv = document.createElement("div");
+        questionDiv.className = "question-card";
+        questionDiv.dataset.trait = trait;
 
-        // 3b. Kérdés szövegének hozzáadása
         const label = document.createElement("label");
+        label.className = "question-text";
         label.setAttribute("for", `q-${index}`);
         label.textContent = text;
-        card.appendChild(label);
+        questionDiv.appendChild(label);
 
-        // 3c. Rádiógombok (1–5) létrehozása
         const ratingGroup = document.createElement("div");
         ratingGroup.className = "rating-group";
         for (let score = 1; score <= 5; score++) {
@@ -212,9 +313,9 @@
           radio.id = `q-${index}-${score}`;
           ratingGroup.appendChild(radio);
         }
-        card.appendChild(ratingGroup);
+        questionDiv.appendChild(ratingGroup);
 
-        container.appendChild(card);
+        container.appendChild(questionDiv);
       });
 
       // --------------------------------------
@@ -241,9 +342,8 @@
             const existingAsterisk = card.querySelector(".required-asterisk");
             if (!existingAsterisk) {
               const star = document.createElement("span");
-              star.textContent = " *";
+              star.textContent = "*";
               star.className = "required-asterisk";
-              star.style.color = "#d00000";
               card.querySelector("label").appendChild(star);
             }
           });
@@ -289,21 +389,16 @@
       // 5. Eredmények megjelenítése
       // --------------------------------------
       function showResults(topFive) {
-        // 5a. Elrejtjük a formot és instrukciót
-        document.getElementById("quizForm").style.display = "none";
-        document.querySelector("p.instruction").style.display = "none";
+        document.getElementById("formPage").style.display = "none";
+        document.getElementById("resultsPage").style.display = "block";
 
-        // 5b. Felsoroljuk a top 5 erősséget
         const topTraitsList = document.getElementById("topTraits");
-        topTraitsList.innerHTML = ""; // Ürítjük
+        topTraitsList.innerHTML = "";
         topFive.forEach((item) => {
           const li = document.createElement("li");
           li.textContent = item.name;
           topTraitsList.appendChild(li);
         });
-
-        // 5c. Megjelenítjük a letöltés gombot és a blokkot
-        document.getElementById("results").style.display = "block";
       }
 
       // --------------------------------------
