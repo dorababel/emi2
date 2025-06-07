@@ -2,67 +2,72 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Values Selection App</title>
+
+  <!-- Load Poppins from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); grid-gap: 10px; }
-    .card { border: 1px solid #ccc; padding: 10px; border-radius: 4px; cursor: pointer; background: #f9f9f9; }
-    .card.selected { background: #d0eaff; border-color: #007bff; }
-    .hidden { display: none; }
-    .pool, .dropzone { border: 1px dashed #ccc; min-height: 100px; padding: 10px; }
-    .dropzone { border: 2px dashed #aaa; }
-    .dropzone.over { border-color: #007bff; }
-    .slot { border: 1px dashed #aaa; padding: 10px; min-height: 40px; margin-bottom: 5px; }
-    .slot.over { border-color: #007bff; }
-    .button { padding: 10px 20px; margin: 5px; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    :root {
+      --dark-teal:  #0A484A;
+      --mint-green: #83BCAC;
+      --gray-bg:    #E9EDF4;
+      --blue-bg:    #A5BAE0;
+      --text-white: #FFFFFF;
+      --text-dark:  #222222;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: var(--gray-bg); color: var(--text-dark); }
+    header { background: var(--dark-teal); padding: 1rem; text-align: center; }
+    header .header-title { color: var(--text-white); font-weight: 600; font-size: 1.5rem; }
+    .container { width: min(90%,900px); margin: 2rem auto; }
+    h2, h3 { color: var(--dark-teal); margin-bottom: .5rem; font-weight: 600; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:1rem; margin-bottom:1rem; }
+    .card { background: var(--text-white); border:1px solid var(--blue-bg); border-radius:8px; padding:1rem; cursor:pointer; transition:transform .2s; }
+    .card:hover { transform:translateY(-2px); }
+    .selected { background: var(--mint-green) !important; border-color: var(--dark-teal) !important; color: var(--text-white) !important; }
+    .pool, .dropzone { background: var(--text-white); border:2px dashed var(--blue-bg); border-radius:8px; min-height:120px; padding:1rem; margin-bottom:1rem; }
+    .over { border-color: var(--dark-teal) !important; }
+    .slot { background: var(--text-white); border:2px dashed var(--blue-bg); border-radius:8px; padding:1rem; min-height:50px; margin-bottom:.5rem; }
+    .btn { background: var(--mint-green); color: var(--text-white); border:none; padding:.75rem 1.5rem; border-radius:50px; text-transform:uppercase; font-weight:600; cursor:pointer; margin:.5rem; }
+    .btn:disabled { opacity:.5; cursor:not-allowed; }
+    .hidden { display:none; }
   </style>
 </head>
 <body>
-  <div id="step1">
-    <h2>Step 1 – Select 10–15 Values</h2>
-    <div class="grid" id="valuesGrid"></div>
-    <button id="next1" class="button" disabled>Next</button>
-  </div>
+  <header><div class="header-title">Values Selection</div></header>
+  <div class="container">
+    <div id="step1">
+      <h2>Step 1 – Select 10–15 Values</h2>
+      <div id="valuesGrid" class="grid"></div>
+      <button id="next1" class="btn" disabled>Next</button>
+    </div>
 
-  <div id="step2" class="hidden">
-    <h2>Step 2 – Sort Into Top 1–5 and Top 6–10</h2>
-    <div>
-      <h3>Pool</h3>
-      <div class="pool" id="pool"></div>
-    </div>
-    <div style="display:flex; gap:10px;">
-      <div style="flex:1;">
-        <h3>TOP 1–5</h3>
-        <div class="dropzone" id="zone1"></div>
+    <div id="step2" class="hidden">
+      <h2>Step 2 – Sort Into Top 1–5 and Top 6–10</h2>
+      <h3>Pool</h3><div id="pool" class="pool"></div>
+      <div style="display:flex; gap:1rem;">
+        <div style="flex:1;"><h3>TOP 1–5</h3><div id="zone1" class="dropzone"></div></div>
+        <div style="flex:1;"><h3>TOP 6–10</h3><div id="zone2" class="dropzone"></div></div>
       </div>
-      <div style="flex:1;">
-        <h3>TOP 6–10</h3>
-        <div class="dropzone" id="zone2"></div>
-      </div>
+      <button id="back2" class="btn">Back</button>
+      <button id="next2" class="btn" disabled>Next</button>
     </div>
-    <button id="back2" class="button">Back</button>
-    <button id="next2" class="button" disabled>Next</button>
-  </div>
 
-  <div id="step3" class="hidden">
-    <h2>Step 3 – Rank Your Top 5</h2>
-    <div>
-      <h3>Slots</h3>
-      <div id="slots"></div>
+    <div id="step3" class="hidden">
+      <h2>Step 3 – Rank Your Top 5</h2>
+      <h3>Slots</h3><div id="slots"></div>
+      <h3>Pool</h3><div id="pool3" class="pool"></div>
+      <button id="startOver" class="btn">Start Over</button>
+      <button id="finalize" class="btn" disabled>Finalize</button>
+      <canvas id="resultCanvas" class="hidden"></canvas>
+      <a id="downloadLink" class="btn hidden">Download Image</a>
     </div>
-    <div>
-      <h3>Pool</h3>
-      <div class="pool" id="pool3"></div>
-    </div>
-    <button id="startOver" class="button">Start Over</button>
-    <button id="finalize" class="button" disabled>Finalize</button>
-    <canvas id="resultCanvas" class="hidden"></canvas>
-    <a id="downloadLink" class="button hidden">Download Image</a>
   </div>
 
   <script>
-    const values = [
+    const values=[
       {title:'AUTHENTICITY',definition:'Being true to oneself'},
       {title:'COMPASSION',definition:'Showing empathy and kindness'},
       {title:'COURAGE',definition:'Doing what is right despite fear'},
@@ -84,175 +89,32 @@
       {title:'STABILITY',definition:'Consistency and support'},
       {title:'ADVENTURE',definition:'Seeking new experiences'}
     ];
-
-    let selectedValues = [], top1to5 = [], top6to10 = [], ranked = {};
-
-    function renderStep1() {
-      const grid = document.getElementById('valuesGrid');
-      const nextBtn = document.getElementById('next1');
-      values.forEach((v,i) => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.dataset.index = i;
-        card.innerHTML = `<strong>${v.title}</strong><p>${v.definition}</p>`;
-        card.addEventListener('click', () => {
-          const idx = selectedValues.indexOf(i);
-          if (idx > -1) {
-            selectedValues.splice(idx,1);
-            card.classList.remove('selected');
-          } else if (selectedValues.length < 15) {
-            selectedValues.push(i);
-            card.classList.add('selected');
-          } else {
-            alert('You can only select up to 15 values.');
-            return;
-          }
-          nextBtn.disabled = !(selectedValues.length >= 10 && selectedValues.length <= 15);
-        });
-        grid.appendChild(card);
+    let selectedValues=[],top1to5=[],top6to10=[],ranked={};
+    function renderStep1(){
+      const grid=document.getElementById('valuesGrid'),btn=document.getElementById('next1');
+      values.forEach((v,i)=>{
+        const c=document.createElement('div');c.className='card';c.dataset.index=i;
+        c.innerHTML=`<strong>${v.title}</strong><p>${v.definition}</p>`;
+        c.onclick=()=>{
+          const idx=selectedValues.indexOf(i);
+          if(idx>-1){selectedValues.splice(idx,1);c.classList.remove('selected');}
+          else if(selectedValues.length<15){selectedValues.push(i);c.classList.add('selected');}
+          else{alert('You can only select up to 15 values.');return;}
+          btn.disabled=!(selectedValues.length>=10&&selectedValues.length<=15);
+        };
+        grid.append(c);
       });
     }
-
-    function toStep2() {
-      document.getElementById('step1').classList.add('hidden');
-      document.getElementById('step2').classList.remove('hidden');
-      const pool = document.getElementById('pool');
-      selectedValues.forEach(i => pool.appendChild(createPoolCard(i)));
-    }
-
-    function createPoolCard(index) {
-      const v = values[index];
-      const card = document.createElement('div');
-      card.className = 'card pool-card';
-      card.draggable = true;
-      card.dataset.index = index;
-      card.textContent = v.title;
-      card.addEventListener('dragstart', onDragStart);
-      card.addEventListener('click', () => removeFromZones(index));
-      return card;
-    }
-
-    function onDragStart(e) {
-      e.dataTransfer.setData('text/plain', e.target.dataset.index);
-    }
-
-    function setupDropzones() {
-      ['zone1','zone2'].forEach((id,zoneIdx) => {
-        const dz = document.getElementById(id);
-        dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
-        dz.addEventListener('dragleave', e => { dz.classList.remove('over'); });
-        dz.addEventListener('drop', e => {
-          e.preventDefault(); dz.classList.remove('over');
-          const idx = parseInt(e.dataTransfer.getData('text/plain'));
-          const list = zoneIdx===0 ? top1to5 : top6to10;
-          if (list.length >=5) { alert('Zone full'); return; }
-          removeFromZones(idx);
-          list.push(idx);
-          renderZones();
-          document.getElementById('next2').disabled = !(top1to5.length===5 && top6to10.length===5);
-        });
-      });
-    }
-
-    function removeFromZones(index) {
-      [top1to5,top6to10].forEach(list => {
-        const idx = list.indexOf(index);
-        if (idx > -1) list.splice(idx,1);
-      });
-      renderZones();
-    }
-
-    function renderZones() {
-      ['zone1','zone2'].forEach((id,zoneIdx) => {
-        const dz = document.getElementById(id);
-        dz.innerHTML = '';
-        const list = zoneIdx===0 ? top1to5 : top6to10;
-        list.forEach(i => {
-          const el = document.createElement('div');
-          el.className = 'card';
-          el.textContent = values[i].title;
-          el.addEventListener('click', () => removeFromZones(i));
-          dz.appendChild(el);
-        });
-      });
-      const pool = document.getElementById('pool');
-      pool.innerHTML = '';
-      selectedValues.forEach(i => {
-        if (!top1to5.includes(i) && !top6to10.includes(i)) pool.appendChild(createPoolCard(i));
-      });
-    }
-
-    function toStep3() {
-      document.getElementById('step2').classList.add('hidden');
-      document.getElementById('step3').classList.remove('hidden');
-      const pool3 = document.getElementById('pool3');
-      top1to5.forEach(i => pool3.appendChild(createPoolCard(i)));
-      const slotsDiv = document.getElementById('slots');
-      for (let n=1; n<=5; n++) {
-        const slot = document.createElement('div');
-        slot.className = 'slot';
-        slot.dataset.slot = n;
-        slot.textContent = 'Slot ' + n;
-        slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('over'); });
-        slot.addEventListener('dragleave', e => { slot.classList.remove('over'); });
-        slot.addEventListener('drop', e => {
-          e.preventDefault(); slot.classList.remove('over');
-          const idx = parseInt(e.dataTransfer.getData('text/plain'));
-          if (ranked[n]) return;
-          const el = document.querySelector('#pool3 .pool-card[data-index="'+idx+'"]');
-          if (el) el.remove();
-          ranked[n] = idx;
-          const card = document.createElement('div');
-          card.className = 'card';
-          card.textContent = values[idx].title;
-          card.addEventListener('click', () => {
-            delete ranked[n];
-            card.remove();
-            pool3.appendChild(createPoolCard(idx));
-            checkFinalize();
-          });
-          slot.appendChild(card);
-          checkFinalize();
-        });
-        slotsDiv.appendChild(slot);
-      }
-    }
-
-    function checkFinalize() {
-      document.getElementById('finalize').disabled = (Object.keys(ranked).length !== 5);
-    }
-
-    function finalize() {
-      const canvas = document.getElementById('resultCanvas');
-      const ctx = canvas.getContext('2d');
-      const width = 600, height = 400;
-      canvas.width = width; canvas.height = height;
-      ctx.fillStyle = 'white'; ctx.fillRect(0,0,width,height);
-      ctx.fillStyle = 'black'; ctx.font = '24px Arial'; ctx.fillText('My Top Five Values',20,40);
-      ctx.font = '20px Arial'; let y=80;
-      [1,2,3,4,5].forEach(n => {
-        const idx = ranked[n];
-        ctx.fillText(n+'. '+values[idx].title, 20, y);
-        y += 30;
-      });
-      canvas.classList.remove('hidden');
-      const link = document.getElementById('downloadLink');
-      link.href = canvas.toDataURL('image/png');
-      link.download = 'my_top_five_values.png';
-      link.classList.remove('hidden');
-    }
-
-    document.getElementById('next1').addEventListener('click', toStep2);
-    document.getElementById('back2').addEventListener('click', () => {
-      document.getElementById('step2').classList.add('hidden');
-      document.getElementById('step1').classList.remove('hidden');
-    });
-    document.getElementById('next2').addEventListener('click', toStep3);
-    document.getElementById('startOver').addEventListener('click', () => location.reload());
-    document.getElementById('finalize').addEventListener('click', finalize);
-
-    renderStep1();
-    setupDropzones();
+    function toStep2(){document.getElementById('step1').classList.add('hidden');document.getElementById('step2').classList.remove('hidden');const p=document.getElementById('pool');selectedValues.forEach(i=>p.append(createPoolCard(i)));}
+    function createPoolCard(i){const v=values[i],c=document.createElement('div');c.className='card';c.draggable=true;c.dataset.index=i;c.textContent=v.title;c.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain',i));c.onclick=()=>removeFromZones(i);return c;}
+    function setupDropzones(){['zone1','zone2'].forEach((id,j)=>{const dz=document.getElementById(id);dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over');});dz.addEventListener('dragleave',e=>dz.classList.remove('over'));dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');const i=parseInt(e.dataTransfer.getData('text/plain'));const list=j===0?top1to5:top6to10;if(list.length>=5){alert('Zone full');return;}removeFromZones(i);list.push(i);renderZones();document.getElementById('next2').disabled=!(top1to5.length===5&&top6to10.length===5);});});}
+    function removeFromZones(i){[top1to5,top6to10].forEach(list=>{const idx=list.indexOf(i);if(idx>-1)list.splice(idx,1);});renderZones();}
+    function renderZones(){['zone1','zone2'].forEach((id,j)=>{const dz=document.getElementById(id),list=j===0?top1to5:top6to10;dz.innerHTML='';list.forEach(i=>{const c=document.createElement('div');c.className='card';c.textContent=values[i].title;c.onclick=()=>removeFromZones(i);dz.append(c);});});const p=document.getElementById('pool');p.innerHTML='';selectedValues.forEach(i=>{if(!top1to5.includes(i)&&!top6to10.includes(i))p.append(createPoolCard(i));});}
+    function toStep3(){document.getElementById('step2').classList.add('hidden');document.getElementById('step3').classList.remove('hidden');const p3=document.getElementById('pool3');top1to5.forEach(i=>p3.append(createPoolCard(i)));const slots=document.getElementById('slots');slots.innerHTML='';for(let n=1;n<=5;n++){const s=document.createElement('div');s.className='slot';s.dataset.slot=n;s.textContent='Slot '+n;s.addEventListener('dragover',e=>{e.preventDefault();s.classList.add('over');});s.addEventListener('dragleave',()=>s.classList.remove('over'));s.addEventListener('drop',e=>{e.preventDefault();s.classList.remove('over');const i=parseInt(e.dataTransfer.getData('text/plain'));if(ranked[n])return;const el=p3.querySelector(`.card[data-index="${i}"]`);if(el)el.remove();ranked[n]=i;const c=document.createElement('div');c.className='card';c.textContent=values[i].title;c.onclick=()=>{delete ranked[n];c.remove();p3.append(createPoolCard(i));checkFinalize();};s.append(c);checkFinalize();});slots.append(s);} }
+    function checkFinalize(){document.getElementById('finalize').disabled=!(Object.keys(ranked).length===5);}  
+    function finalize(){const c=document.getElementById('resultCanvas'),ctx=c.getContext('2d');const w=600,h=400;c.width=w;c.height=h;ctx.fillStyle='white';ctx.fillRect(0,0,w,h);ctx.fillStyle='black';ctx.font='24px Poppins';ctx.fillText('My Top Five Values',20,40);ctx.font='20px Poppins';let y=80;for(let n=1;n<=5;n++){ctx.fillText(n+'. '+values[ranked[n]].title,20,y);y+=30;}c.classList.remove('hidden');const link=document.getElementById('downloadLink');link.href=c.toDataURL();link.download='my_top_five_values.png';link.classList.remove('hidden');}
+    document.getElementById('next1').onclick=toStep2;document.getElementById('back2').onclick=()=>{document.getElementById('step2').classList.add('hidden');document.getElementById('step1').classList.remove('hidden');};document.getElementById('next2').onclick=toStep3;document.getElementById('startOver').onclick=()=>location.reload();document.getElementById('finalize').onclick=finalize;
+    renderStep1();setupDropzones();
   </script>
 </body>
 </html>
