@@ -1,181 +1,191 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Values Sorter</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    .step { display: none; }
-    .step.active { display: block; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
-    .card { padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; user-select: none; }
-    .card.selected { background: #def; border-color: #89c; }
-    .dropzone { min-height: 150px; border: 2px dashed #aaa; padding: 10px; border-radius: 4px; }
-    .slot { width: 100px; height: 40px; margin: 5px; border: 2px dashed #aaa; display: inline-block; vertical-align: top; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-  </style>
-</head>
-<body>
-  <div id="step1" class="step active">
-    <h2>Step 1: Select 10–15 Values</h2>
-    <div id="grid1" class="grid"></div>
-    <button id="next1" disabled>Next</button>
-  </div>
+import React, { useState, useCallback, useRef } from 'react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-  <div id="step2" class="step">
-    <h2>Step 2: Split into Top 1–5 and Top 6–10</h2>
-    <div>
-      <h3>Pool</h3>
-      <div id="pool2" class="grid"></div>
+// Sample values data
+const VALUES = [
+  { id: 'Acceptance', label: 'Acceptance', description: 'to be accepted as I am' },
+  // ... add remaining values
+];
+
+function StepSelector({ values, selected, toggleSelect, onNext }) {
+  return (
+    <div className="p-4">
+      <h2 className="text-xl font-semibold mb-4">Select 10–15 Values</h2>
+      <div className="grid grid-cols-3 gap-3">
+        {values.map((v) => (
+          <button
+            key={v.id}
+            onClick={() => toggleSelect(v.id)}
+            className={`p-3 border rounded-lg text-left ${
+              selected.includes(v.id) ? 'bg-blue-100 border-blue-400' : 'bg-white'
+            }`}
+          >
+            <div className="font-bold uppercase">{v.label}</div>
+            <div className="text-sm text-gray-600">{v.description}</div>
+          </button>
+        ))}
+      </div>
+      <button
+        onClick={onNext}
+        disabled={selected.length < 10 || selected.length > 15}
+        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+      >Next</button>
     </div>
-    <div>
-      <h3>TOP 1–5</h3>
-      <div id="zone1" class="dropzone" data-max="5"></div>
-      <h3>TOP 6–10</h3>
-      <div id="zone2" class="dropzone" data-max="5"></div>
+  );
+}
+
+function StepPool({ items, onComplete }) {
+  const [top5, setTop5] = useState([]);
+  const [next5, setNext5] = useState([]);
+
+  const onDragEnd = useCallback(({ source, destination }) => {
+    if (!destination) return;
+    const srcList = source.droppableId === 'pool' ? items : source.droppableId === 'top5' ? top5 : next5;
+    const dstList = destination.droppableId === 'top5' ? top5 : destination.droppableId === 'next5' ? next5 : items;
+    if (dstList.length >= 5) return alert('Max 5 items');
+
+    const [moved] = srcList.splice(source.index, 1);
+    dstList.splice(destination.index, 0, moved);
+    setTop5([...top5]);
+    setNext5([...next5]);
+    if (top5.length === 5 && next5.length === 5) onComplete([...top5, ...next5]);
+  }, [items, top5, next5, onComplete]);
+
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className="p-4 space-y-6">
+        <h2 className="text-xl font-semibold">Sort Into Top 1–5 and Top 6–10</h2>
+        <Droppable droppableId="pool" direction="horizontal">
+          {(provided) => (
+            <div ref={provided.innerRef} {...provided.droppableProps} className="flex space-x-2">
+              {items.map((id, idx) => (
+                <Draggable key={id} draggableId={id} index={idx}>
+                  {(p) => <div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps} className="p-2 bg-gray-100 rounded">{id}</div>}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+        <div className="flex space-x-4">
+          <Droppable droppableId="top5">
+            {(prov) => (
+              <div ref={prov.innerRef} {...prov.droppableProps} className="w-1/2 min-h-[100px] p-4 border rounded">
+                <h3 className="font-semibold">TOP 1–5</h3>
+                {top5.map((id, i) => (
+                  <Draggable key={id} draggableId={id} index={i}>
+                    {(p) => <div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps} className="p-2 bg-blue-50 rounded">{id}</div>}
+                  </Draggable>
+                ))}
+                {prov.placeholder}
+              </div>
+            )}
+          </Droppable>
+          <Droppable droppableId="next5">
+            {(prov) => (
+              <div ref={prov.innerRef} {...prov.droppableProps} className="w-1/2 min-h-[100px] p-4 border rounded">
+                <h3 className="font-semibold">TOP 6–10</h3>
+                {next5.map((id, i) => (
+                  <Draggable key={id} draggableId={id} index={i}>
+                    {(p) => <div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps} className="p-2 bg-blue-50 rounded">{id}</div>}
+                  </Draggable>
+                ))}
+                {prov.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </div>
+      </div>
+    </DragDropContext>
+  );
+}
+
+function StepRank({ top5, onFinalize }) {
+  const [order, setOrder] = useState(Array(5).fill(null));
+
+  const onDragEnd = useCallback(({ source, destination }) => {
+    if (!destination) return;
+    const newOrder = [...order];
+    newOrder[destination.index] = source.draggableId;
+    setOrder(newOrder);
+    if (newOrder.every((v) => v)) onFinalize(newOrder);
+  }, [order, onFinalize]);
+
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className="p-4 space-y-4">
+        <h2 className="text-xl font-semibold">Rank Your Top 5</h2>
+        <div className="grid grid-cols-5 gap-2">
+          {order.map((val, idx) => (
+            <Droppable key={idx} droppableId={`slot-${idx}`}>
+              {(prov) => (
+                <div ref={prov.innerRef} {...prov.droppableProps} className="h-20 p-2 border rounded text-center">
+                  {val || <span className="text-gray-400">Drop {idx + 1}</span>}
+                  {prov.placeholder}
+                </div>
+              )}
+            </Droppable>
+          ))}
+        </div>
+        <Droppable droppableId="rank-pool" direction="horizontal">
+          {(prov) => (
+            <div ref={prov.innerRef} {...prov.droppableProps} className="flex space-x-2">
+              {top5.filter((id) => !order.includes(id)).map((id, idx) => (
+                <Draggable key={id} draggableId={id} index={idx}>
+                  {(p) => <div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps} className="p-2 bg-gray-100 rounded">{id}</div>}
+                </Draggable>
+              ))}
+              {prov.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </div>
+    </DragDropContext>
+  );
+}
+
+export default function App() {
+  const [step, setStep] = useState(1);
+  const [selected, setSelected] = useState([]);
+  const [pool, setPool] = useState([]);
+  const [finalOrder, setFinalOrder] = useState([]);
+  const canvasRef = useRef();
+
+  const toggleSelect = useCallback((id) => {
+    setSelected((s) => s.includes(id) ? s.filter((x) => x !== id) : s.length < 15 ? [...s, id] : s);
+  }, []);
+
+  const handlePoolComplete = useCallback((ordered) => { setPool(ordered); setStep(3); }, []);
+  const handleFinalize = useCallback((order) => {
+    setFinalOrder(order);
+    const canvas = document.createElement('canvas');
+    canvas.width = 600; canvas.height = 400;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '28px Arial'; ctx.fillStyle = '#000'; ctx.fillText('My Top Five Values', 20, 50);
+    ctx.font = '20px Arial';
+    order.forEach((val, i) => ctx.fillText(`${i+1}. ${val}`, 20, 100 + i*40));
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'my_top_five_values.png';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }, []);
+
+  return (
+    <div className="max-w-3xl mx-auto shadow-lg rounded-lg p-6 bg-white">
+      {step === 1 && (
+        <StepSelector
+          values={VALUES}
+          selected={selected}
+          toggleSelect={toggleSelect}
+          onNext={() => { setPool(selected); setStep(2); }}
+        />
+      )}
+      {step === 2 && <StepPool items={pool} onComplete={handlePoolComplete} />}
+      {step === 3 && <StepRank top5={pool.slice(0,5)} onFinalize={handleFinalize} />}
     </div>
-    <button id="next2" disabled>Next</button>
-  </div>
-
-  <div id="step3" class="step">
-    <h2>Step 3: Rank Your Top 5</h2>
-    <div id="slots3"></div>
-    <h3>Remaining Pool</h3>
-    <div id="pool3" class="grid"></div>
-    <button id="finalize" disabled>Finalize and Download</button>
-  </div>
-
-  <canvas id="canvas" width="600" height="400" style="display:none;"></canvas>
-  <script>
-    const values = [
-      {id:'Acceptance',desc:'to be accepted as I am'},
-      /* ... other values ... */
-    ];
-    let selected = [], top5 = [], next5 = [], ranked = {};
-    const grid1 = document.getElementById('grid1');
-    const pool2 = document.getElementById('pool2');
-    const zone1 = document.getElementById('zone1');
-    const zone2 = document.getElementById('zone2');
-    const slots3 = document.getElementById('slots3');
-    const pool3 = document.getElementById('pool3');
-    const next1 = document.getElementById('next1');
-    const next2 = document.getElementById('next2');
-    const finalize = document.getElementById('finalize');
-
-    function createCard(id) {
-      const c = document.createElement('div');
-      c.className = 'card'; c.textContent = id;
-      c.draggable = true;
-      c.id = 'card-'+id;
-      c.addEventListener('dragstart', e=> e.dataTransfer.setData('text/plain', id));
-      c.addEventListener('click', () => handleClickReturn(id));
-      return c;
-    }
-
-    function handleClickReturn(id) {
-      const card = document.getElementById('card-'+id);
-      // If in slots3 or pool3, return to pool3
-      if (document.getElementById('step3').classList.contains('active')) {
-        if (card.parentElement !== pool3) {
-          // remove from slot or pool
-          if (ranked[id]) delete ranked[id];
-          card.parentElement.removeChild(card);
-          pool3.appendChild(card);
-          updateFinalizeState();
-        }
-      }
-    }
-
-    // Step1 init
-    values.forEach(v=>{
-      const c = createCard(v.id);
-      c.addEventListener('click', ()=>{
-        if (selected.includes(v.id)) {
-          selected = selected.filter(x=>x!==v.id);
-          c.classList.remove('selected');
-        } else if (selected.length < 15) {
-          selected.push(v.id);
-          c.classList.add('selected');
-        }
-        next1.disabled = selected.length<10 || selected.length>15;
-      });
-      grid1.appendChild(c);
-    });
-    next1.onclick = ()=>{
-      grid1.parentElement.classList.remove('active'); document.getElementById('step2').classList.add('active');
-      selected.forEach(id=> pool2.appendChild(createCard(id)));
-    };
-
-    // Step2 drag/drop logic
-    [zone1, zone2, pool2].forEach(z=>{
-      z.addEventListener('dragover', e=>e.preventDefault());
-      z.addEventListener('drop', e=>{
-        e.preventDefault(); const id=e.dataTransfer.getData('text');
-        const dst = z;
-        const max = parseInt(dst.dataset.max||'15');
-        if (dst.children.length>=max) { alert('Zone full'); return; }
-        const c = document.getElementById('card-'+id);
-        dst.appendChild(c);
-        top5 = Array.from(zone1.children).map(c=>c.textContent);
-        next5 = Array.from(zone2.children).map(c=>c.textContent);
-        next2.disabled = top5.length!==5||next5.length!==5;
-      });
-    });
-    next2.onclick = ()=>{
-      document.getElementById('step2').classList.remove('active');
-      document.getElementById('step3').classList.add('active');
-      // init slots3 and pool3
-      slots3.innerHTML = '';
-      for(let i=1;i<=5;i++){
-        const slot = document.createElement('div');
-        slot.className='slot'; slot.dataset.slot=i;
-        slot.addEventListener('dragover', e=>e.preventDefault());
-        slot.addEventListener('drop', e=>{
-          e.preventDefault(); const id=e.dataTransfer.getData('text');
-          if (slot.children.length>0) return;
-          const c = document.getElementById('card-'+id);
-          slot.appendChild(c);
-          ranked[id]=slot.dataset.slot;
-          updateFinalizeState();
-        });
-        slots3.appendChild(slot);
-      }
-      pool3.innerHTML=''; selected.slice(0,5).forEach(id=>{});
-      selected = top5;
-      selected.forEach(id=> pool3.appendChild(createCard(id)));
-    };
-
-    function updateFinalizeState(){
-      const filled = Object.keys(ranked).length===5;
-      finalize.disabled = !filled;
-    }
-
-    finalize.onclick = ()=>{
-      const canvas = document.getElementById('canvas');
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
-      const logo = new Image();
-      logo.src='logo.png';
-      logo.onload = ()=>{
-        ctx.drawImage(logo, canvas.width-100, 10, 80, 80);
-        const title = 'My Top Five Values';
-        ctx.font='28px Arial'; ctx.fillStyle='#000';
-        ctx.fillText(title, 20, 60);
-        const m = ctx.measureText(title);
-        ctx.beginPath(); ctx.moveTo(20,70); ctx.lineTo(20+m.width,70); ctx.stroke();
-        ctx.font='20px Arial';
-        Object.entries(ranked)
-          .sort((a,b)=>a[1]-b[1])
-          .forEach(([val,slot],i)=>{
-            ctx.fillText(`${slot}. ${val}`, 20, 100 + i*30);
-          });
-        const link = document.createElement('a');
-        link.download='my_top_five_values.png';
-        link.href=canvas.toDataURL();
-        link.click();
-      };
-    };
-  </script>
-</body>
-</html>
+  );
+}
