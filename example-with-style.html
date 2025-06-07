@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Exercise Motivation Inventory-2</title>
+
+  <!-- === Load Poppins from Google Fonts === -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* === Brand Color Variables (from example.html) === */
+    :root {
+      --dark-teal:      #0A484A;
+      --mint-green:     #83BCAC;
+      --gray-bg:        #E9EDF4;
+      --blue-bg:        #A5BAE0;
+      --pink-bg:        #FFAAAA;
+
+      --text-white:     #FFFFFF;
+      --text-dark:      #222222;
+    }
+
+    /* === Global Reset & Typography (Poppins) === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--text-dark);
+      background-color: var(--gray-bg);
+    }
+    h1, h2, h3 {
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+      font-weight: 700;
+      color: var(--dark-teal);
+    }
+    p {
+      margin-bottom: 1rem;
+      font-weight: 400;
+      color: var(--text-dark);
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .container {
+      width: min(90%, 900px);
+      margin: 0 auto;
+      padding: 2rem 0;
+    }
+
+    /* === Header === */
+    header {
+      background-color: var(--dark-teal);
+      color: var(--text-white);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2rem;
+    }
+    .header-title {
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    /* === Form Section === */
+    #formPage {
+      background-color: var(--text-white);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    #formPage h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+    }
+    #formPage p {
+      font-size: 1rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .question {
+      margin-bottom: 1.5rem;
+    }
+    .question label.question-text {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--dark-teal);
+    }
+    .options {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .options label {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-weight: 400;
+      color: var(--text-dark);
+    }
+    .options input[type="radio"] {
+      transform: scale(1.2);
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--mint-green);
+      color: var(--text-white);
+      font-weight: 600;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn:hover {
+      opacity: 0.85;
+    }
+    .button-wrapper {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    /* === Results Section === */
+    #resultsPage {
+      display: none;
+      background-color: var(--text-white);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+    }
+    #resultsPage h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+    }
+    #resultsTable {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    #resultsTable th, 
+    #resultsTable td {
+      border: 1px solid #ccc;
+      padding: 0.75rem;
+      text-align: center;
+    }
+    #resultsTable th {
+      background-color: var(--dark-teal);
+      color: var(--text-white);
+      font-weight: 600;
+    }
+    #resultsTable td {
+      background-color: var(--gray-bg);
+      color: var(--text-dark);
+    }
+    .results-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .results-buttons button {
+      padding: 0.5rem 1.25rem;
+      background-color: var(--mint-green);
+      color: var(--text-white);
+      font-weight: 600;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .results-buttons button:hover {
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <!-- ========== Header ========== -->
+  <header>
+    <div class="header-inner">
+      <div class="header-title">Exercise Motivation Inventory-2</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- ========== Form Section ========== -->
+    <div id="formPage">
+      <h1>Exercise Motivation Inventory-2</h1>
+      <p>
+        Please read the statements carefully and circle the appropriate number that reflects whether each
+        statement is true for you personally or would be true if you exercised.<br />
+        Use '0' if the statement is not true for you at all and '5' if it is very true. For partly true statements,
+        choose '1', '2', '3', or '4' based on your feelings.
+      </p>
+      <form id="emiForm"></form>
+      <div class="button-wrapper">
+        <button type="button" id="nextButton" class="btn">Next</button>
+      </div>
+    </div>
+
+    <!-- ========== Results Section ========== -->
+    <div id="resultsPage">
+      <h1>EMI-2 Subscale Results</h1>
+      <table id="resultsTable">
+        <thead>
+          <tr>
+            <th>Subscale</th>
+            <th>Average Score</th>
+          </tr>
+        </thead>
+        <tbody id="results"></tbody>
+      </table>
+      <div class="results-buttons">
+        <button onclick="downloadResultsImage()">Download Results as Image</button>
+        <button onclick="location.reload()">Start Over</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    // === Questions & Subscales (unchanged text content) ===
+    const questions = [
+      "To stay slim", "To avoid ill-health", "Because it makes me feel good", "To help me look younger",
+      "To show my worth to others", "To give me space to think", "To have a healthy body", "To build up my strength",
+      "Because I enjoy the feeling of exerting myself", "To spend time with friends", "Because my doctor advised me to exercise",
+      "Because I like trying to win in physical activities", "To stay/become more agile", "To give me goals to work towards",
+      "To lose weight", "To prevent health problems", "Because I find exercise invigorating", "To have a good body",
+      "To compare my abilities with other peoples’", "Because it helps to reduce tension", "Because I want to maintain good health",
+      "To increase my endurance", "Because I find exercising satisfying in and of itself", "To enjoy the social aspects of exercising",
+      "To help prevent an illness that runs in my family", "Because I enjoy competing", "To maintain flexibility",
+      "To give me personal challenges to face", "To help control my weight", "To avoid heart disease", "To recharge my batteries",
+      "To improve my appearance", "To gain recognition for my accomplishments", "To help manage stress", "To feel more healthy",
+      "To get stronger", "For enjoyment of the experience of exercising", "To have fun being active with other people",
+      "To help recover from an illness/injury", "Because I enjoy physical competition", "To stay/become flexible",
+      "To develop personal skills", "Because exercise helps me to burn calories", "To look more attractive",
+      "To accomplish things that others are incapable of", "To release tension", "To develop my muscles",
+      "Because I feel at my best when exercising", "To make new friends", "Because I find physical activities fun, especially when competition is involved",
+      "To measure myself against personal standards"
+    ];
+
+    const subscales = {
+      "Stress Management":         [6, 20, 34, 46],
+      "Revitalization":            [3, 17, 31],
+      "Enjoyment":                 [9, 23, 37, 48],
+      "Challenge":                 [14, 28, 42, 51],
+      "Social Recognition":        [5, 19, 33, 45],
+      "Affiliation":               [10, 24, 38, 49],
+      "Competition":               [12, 26, 40, 50],
+      "Health Pressures":          [11, 25, 39],
+      "Ill-health Avoidance":      [2, 16, 30],
+      "Positive Health":           [7, 21, 35],
+      "Weight Management":         [1, 15, 29, 43],
+      "Appearance":                [4, 18, 32, 44],
+      "Strength and Endurance":    [8, 22, 36, 47],
+      "Nimbleness":                [13, 27, 41]
+    };
+
+    // === Build Question Form ===
+    const form = document.getElementById('emiForm');
+    questions.forEach((text, idx) => {
+      const qNum = idx + 1;
+
+      const questionDiv = document.createElement('div');
+      questionDiv.className = 'question';
+
+      const label = document.createElement('label');
+      label.className = 'question-text';
+      label.textContent = `${qNum}. ${text}`;
+      questionDiv.appendChild(label);
+
+      const optionsDiv = document.createElement('div');
+      optionsDiv.className = 'options';
+
+      for (let value = 0; value <= 5; value++) {
+        const optionLabel = document.createElement('label');
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = `q${qNum}`;
+        radio.value = value;
+        radio.id = `q${qNum}_${value}`;
+
+        const span = document.createElement('span');
+        span.textContent = value;
+
+        optionLabel.appendChild(radio);
+        optionLabel.appendChild(span);
+        optionsDiv.appendChild(optionLabel);
+      }
+
+      questionDiv.appendChild(optionsDiv);
+      form.appendChild(questionDiv);
+    });
+
+    // === Next Button Handler ===
+    document.getElementById('nextButton').onclick = () => {
+      const scores = questions.map((_, i) => {
+        const radios = document.getElementsByName(`q${i + 1}`);
+        for (const r of radios) {
+          if (r.checked) return parseInt(r.value, 10);
+        }
+        return 0;
+      });
+      showResults(scores);
+    };
+
+    // === Show Results ===
+    function showResults(scores) {
+      document.getElementById('formPage').style.display = 'none';
+      document.getElementById('resultsPage').style.display = 'block';
+      const resultsBody = document.getElementById('results');
+      resultsBody.innerHTML = '';
+
+      const computed = [];
+      for (const [label, indices] of Object.entries(subscales)) {
+        const vals = indices.map(i => scores[i - 1]);
+        const avg = (vals.reduce((sum, v) => sum + v, 0) / vals.length);
+        computed.push({ label, average: avg });
+      }
+
+      // Sort by average descending, then label
+      computed.sort((a, b) => {
+        if (b.average !== a.average) return b.average - a.average;
+        return a.label.localeCompare(b.label);
+      });
+
+      computed.forEach(item => {
+        const tr = document.createElement('tr');
+        const tdLabel = document.createElement('td');
+        const tdAvg = document.createElement('td');
+        tdLabel.textContent = item.label;
+        tdAvg.textContent = item.average.toFixed(2);
+        tr.appendChild(tdLabel);
+        tr.appendChild(tdAvg);
+        resultsBody.appendChild(tr);
+      });
+    }
+
+    // === Download Results as Image ===
+    function downloadResultsImage() {
+      const table = document.getElementById('resultsTable');
+      html2canvas(table).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'emi2_results.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>
