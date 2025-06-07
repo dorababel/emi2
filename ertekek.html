@@ -3,217 +3,247 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Value Selector</title>
+  <title>Values Selector</title>
   <style>
-    body { font-family: sans-serif; margin: 20px; }
+    body { font-family: Arial, sans-serif; margin: 20px; }
     .hidden { display: none; }
-    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
-    .card {
-      border: 1px solid #ccc; border-radius: 4px; padding: 10px;
-      cursor: pointer; background: #f9f9f9;
-    }
-    .card.selected { background: #d0f0c0; border-color: #5cb85c; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-    .pool, .drop-zone { border: 1px dashed #aaa; min-height: 100px; padding: 10px; margin: 10px 0; }
-    .drop-zone { background: #fafafa; }
-    .drop-zone.full { border-color: #d9534f; }
-    .draggable { display: inline-block; margin: 5px; padding: 5px 10px; border: 1px solid #666; border-radius: 3px; background: #fff; cursor: move; }
-    .slot { border: 1px dashed #888; width: 100px; height: 40px; display: inline-block; vertical-align: top; margin: 5px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+    .card { border: 1px solid #ccc; padding: 10px; cursor: pointer; border-radius: 4px; transition: background 0.2s; }
+    .card.selected { background: #cce5ff; border-color: #66b0ff; }
+    .btn { padding: 8px 16px; margin: 10px 0; font-size: 16px; border: none; border-radius: 4px; cursor: pointer; }
+    .btn:disabled { background: #ddd; cursor: not-allowed; }
+    .area { display: flex; gap: 20px; margin-top: 20px; }
+    .zone, .pool, .slots { flex: 1; border: 2px dashed #aaa; min-height: 200px; padding: 10px; border-radius: 4px; }
+    .zone { position: relative; }
+    .zone-title, .pool-title, .slots-title { position: absolute; top: -20px; left: 10px; background: #fff; padding: 0 4px; font-weight: bold; }
+    .small-card { border: 1px solid #666; padding: 4px 6px; margin: 4px; border-radius: 4px; cursor: move; display: inline-block; background: #f8f9fa; }
+    .slot { border: 1px solid #888; padding: 10px; margin: 8px 0; min-height: 40px; border-radius: 4px; }
+    .slot-number { font-weight: bold; margin-right: 8px; }
+    canvas { border: 1px solid #ccc; margin-top: 20px; }
   </style>
 </head>
 <body>
 
-  <!-- Step 1 -->
-  <section id="step1">
-    <h2>Select 10–15 Values</h2>
-    <div class="card-grid" id="cards"></div>
-    <button id="step1-next" disabled>Next</button>
-  </section>
+<!-- Step 1 -->
+<div id="step1">
+  <h2>Select 10–15 Values</h2>
+  <div id="valuesGrid" class="grid"></div>
+  <button id="toStep2Btn" class="btn" disabled>Next</button>
+</div>
 
-  <!-- Step 2 -->
-  <section id="step2" class="hidden">
-    <h2>Sort Into Top 1–5 and Top 6–10</h2>
-    <div id="pool" class="pool"></div>
-    <div style="display: flex; gap: 20px;">
-      <div class="drop-zone" id="zone1"><h3>TOP 1–5</h3></div>
-      <div class="drop-zone" id="zone2"><h3>TOP 6–10</h3></div>
-    </div>
-    <button id="step2-back">Back</button>
-    <button id="step2-next" disabled>Next</button>
-  </section>
+<!-- Step 2 -->
+<div id="step2" class="hidden">
+  <h2>Sort Into Top 1–5 and Top 6–10</h2>
+  <div class="pool zone" id="pool2"><div class="pool-title">Pool</div></div>
+  <div class="area">
+    <div class="zone" id="zone1"><div class="zone-title">TOP 1–5</div></div>
+    <div class="zone" id="zone2"><div class="zone-title">TOP 6–10</div></div>
+  </div>
+  <button id="backToStep1Btn" class="btn">Back</button>
+  <button id="toStep3Btn" class="btn" disabled>Next</button>
+</div>
 
-  <!-- Step 3 -->
-  <section id="step3" class="hidden">
-    <h2>Rank Your Top 5</h2>
-    <div id="ranking-pool" class="pool"></div>
-    <div id="slots"></div>
-    <button id="start-over">Start Over</button>
-    <button id="finalize" disabled>Finalize</button>
-  </section>
+<!-- Step 3 -->
+<div id="step3" class="hidden">
+  <h2>Rank Your Top 5</h2>
+  <div class="slots" id="slots3"><div class="slots-title">Slots</div></div>
+  <div class="pool zone" id="pool3"><div class="pool-title">Pool</div></div>
+  <button id="startOverBtn" class="btn">Start Over</button>
+  <button id="finalizeBtn" class="btn" disabled>Finalize</button>
+</div>
 
-  <!-- Canvas Output -->
-  <section id="output" class="hidden">
-    <h2>Result</h2>
-    <canvas id="result-canvas" width="600" height="400"></canvas>
-    <a id="download-link" download="my_top_five_values.png">Download</a>
-  </section>
+<!-- Canvas & Download -->
+<canvas id="resultCanvas" width="600" height="400" class="hidden"></canvas>
+<button id="downloadBtn" class="btn hidden">Download Image</button>
 
-  <script>
-    const values = [
-      { title: 'HONESTY', def: 'Being truthful and transparent.' },
-      { title: 'COURAGE', def: 'Facing fears and challenges.' },
-      { title: 'COMPASSION', def: 'Showing kindness and empathy.' },
-      { title: 'GROWTH', def: 'Continuous learning and improvement.' },
-      { title: 'BALANCE', def: 'Maintaining harmony in life.' },
-      { title: 'CREATIVITY', def: 'Expressing imagination.' },
-      { title: 'DISCIPLINE', def: 'Consistent effort.' },
-      { title: 'RESPECT', def: 'Valuing others and self.' },
-      { title: 'ADVENTURE', def: 'Seeking new experiences.' },
-      { title: 'FAMILY', def: 'Prioritizing loved ones.' },
-      { title: 'HEALTH', def: 'Well-being of body and mind.' },
-      { title: 'INTEGRITY', def: 'Aligning actions with values.' },
-      { title: 'JOY', def: 'Finding delight.' },
-      { title: 'SERVICE', def: 'Helping others.' },
-      { title: 'FREEDOM', def: 'Autonomy and choice.' }
-    ];
+<script>
+  const values = [
+    { title: 'HONESTY', definition: 'Being truthful and transparent.' },
+    { title: 'COMPASSION', definition: 'Showing empathy and care.' },
+    { title: 'CREATIVITY', definition: 'Thinking outside the box.' },
+    { title: 'GROWTH', definition: 'Continuously improving.' },
+    { title: 'COURAGE', definition: 'Facing fears boldly.' },
+    { title: 'BALANCE', definition: 'Maintaining harmony.' },
+    { title: 'RESPECT', definition: 'Valuing others.' },
+    { title: 'RESPONSIBILITY', definition: 'Owning your actions.' },
+    { title: 'FREEDOM', definition: 'Being independent.' },
+    { title: 'LOVE', definition: 'Showing deep affection.' },
+    { title: 'JOY', definition: 'Experiencing happiness.' },
+    { title: 'SECURITY', definition: 'Feeling safe.' },
+    { title: 'LEARNING', definition: 'Acquiring knowledge.' },
+    { title: 'HEALTH', definition: 'Caring for body and mind.' },
+    { title: 'COMMUNITY', definition: 'Belonging with others.' },
+    { title: 'INNOVATION', definition: 'Introducing new ideas.' },
+    { title: 'TRUST', definition: 'Building confidence.' },
+    { title: 'GRATITUDE', definition: 'Appreciating what you have.' },
+    { title: 'ADVENTURE', definition: 'Seeking excitement.' },
+    { title: 'WISDOM', definition: 'Applying knowledge.' }
+  ];
 
-    // Step elements
-    const step1 = document.getElementById('step1');
-    const step2 = document.getElementById('step2');
-    const step3 = document.getElementById('step3');
-    const output = document.getElementById('output');
+  let selected = [];
+  let top1 = [];
+  let top2 = [];
+  let finalRank = {};
 
-    // Step1: render cards
-    const cardsContainer = document.getElementById('cards');
-    values.forEach((v,i) => {
-      const div = document.createElement('div');
-      div.className = 'card';
-      div.dataset.index = i;
-      div.innerHTML = `<strong>${v.title}</strong><p>${v.def}</p>`;
-      div.addEventListener('click', () => {
-        div.classList.toggle('selected');
-        updateStep1Next();
-      });
-      cardsContainer.appendChild(div);
-    });
-    function updateStep1Next() {
-      const sel = document.querySelectorAll('.card.selected').length;
-      document.getElementById('step1-next').disabled = !(sel >=10 && sel <=15);
-    }
-    document.getElementById('step1-next').addEventListener('click', () => {
-      // gather selected values
-      selected = Array.from(document.querySelectorAll('.card.selected')).map(c => ({ idx: c.dataset.index, ...values[c.dataset.index] }));
-      showStep(step2);
-      initStep2();
-    });
-
-    // Step2 vars
-    let selected = [];
-    function initStep2() {
-      const pool = document.getElementById('pool');
-      pool.innerHTML = '';
-      ['zone1','zone2'].forEach(id => document.getElementById(id).querySelectorAll('.draggable').forEach(n=>n.remove()));
-      selected.forEach((v,i) => {
-        const d = document.createElement('div');
-        d.className = 'draggable';
-        d.draggable = true;
-        d.id = 'item-'+i;
-        d.textContent = v.title;
-        d.dataset.idx = i;
-        d.addEventListener('dragstart', dragStart);
-        pool.appendChild(d);
-      });
-      updateStep2Next();
-    }
-    function dragStart(e) { e.dataTransfer.setData('text/plain', e.target.id); }
-    function allowDrop(e) { e.preventDefault(); }
-    function dropToZone(e) {
-      e.preventDefault();
-      const zone = e.currentTarget;
-      const id = e.dataTransfer.getData('text/plain');
-      const el = document.getElementById(id);
-      if(zone.querySelectorAll('.draggable').length >=5) { alert('Zone full'); return; }
-      zone.appendChild(el);
-      updateStep2Next();
-    }
-    ['zone1','zone2','pool'].forEach(id => {
-      const el = document.getElementById(id);
-      el.addEventListener('dragover', allowDrop);
-      el.addEventListener('drop', dropToZone);
-    });
-    document.getElementById('zone1').addEventListener('click', returnToPool);
-    document.getElementById('zone2').addEventListener('click', returnToPool);
-    function returnToPool(e) {
-      if(e.target.classList.contains('draggable')) document.getElementById('pool').appendChild(e.target);
-      updateStep2Next();
-    }
-    function updateStep2Next() {
-      const z1 = document.getElementById('zone1').querySelectorAll('.draggable').length;
-      const z2 = document.getElementById('zone2').querySelectorAll('.draggable').length;
-      document.getElementById('step2-next').disabled = !(z1===5 && z2===5);
-    }
-    document.getElementById('step2-back').addEventListener('click', () => showStep(step1));
-    document.getElementById('step2-next').addEventListener('click', () => {
-      topFive = Array.from(document.getElementById('zone1').children).map(el => selected[el.dataset.idx]);
-      showStep(step3);
-      initStep3();
-    });
-
-    // Step3
-    let topFive = [];
-    function initStep3() {
-      const pool = document.getElementById('ranking-pool'); pool.innerHTML='';
-      document.getElementById('slots').innerHTML = '';
-      topFive.forEach((v,i)=>{
-        const d=document.createElement('div'); d.className='draggable'; d.draggable=true; d.id='rank-'+i; d.textContent=v.title; d.dataset.idx=i;
-        d.addEventListener('dragstart', dragStart);
-        pool.appendChild(d);
-      });
-      for(let i=1;i<=5;i++){
-        const slot = document.createElement('div'); slot.className='slot'; slot.dataset.slot=i;
-        slot.addEventListener('dragover', allowDrop);
-        slot.addEventListener('drop', e=>{
-          const id=e.dataTransfer.getData('text'); const el=document.getElementById(id);
-          if(slot.children.length) { slot.appendChild(el.parentNode); /* send back to pool */ document.getElementById('ranking-pool').appendChild(el);} else slot.appendChild(el);
-          updateFinalize();
-        });
-        document.getElementById('slots').appendChild(slot);
+  // Render Step 1
+  const grid = document.getElementById('valuesGrid');
+  values.forEach((v, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.index = i;
+    card.innerHTML = `<strong>${v.title}</strong><p>${v.definition}</p>`;
+    card.addEventListener('click', () => {
+      const idx = selected.indexOf(i);
+      if (idx === -1 && selected.length < 15) {
+        selected.push(i);
+        card.classList.add('selected');
+      } else if (idx > -1) {
+        selected.splice(idx,1);
+        card.classList.remove('selected');
       }
-      updateFinalize();
-    }
-    function updateFinalize() {
-      const filled = Array.from(document.getElementById('slots').children).filter(s=>s.children.length).length;
-      document.getElementById('finalize').disabled = filled!==5;
-    }
-    document.getElementById('start-over').addEventListener('click', ()=>{
-      document.querySelectorAll('.card.selected').forEach(c=>c.classList.remove('selected'));
-      updateStep1Next();
-      showStep(step1);
+      document.getElementById('toStep2Btn').disabled = !(selected.length >= 10 && selected.length <= 15);
     });
-    document.getElementById('finalize').addEventListener('click', ()=>{
-      const list = Array.from(document.getElementById('slots').children).map(slot=>slot.firstChild.textContent);
-      showCanvas(list);
+    grid.appendChild(card);
+  });
+
+  document.getElementById('toStep2Btn').addEventListener('click', () => {
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('step2').classList.remove('hidden');
+    setupStep2();
+  });
+
+  document.getElementById('backToStep1Btn').addEventListener('click', () => {
+    document.getElementById('step2').classList.add('hidden');
+    document.getElementById('step1').classList.remove('hidden');
+  });
+
+  function setupStep2() {
+    const pool = document.getElementById('pool2');
+    pool.querySelectorAll('.small-card').forEach(n=>n.remove());
+    top1 = [];
+    top2 = [];
+    document.getElementById('toStep3Btn').disabled = true;
+    selected.forEach(i => {
+      const card = makeSmallCard(i);
+      pool.appendChild(card);
     });
+    ['zone1','zone2'].forEach(z => {
+      const zone = document.getElementById(z);
+      zone.querySelectorAll('.small-card').forEach(n=>n.remove());
+      zone.ondragover = e => e.preventDefault();
+      zone.ondrop = e => handleDrop(e, z);
+    });
+  }
 
-    // Show sections
-    function showStep(sec) {
-      [step1,step2,step3,output].forEach(s=>s.classList.add('hidden'));
-      sec.classList.remove('hidden');
-      output.classList.add('hidden');
-    }
+  function makeSmallCard(i) {
+    const card = document.createElement('div');
+    card.className = 'small-card';
+    card.draggable = true;
+    card.dataset.index = i;
+    card.textContent = values[i].title;
+    card.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', i);
+    });
+    card.addEventListener('click', () => {
+      // return to pool
+      const parent = card.parentElement.id;
+      if (parent === 'zone1') top1 = top1.filter(x=>x!==i);
+      if (parent === 'zone2') top2 = top2.filter(x=>x!==i);
+      document.getElementById('pool2').appendChild(card);
+      updateStep2Next();
+    });
+    return card;
+  }
 
-    // Canvas generation
-    function showCanvas(list) {
-      showStep(output);
-      const canvas = document.getElementById('result-canvas');
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = '#000'; ctx.font = '20px sans-serif'; ctx.fillText('My Top Five Values', 20, 40);
-      ctx.font = '16px sans-serif';
-      list.forEach((v,i)=> ctx.fillText(`${i+1}. ${v}`, 20, 80 + i*30));
-      document.getElementById('download-link').href = canvas.toDataURL();
+  function handleDrop(e, zoneId) {
+    const i = parseInt(e.dataTransfer.getData('text/plain'));
+    const zone = document.getElementById(zoneId);
+    const arr = zoneId==='zone1'? top1: top2;
+    if (arr.length >= 5) { alert('Only 5 cards allowed here'); return; }
+    // remove from other if exists
+    top1 = top1.filter(x=>x!==i);
+    top2 = top2.filter(x=>x!==i);
+    arr.push(i);
+    const card = makeSmallCard(i);
+    zone.appendChild(card);
+    updateStep2Next();
+  }
+
+  function updateStep2Next() {
+    document.getElementById('toStep3Btn').disabled = !(top1.length ===5 && top2.length ===5);
+  }
+
+  document.getElementById('toStep3Btn').addEventListener('click', () => {
+    document.getElementById('step2').classList.add('hidden');
+    document.getElementById('step3').classList.remove('hidden');
+    setupStep3();
+  });
+
+  document.getElementById('startOverBtn').addEventListener('click', () => {
+    location.reload();
+  });
+
+  function setupStep3() {
+    finalRank = {};
+    const pool = document.getElementById('pool3');
+    const slotsContainer = document.getElementById('slots3');
+    pool.querySelectorAll('.small-card').forEach(n=>n.remove());
+    slotsContainer.querySelectorAll('.slot').forEach(n=>n.remove());
+    top1.forEach(i => {
+      const card = makeSmallCard(i);
+      pool.appendChild(card);
+    });
+    for (let n=1; n<=5; n++) {
+      const slot = document.createElement('div');
+      slot.className = 'slot';
+      slot.dataset.slot = n;
+      slot.innerHTML = `<span class="slot-number">${n}.</span>`;
+      slot.ondragover = e => e.preventDefault();
+      slot.ondrop = e => {
+        const i = parseInt(e.dataTransfer.getData('text/plain'));
+        if (Object.values(finalRank).includes(i)) return;
+        finalRank['s'+n] = i;
+        const card = makeSmallCard(i);
+        slot.appendChild(card);
+        updateFinalize();
+      };
+      slotsContainer.appendChild(slot);
     }
-  </script>
+    updateFinalize();
+  }
+
+  function updateFinalize() {
+    document.getElementById('finalizeBtn').disabled = Object.keys(finalRank).length !==5;
+  }
+
+  document.getElementById('finalizeBtn').addEventListener('click', () => {
+    document.getElementById('step3').classList.add('hidden');
+    drawResult();
+  });
+
+  function drawResult() {
+    const canvas = document.getElementById('resultCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.classList.remove('hidden');
+    ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#000'; ctx.font = '24px Arial';
+    ctx.fillText('My Top Five Values', 20, 40);
+    ctx.font = '18px Arial';
+    let y = 80;
+    Object.keys(finalRank).sort().forEach((key, idx) => {
+      const val = values[finalRank[key]].title;
+      ctx.fillText(`${idx+1}. ${val}`, 20, y);
+      y += 30;
+    });
+    document.getElementById('downloadBtn').classList.remove('hidden');
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.download = 'my-top-five-values.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+  }
+</script>
+
 </body>
 </html>
-
