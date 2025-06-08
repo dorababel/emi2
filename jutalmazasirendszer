@@ -2,115 +2,196 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Motiva Reward System</title>
+  <title>Motiva Reward System Builder</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
-    body { font-family: sans-serif; max-width: 600px; margin: 20px auto; }
-    h1, h2, h3 { color: #333; }
-    .item { margin-bottom: 8px; }
-    label { display: block; margin: 6px 0; }
-    input[type="text"], input[type="number"] { width: 100%; padding: 6px; box-sizing: border-box; }
-    button { padding: 8px 16px; margin-top: 12px; }
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; line-height: 1.5; }
+    .step { display: none; }
+    .step.active { display: block; }
+    h2 { margin-top: 0; }
+    .inputs { margin: 10px 0; }
+    .inputs input { width: 100%; padding: 8px; margin: 5px 0; box-sizing: border-box; }
+    .tables { display: flex; flex-wrap: wrap; gap: 20px; margin: 20px 0; }
+    table { border-collapse: collapse; width: 48%; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #f0f0f0; }
+    button { padding: 10px 20px; font-size: 16px; margin-top: 10px; }
+    button:disabled { background: #ccc; }
   </style>
 </head>
 <body>
-  <div id="step1">
-    <h2>Step 1: Define Your Habits and Rewards</h2>
-    <p>First of all, think of all the health related habits you would like to introduce to your life. As you are in the program, your top priority will be working out, so just put "Working out twice a week" as your goal. There are two more places left&mdash;think eating habits, sleeping habits, cold showers, taking vitamins, eating more fruit, phone-free periods, anything you have been wanting to integrate into your life but find it hard to stick with. You will be getting motiva points for carrying these activities out.</p>
-    <label>Healthy Habit 1:<input type="text" id="habit1" value="Working out twice a week"></label>
-    <label>Healthy Habit 2:<input type="text" id="habit2"></label>
-    <label>Healthy Habit 3:<input type="text" id="habit3"></label>
 
-    <p>Great. Now let's think of some ways to reward yourself for all these activities. What are some things you have been meaning to buy for yourself or do, anything to indulge in: massages, beauty products, clothes, eating out at your favorite restaurant, buying a book, going to a concert, etc. Think of something you would really want to do but maybe you could delay it for after you have deserved it. Think of 3 smaller rewards that you can claim after a couple of weeks of sticking to your healthy habits and some bigger ones for sticking to them for 4-5 months already.</p>
-    <h3>My Small Rewards</h3>
-    <label>Reward 1:<input type="text" id="smallReward1"></label>
-    <label>Reward 2:<input type="text" id="smallReward2"></label>
-    <label>Reward 3:<input type="text" id="smallReward3"></label>
-    <h3>My Milestone Rewards</h3>
-    <label>Reward 1:<input type="text" id="milestoneReward1"></label>
-    <label>Reward 2:<input type="text" id="milestoneReward2"></label>
-    <label>Reward 3:<input type="text" id="milestoneReward3"></label>
-
-    <p>Excellent. Your reward system is shaping up. However, now think of the other side of the deal. What is one unhealthy habit that you do have but you would like to get rid of? You will have some points deducted for this.</p>
-    <label>Unhealthy Habit:<input type="text" id="unhealthyHabit"></label>
-
+  <!-- Step 1: Choose Healthy Habits -->
+  <div id="step1" class="step active">
+    <h2>1. Health-related Habits</h2>
+    <p>First of all, think of all the health-related habits you would like to introduce to your life. As you are in the program, your top priority will be working out, so just put <strong>working out twice a week</strong> as your goal. There are two more spots—think eating habits, sleeping habits, cold showers, taking vitamins, eating more fruit, phone-free periods—anything you've wanted to integrate but find hard to stick with. You will earn MotivaPoints for carrying these out.</p>
+    <div class="inputs">
+      <input type="text" id="habit1" value="Working out twice a week" disabled>
+      <input type="text" id="habit2" placeholder="Enter another healthy habit">
+      <input type="text" id="habit3" placeholder="Enter another healthy habit">
+    </div>
     <button id="toStep2">Next</button>
   </div>
 
-  <div id="step2" style="display:none;">
-    <h2>Step 2: Assign Points</h2>
-    <p>Now that we have what habits you want to build into your life and how you will reward yourself for sticking to them, you need to figure out how many points you will get for the activities and how many points will be needed to get the rewards. Calculate how many points you can get with three or four weeks of consistent effort and use that number for your small rewards. Now multiply that number by 5, 10, and 15 for your milestone rewards. Let's get counting.</p>
-
-    <div id="reward-system">
-      <h1>My Motiva Reward System</h1>
-
-      <h3>My Healthy Habits</h3>
-      <div class="item"><span id="displayHabit1"></span>: <input type="number" class="points" id="pointsHabit1"></div>
-      <div class="item"><span id="displayHabit2"></span>: <input type="number" class="points" id="pointsHabit2"></div>
-      <div class="item"><span id="displayHabit3"></span>: <input type="number" class="points" id="pointsHabit3"></div>
-
-      <h3>My Small Rewards</h3>
-      <div class="item"><span id="displaySmallReward1"></span>: <input type="number" class="points" id="pointsSmallReward1"></div>
-      <div class="item"><span id="displaySmallReward2"></span>: <input type="number" class="points" id="pointsSmallReward2"></div>
-      <div class="item"><span id="displaySmallReward3"></span>: <input type="number" class="points" id="pointsSmallReward3"></div>
-
-      <h3>My Milestone Rewards</h3>
-      <div class="item"><span id="displayMilestoneReward1"></span>: <input type="number" class="points" id="pointsMilestoneReward1"></div>
-      <div class="item"><span id="displayMilestoneReward2"></span>: <input type="number" class="points" id="pointsMilestoneReward2"></div>
-      <div class="item"><span id="displayMilestoneReward3"></span>: <input type="number" class="points" id="pointsMilestoneReward3"></div>
-
-      <h3>My Unhealthy Habit</h3>
-      <div class="item"><span id="displayUnhealthyHabit"></span>: <input type="number" class="points" id="pointsUnhealthyHabit"></div>
+  <!-- Step 2: Define Rewards & Unhealthy Habit -->
+  <div id="step2" class="step">
+    <h2>2. Rewards & Unhealthy Habit</h2>
+    <p>Now let's think of some rewards for these activities. What are some things you've been meaning to buy or do? Massages, beauty products, clothes, eating out, a book, a concert—anything you really want but could delay until you deserve it. Think of <strong>3 smaller rewards</strong> you can claim after a couple of weeks and <strong>3 bigger milestone rewards</strong> for sticking with your habits for 4–5 months.</p>
+    <h3>My Small Rewards</h3>
+    <div class="inputs">
+      <input type="text" id="small1" placeholder="Small reward #1">
+      <input type="text" id="small2" placeholder="Small reward #2">
+      <input type="text" id="small3" placeholder="Small reward #3">
     </div>
+    <h3>My Milestone Rewards</h3>
+    <div class="inputs">
+      <input type="text" id="mile1" placeholder="Milestone reward #1">
+      <input type="text" id="mile2" placeholder="Milestone reward #2">
+      <input type="text" id="mile3" placeholder="Milestone reward #3">
+    </div>
+    <p>Now, think of the other side of the deal: one unhealthy habit you'd like to get rid of. You'll lose points for this.</p>
+    <div class="inputs">
+      <input type="text" id="unhealthy" placeholder="Unhealthy habit to drop">
+    </div>
+    <button id="toStep3">Next</button>
+  </div>
 
-    <button id="finalize" disabled>Finalize</button>
+  <!-- Step 3: Assign Points & Finalize -->
+  <div id="step3" class="step">
+    <h2>3. Assign MotivaPoints</h2>
+    <p>Calculate the total points you could earn with 3–4 weeks of consistent effort. Use that number for each small reward. Then multiply it by 5, 10, and 15 for your milestone rewards. Let's get counting!</p>
+    <div class="tables">
+      <div>
+        <h3>My Healthy Habits</h3>
+        <table id="habitsTable">
+          <tr><th>Habit</th><th>Points</th></tr>
+        </table>
+      </div>
+      <div>
+        <h3>My Small Rewards</h3>
+        <table id="smallTable">
+          <tr><th>Reward</th><th>Points Required</th></tr>
+        </table>
+      </div>
+      <div>
+        <h3>My Milestone Rewards</h3>
+        <table id="mileTable">
+          <tr><th>Reward</th><th>Points Required</th></tr>
+        </table>
+      </div>
+      <div>
+        <h3>Unhealthy Habit</h3>
+        <table id="unhealthyTable">
+          <tr><th>Habit</th><th>Points Deducted</th></tr>
+        </table>
+      </div>
+    </div>
+    <button id="finalize" disabled>Finalize & Download</button>
   </div>
 
   <script>
-    document.getElementById("toStep2").addEventListener("click", function() {
-      const h1 = document.getElementById("habit1").value.trim();
-      const h2 = document.getElementById("habit2").value.trim();
-      const h3 = document.getElementById("habit3").value.trim();
-      const sr1 = document.getElementById("smallReward1").value.trim();
-      const sr2 = document.getElementById("smallReward2").value.trim();
-      const sr3 = document.getElementById("smallReward3").value.trim();
-      const mr1 = document.getElementById("milestoneReward1").value.trim();
-      const mr2 = document.getElementById("milestoneReward2").value.trim();
-      const mr3 = document.getElementById("milestoneReward3").value.trim();
-      const uh = document.getElementById("unhealthyHabit").value.trim();
-      if (!h1 || !h2 || !h3 || !sr1 || !sr2 || !sr3 || !mr1 || !mr2 || !mr3 || !uh) {
-        alert('Please fill in all fields before proceeding.');
-        return;
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    document.getElementById('toStep2').onclick = () => {
+      step1.classList.remove('active');
+      step2.classList.add('active');
+    };
+    document.getElementById('toStep3').onclick = () => {
+      const habits = [
+        document.getElementById('habit1').value,
+        document.getElementById('habit2').value,
+        document.getElementById('habit3').value
+      ];
+      const small = [
+        document.getElementById('small1').value,
+        document.getElementById('small2').value,
+        document.getElementById('small3').value
+      ];
+      const mile = [
+        document.getElementById('mile1').value,
+        document.getElementById('mile2').value,
+        document.getElementById('mile3').value
+      ];
+      const unhealthy = document.getElementById('unhealthy').value;
+
+      const habitsTable = document.getElementById('habitsTable');
+      const smallTable = document.getElementById('smallTable');
+      const mileTable = document.getElementById('mileTable');
+      const unhealthyTable = document.getElementById('unhealthyTable');
+
+      // Populate tables with inputs and point fields
+      habits.forEach(h => {
+        if (h) {
+          const row = habitsTable.insertRow();
+          row.insertCell().innerText = h;
+          const cell = row.insertCell();
+          const inp = document.createElement('input');
+          inp.type = 'number';
+          inp.min = '0';
+          inp.required = true;
+          cell.appendChild(inp);
+        }
+      });
+      small.forEach(r => {
+        if (r) {
+          const row = smallTable.insertRow();
+          row.insertCell().innerText = r;
+          const cell = row.insertCell();
+          const inp = document.createElement('input');
+          inp.type = 'number';
+          inp.min = '0';
+          inp.required = true;
+          cell.appendChild(inp);
+        }
+      });
+      mile.forEach(r => {
+        if (r) {
+          const row = mileTable.insertRow();
+          row.insertCell().innerText = r;
+          const cell = row.insertCell();
+          const inp = document.createElement('input');
+          inp.type = 'number';
+          inp.min = '0';
+          inp.required = true;
+          cell.appendChild(inp);
+        }
+      });
+      if (unhealthy) {
+        const row = unhealthyTable.insertRow();
+        row.insertCell().innerText = unhealthy;
+        const cell = row.insertCell();
+        const inp = document.createElement('input');
+        inp.type = 'number';
+        inp.min = '0';
+        inp.required = true;
+        cell.appendChild(inp);
       }
-      document.getElementById("displayHabit1").textContent = h1;
-      document.getElementById("displayHabit2").textContent = h2;
-      document.getElementById("displayHabit3").textContent = h3;
-      document.getElementById("displaySmallReward1").textContent = sr1;
-      document.getElementById("displaySmallReward2").textContent = sr2;
-      document.getElementById("displaySmallReward3").textContent = sr3;
-      document.getElementById("displayMilestoneReward1").textContent = mr1;
-      document.getElementById("displayMilestoneReward2").textContent = mr2;
-      document.getElementById("displayMilestoneReward3").textContent = mr3;
-      document.getElementById("displayUnhealthyHabit").textContent = uh;
-      document.getElementById("step1").style.display = 'none';
-      document.getElementById("step2").style.display = 'block';
-    });
 
-    function checkPoints() {
-      const all = Array.from(document.querySelectorAll('.points')).every(i => i.value.trim() !== '');
-      document.getElementById('finalize').disabled = !all;
-    }
-    document.querySelectorAll('.points').forEach(i => i.addEventListener('input', checkPoints));
+      step2.classList.remove('active');
+      step3.classList.add('active');
 
-    document.getElementById('finalize').addEventListener('click', () => {
-      html2canvas(document.getElementById('reward-system')).then(canvas => {
+      // Enable finalize when all point fields are filled
+      const allInputs = step3.querySelectorAll('input[type="number"]');
+      allInputs.forEach(i => {
+        i.addEventListener('input', () => {
+          const allFilled = Array.from(allInputs).every(inp => inp.value !== '');
+          document.getElementById('finalize').disabled = !allFilled;
+        });
+      });
+    };
+
+    document.getElementById('finalize').onclick = () => {
+      document.getElementById('finalize').innerText = 'Preparing image...';
+      html2canvas(document.body).then(canvas => {
         const link = document.createElement('a');
-        link.download = 'motiva_reward_system.png';
+        link.download = 'My_Motiva_Reward_System.png';
         link.href = canvas.toDataURL();
         link.click();
+        document.getElementById('finalize').innerText = 'Download Ready';
       });
-    });
+    };
   </script>
+
 </body>
 </html>
