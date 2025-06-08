@@ -2,119 +2,248 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Values Selection App</title>
-
-  <!-- Load Poppins from Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Values Selector</title>
   <style>
-    :root {
-      --dark-teal:  #0A484A;
-      --mint-green: #83BCAC;
-      --gray-bg:    #E9EDF4;
-      --blue-bg:    #A5BAE0;
-      --text-white: #FFFFFF;
-      --text-dark:  #222222;
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .hidden { display: none; }
+    .grid { display: flex; flex-wrap: wrap; margin: -5px; }
+    .card {
+      box-sizing: border-box;
+      width: 120px; height: 80px;
+      margin: 5px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Poppins', sans-serif; background: var(--gray-bg); color: var(--text-dark); }
-    header { background: var(--dark-teal); padding: 1rem; text-align: center; }
-    header .header-title { color: var(--text-white); font-weight: 600; font-size: 1.5rem; }
-    .container { width: min(90%,900px); margin: 2rem auto; }
-    h2, h3 { color: var(--dark-teal); margin-bottom: .5rem; font-weight: 600; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:1rem; margin-bottom:1rem; }
-    .card { background: var(--text-white); border:1px solid var(--blue-bg); border-radius:8px; padding:1rem; cursor:pointer; transition:transform .2s; }
-    .card:hover { transform:translateY(-2px); }
-    .selected { background: var(--mint-green) !important; border-color: var(--dark-teal) !important; color: var(--text-white) !important; }
-    .pool, .dropzone { background: var(--text-white); border:2px dashed var(--blue-bg); border-radius:8px; min-height:120px; padding:1rem; margin-bottom:1rem; }
-    .over { border-color: var(--dark-teal) !important; }
-    .slot { background: var(--text-white); border:2px dashed var(--blue-bg); border-radius:8px; padding:1rem; min-height:50px; margin-bottom:.5rem; }
-    .btn { background: var(--mint-green); color: var(--text-white); border:none; padding:.75rem 1.5rem; border-radius:50px; text-transform:uppercase; font-weight:600; cursor:pointer; margin:.5rem; }
-    .btn:disabled { opacity:.5; cursor:not-allowed; }
-    .hidden { display:none; }
+    .card.selected {
+      border-color: #007BFF;
+      background-color: #E0F0FF;
+    }
+    button { margin-top: 10px; padding: 8px 16px; }
+    .pool, .zones, .slots { margin-top: 20px; }
+    .pool-card {
+      display: inline-block;
+      padding: 5px 10px;
+      margin: 5px;
+      border: 1px solid #ccc;
+      cursor: move;
+      user-select: none;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .zones { display: flex; gap: 20px; }
+    .zone {
+      flex: 1;
+      min-height: 120px;
+      border: 2px dashed #ccc;
+      padding: 10px;
+    }
+    .zone.over { border-color: #007BFF; }
+    .zone .pool-card { display: block; margin: 5px 0; }
+    .slots { display: flex; gap: 10px; }
+    .slot {
+      flex: 1;
+      height: 60px;
+      border: 2px dashed #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+    }
+    #canvasContainer { margin-top: 20px; text-align: center; }
   </style>
 </head>
 <body>
-  <header><div class="header-title">Values Selection</div></header>
-  <div class="container">
-    <div id="step1">
-      <h2>Step 1 – Select 10–15 Values</h2>
-      <div id="valuesGrid" class="grid"></div>
-      <button id="next1" class="btn" disabled>Next</button>
-    </div>
+  <!-- Step 1 -->
+  <div id="step1">
+    <label>Your Name: <input type="text" id="userName"></label>
+    <div class="grid" id="valuesGrid"></div>
+    <button id="toStep2" disabled>Next</button>
+  </div>
 
-    <div id="step2" class="hidden">
-      <h2>Step 2 – Sort Into Top 1–5 and Top 6–10</h2>
-      <h3>Pool</h3><div id="pool" class="pool"></div>
-      <div style="display:flex; gap:1rem;">
-        <div style="flex:1;"><h3>TOP 1–5</h3><div id="zone1" class="dropzone"></div></div>
-        <div style="flex:1;"><h3>TOP 6–10</h3><div id="zone2" class="dropzone"></div></div>
-      </div>
-      <button id="back2" class="btn">Back</button>
-      <button id="next2" class="btn" disabled>Next</button>
+  <!-- Step 2 -->
+  <div id="step2" class="hidden">
+    <button id="backTo1">Return</button>
+    <div class="pool" id="step2Pool"></div>
+    <div class="zones">
+      <div class="zone" id="zone1"><strong>TOP 1–5</strong></div>
+      <div class="zone" id="zone2"><strong>TOP 6–10</strong></div>
     </div>
+    <button id="toStep3" disabled>Next</button>
+  </div>
 
-    <div id="step3" class="hidden">
-      <h2>Step 3 – Rank Your Top 5</h2>
-      <h3>Slots</h3><div id="slots"></div>
-      <h3>Pool</h3><div id="pool3" class="pool"></div>
-      <button id="startOver" class="btn">Start Over</button>
-      <button id="finalize" class="btn" disabled>Finalize</button>
-      <canvas id="resultCanvas" class="hidden"></canvas>
-      <a id="downloadLink" class="btn hidden">Download Image</a>
-    </div>
+  <!-- Step 3 -->
+  <div id="step3" class="hidden">
+    <button id="backTo2">Return</button>
+    <button id="startOver">Start Over</button>
+    <div class="pool" id="step3Pool"></div>
+    <div class="slots" id="slotsContainer"></div>
+    <button id="finalize" disabled>Finalize</button>
+  </div>
+
+  <!-- Canvas Output -->
+  <div id="canvasContainer" class="hidden">
+    <canvas id="resultCanvas" width="600" height="400"></canvas><br>
+    <button id="download">Download</button>
   </div>
 
   <script>
-    const values=[
-      {title:'AUTHENTICITY',definition:'Being true to oneself'},
-      {title:'COMPASSION',definition:'Showing empathy and kindness'},
-      {title:'COURAGE',definition:'Doing what is right despite fear'},
-      {title:'CREATIVITY',definition:'Thinking outside the box'},
-      {title:'INTEGRITY',definition:'Honesty and strong moral principles'},
-      {title:'RESPECT',definition:'Valuing others'},
-      {title:'GROWTH',definition:'Continuous self-improvement'},
-      {title:'BALANCE',definition:'Maintaining equilibrium'},
-      {title:'JOY',definition:'Finding happiness in life'},
-      {title:'FREEDOM',definition:'Ability to act independently'},
-      {title:'GRATITUDE',definition:'Appreciation and thankfulness'},
-      {title:'HONOR',definition:'High respect and esteem'},
-      {title:'LEADERSHIP',definition:'Guiding others'},
-      {title:'PEACE',definition:'Calm and tranquility'},
-      {title:'SERVICE',definition:'Helping others'},
-      {title:'WISDOM',definition:'Applying knowledge thoughtfully'},
-      {title:'TRUST',definition:'Reliance on integrity'},
-      {title:'PASSION',definition:'Strong enthusiasm'},
-      {title:'STABILITY',definition:'Consistency and support'},
-      {title:'ADVENTURE',definition:'Seeking new experiences'}
+    const valuesList = [
+      { title: 'AUTHENTICITY', def: 'Being true to yourself' },
+      { title: 'BALANCE', def: 'Maintaining harmony in life' },
+      { title: 'COURAGE', def: 'Facing fears boldly' },
+      { title: 'CREATIVITY', def: 'Thinking outside the box' },
+      { title: 'COMPASSION', def: 'Showing empathy to others' },
+      { title: 'GROWTH', def: 'Continual self-improvement' },
+      { title: 'INTEGRITY', def: 'Acting with honesty' },
+      { title: 'JOY', def: 'Finding happiness daily' },
+      { title: 'RESILIENCE', def: 'Bouncing back from setbacks' },
+      { title: 'PEACE', def: 'Inner calm and tranquility' },
+      { title: 'DISCIPLINE', def: 'Consistent self-control' },
+      { title: 'ADVENTURE', def: 'Embracing new experiences' },
+      { title: 'FREEDOM', def: 'Living without constraints' },
+      { title: 'LEARNING', def: 'Seeking knowledge' },
+      { title: 'SERVICE', def: 'Helping others selflessly' }
     ];
-    let selectedValues=[],top1to5=[],top6to10=[],ranked={};
-    function renderStep1(){
-      const grid=document.getElementById('valuesGrid'),btn=document.getElementById('next1');
-      values.forEach((v,i)=>{
-        const c=document.createElement('div');c.className='card';c.dataset.index=i;
-        c.innerHTML=`<strong>${v.title}</strong><p>${v.definition}</p>`;
-        c.onclick=()=>{
-          const idx=selectedValues.indexOf(i);
-          if(idx>-1){selectedValues.splice(idx,1);c.classList.remove('selected');}
-          else if(selectedValues.length<15){selectedValues.push(i);c.classList.add('selected');}
-          else{alert('You can only select up to 15 values.');return;}
-          btn.disabled=!(selectedValues.length>=10&&selectedValues.length<=15);
-        };
-        grid.append(c);
+
+    // Step 1
+    const grid = document.getElementById('valuesGrid');
+    const toStep2Btn = document.getElementById('toStep2');
+    let selected = new Set();
+    valuesList.forEach((v,i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<strong>${v.title}</strong><small>${v.def}</small>`;
+      card.addEventListener('click', () => {
+        if (card.classList.contains('selected')) {
+          card.classList.remove('selected'); selected.delete(i);
+        } else {
+          if (selected.size >= 15) { alert('Max 15'); return; }
+          card.classList.add('selected'); selected.add(i);
+        }
+        toStep2Btn.disabled = !(selected.size >= 10 && selected.size <= 15);
+      });
+      grid.appendChild(card);
+    });
+    toStep2Btn.addEventListener('click', () => {
+      const pool = document.getElementById('step2Pool'); pool.innerHTML = '';
+      selected.forEach(i => createPoolCard(i, pool));
+      document.getElementById('step1').classList.add('hidden');
+      document.getElementById('step2').classList.remove('hidden');
+    });
+
+    document.getElementById('backTo1').addEventListener('click', () => {
+      document.getElementById('step2').classList.add('hidden');
+      document.getElementById('step1').classList.remove('hidden');
+    });
+
+    // Drag & Drop Helpers
+    function createPoolCard(i, container) {
+      const c = document.createElement('div');
+      c.className = 'pool-card'; c.draggable = true;
+      c.textContent = valuesList[i].title;
+      c.dataset.index = i;
+      c.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', i));
+      container.appendChild(c);
+    }
+    function setupZone(zoneId, max, onChange) {
+      const zone = document.getElementById(zoneId);
+      zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+      zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+      zone.addEventListener('drop', e => {
+        e.preventDefault(); zone.classList.remove('over');
+        const i = e.dataTransfer.getData('text/plain');
+        if (zone.querySelectorAll('.pool-card').length >= max) { alert('Limit '+max); return; }
+        const card = document.querySelector(`.pool-card[data-index='${i}']`);
+        zone.appendChild(card);
+        onChange();
       });
     }
-    function toStep2(){document.getElementById('step1').classList.add('hidden');document.getElementById('step2').classList.remove('hidden');const p=document.getElementById('pool');selectedValues.forEach(i=>p.append(createPoolCard(i)));}
-    function createPoolCard(i){const v=values[i],c=document.createElement('div');c.className='card';c.draggable=true;c.dataset.index=i;c.textContent=v.title;c.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain',i));c.onclick=()=>removeFromZones(i);return c;}
-    function setupDropzones(){['zone1','zone2'].forEach((id,j)=>{const dz=document.getElementById(id);dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over');});dz.addEventListener('dragleave',e=>dz.classList.remove('over'));dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');const i=parseInt(e.dataTransfer.getData('text/plain'));const list=j===0?top1to5:top6to10;if(list.length>=5){alert('Zone full');return;}removeFromZones(i);list.push(i);renderZones();document.getElementById('next2').disabled=!(top1to5.length===5&&top6to10.length===5);});});}
-    function removeFromZones(i){[top1to5,top6to10].forEach(list=>{const idx=list.indexOf(i);if(idx>-1)list.splice(idx,1);});renderZones();}
-    function renderZones(){['zone1','zone2'].forEach((id,j)=>{const dz=document.getElementById(id),list=j===0?top1to5:top6to10;dz.innerHTML='';list.forEach(i=>{const c=document.createElement('div');c.className='card';c.textContent=values[i].title;c.onclick=()=>removeFromZones(i);dz.append(c);});});const p=document.getElementById('pool');p.innerHTML='';selectedValues.forEach(i=>{if(!top1to5.includes(i)&&!top6to10.includes(i))p.append(createPoolCard(i));});}
-    function toStep3(){document.getElementById('step2').classList.add('hidden');document.getElementById('step3').classList.remove('hidden');const p3=document.getElementById('pool3');top1to5.forEach(i=>p3.append(createPoolCard(i)));const slots=document.getElementById('slots');slots.innerHTML='';for(let n=1;n<=5;n++){const s=document.createElement('div');s.className='slot';s.dataset.slot=n;s.textContent='Slot '+n;s.addEventListener('dragover',e=>{e.preventDefault();s.classList.add('over');});s.addEventListener('dragleave',()=>s.classList.remove('over'));s.addEventListener('drop',e=>{e.preventDefault();s.classList.remove('over');const i=parseInt(e.dataTransfer.getData('text/plain'));if(ranked[n])return;const el=p3.querySelector(`.card[data-index="${i}"]`);if(el)el.remove();ranked[n]=i;const c=document.createElement('div');c.className='card';c.textContent=values[i].title;c.onclick=()=>{delete ranked[n];c.remove();p3.append(createPoolCard(i));checkFinalize();};s.append(c);checkFinalize();});slots.append(s);} }
-    function checkFinalize(){document.getElementById('finalize').disabled=!(Object.keys(ranked).length===5);}  
-    function finalize(){const c=document.getElementById('resultCanvas'),ctx=c.getContext('2d');const w=600,h=400;c.width=w;c.height=h;ctx.fillStyle='white';ctx.fillRect(0,0,w,h);ctx.fillStyle='black';ctx.font='24px Poppins';ctx.fillText('My Top Five Values',20,40);ctx.font='20px Poppins';let y=80;for(let n=1;n<=5;n++){ctx.fillText(n+'. '+values[ranked[n]].title,20,y);y+=30;}c.classList.remove('hidden');const link=document.getElementById('downloadLink');link.href=c.toDataURL();link.download='my_top_five_values.png';link.classList.remove('hidden');}
-    document.getElementById('next1').onclick=toStep2;document.getElementById('back2').onclick=()=>{document.getElementById('step2').classList.add('hidden');document.getElementById('step1').classList.remove('hidden');};document.getElementById('next2').onclick=toStep3;document.getElementById('startOver').onclick=()=>location.reload();document.getElementById('finalize').onclick=finalize;
-    renderStep1();setupDropzones();
+
+    // Step 2 Zones
+    setupZone('zone1', 5, checkStep2);
+    setupZone('zone2', 5, checkStep2);
+    function checkStep2() {
+      const z1 = document.getElementById('zone1').querySelectorAll('.pool-card').length;
+      const z2 = document.getElementById('zone2').querySelectorAll('.pool-card').length;
+      document.getElementById('toStep3').disabled = !(z1===5 && z2===5);
+    }
+    document.getElementById('toStep3').addEventListener('click', () => {
+      const pool3 = document.getElementById('step3Pool'); pool3.innerHTML = '';
+      document.querySelectorAll('#zone1 .pool-card').forEach(c=> pool3.appendChild(c));
+      document.getElementById('step2').classList.add('hidden');
+      document.getElementById('step3').classList.remove('hidden');
+      setupStep3();
+    });
+
+    document.getElementById('backTo2').addEventListener('click', () => {
+      document.getElementById('step3').classList.add('hidden');
+      document.getElementById('step2').classList.remove('hidden');
+    });
+    document.getElementById('startOver').addEventListener('click', () => location.reload());
+
+    // Step 3
+    function setupStep3() {
+      const slots = document.getElementById('slotsContainer'); slots.innerHTML = '';
+      for (let n=1; n<=5; n++) {
+        const slot = document.createElement('div'); slot.className = 'slot'; slot.dataset.slot=n;
+        slot.textContent = n;
+        slot.addEventListener('dragover', e => { e.preventDefault(); });
+        slot.addEventListener('drop', e => {
+          e.preventDefault();
+          const i = e.dataTransfer.getData('text/plain');
+          if (slot.querySelector('.pool-card')) return;
+          const card = document.querySelector(`.pool-card[data-index='${i}']`);
+          slot.innerHTML=''; slot.appendChild(card);
+          checkFinalize();
+        });
+        slots.appendChild(slot);
+      }
+      document.querySelectorAll('#step3Pool .pool-card').forEach(c=>{
+        c.addEventListener('click', () => {
+          // return from slot
+          const parent = c.parentElement;
+          if (parent.classList.contains('slot')) {
+            document.getElementById('step3Pool').appendChild(c);
+            parent.textContent = parent.dataset.slot;
+            checkFinalize();
+          }
+        });
+      });
+    }
+    function checkFinalize() {
+      const filled = document.querySelectorAll('.slot .pool-card').length;
+      document.getElementById('finalize').disabled = (filled!==5);
+    }
+    document.getElementById('finalize').addEventListener('click', () => {
+      const name = document.getElementById('userName').value.trim();
+      const top5 = Array.from(document.querySelectorAll('.slot .pool-card'))
+        .sort((a,b)=> a.parentElement.dataset.slot - b.parentElement.dataset.slot)
+        .map(c=>c.textContent);
+      const canvas = document.getElementById('resultCanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvas.width, canvas.height);
+      ctx.fillStyle = '#000'; ctx.font='20px Arial';
+      ctx.fillText(`${name} - Top Five Values`, 20, 40);
+      ctx.font='16px Arial';
+      top5.forEach((v,i) => ctx.fillText(`${i+1}. ${v}`, 20, 80 + i*30));
+      document.getElementById('step3').classList.add('hidden');
+      document.getElementById('canvasContainer').classList.remove('hidden');
+    });
+
+    document.getElementById('download').addEventListener('click', () => {
+      const canvas = document.getElementById('resultCanvas');
+      const link = document.createElement('a');
+      link.download = 'top5-values.png'; link.href = canvas.toDataURL();
+      link.click();
+    });
   </script>
 </body>
 </html>
