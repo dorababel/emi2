@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Motiva Értékfeltérképezés</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <title>Értékfeltérképezés</title>
+  <!-- === Load Poppins from Google Fonts === -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --dark-teal:  #0A484A;
@@ -12,58 +13,16 @@
       --gray-bg:    #E9EDF4;
       --text-white: #FFFFFF;
       --text-dark:  #222222;
-      --card-bg:    #FFFFFF;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--gray-bg);
-      color: var(--text-dark);
-    }
-    header {
-      background: var(--dark-teal);
-      color: var(--text-white);
-      padding: 1rem 2rem;
-      text-align: center;
-      font-weight: 600;
-      letter-spacing: 1px;
-    }
-    header span { font-weight: 700; }
-    .container { width: min(90%,900px); margin: 2rem auto; }
-    h1 { font-size: 1.75rem; margin-bottom: .5rem; }
-    p.instruction { margin-bottom: 1.5rem; }
-    /* Step 1 cards */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
-      gap: 1rem;
-    }
-    .card {
-      background: var(--card-bg);
-      border: 2px solid transparent;
-      border-radius: 8px;
-      padding: 1rem;
-      height: 200px;
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
-      overflow: hidden;
-    }
-    .card.selected { border-color: var(--mint-green); }
-    .card-title {
-      font-weight: 700;
-      text-transform: uppercase;
-      margin-bottom: .5rem;
-      flex-shrink: 0;
-    }
-    .card-def {
-      font-weight: 400;
-      font-size: .9rem;
-      overflow: auto;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: var(--gray-bg); color: var(--text-dark); }
+    .container { width: min(90%, 900px); margin: 0 auto; padding: 2rem 0; }
+    header { background: var(--dark-teal); color: var(--text-white); }
+    .header-inner { display: flex; align-items: center; justify-content: center; padding: 1rem 2rem; }
+    .header-inner h1 { font-size: 1.5rem; font-weight: 600; }
+    h1, h2 { font-weight: 700; margin-bottom: 1rem; }
     .btn {
-      margin-top: 1.5rem;
-      padding: .75rem 1.5rem;
+      padding: 0.75rem 1.5rem;
       background: var(--mint-green);
       color: var(--text-white);
       border: none;
@@ -71,187 +30,194 @@
       font-weight: 600;
       text-transform: uppercase;
       cursor: pointer;
-      opacity: .5;
+      opacity: 0.5;
+      transition: opacity 0.2s;
     }
-    .btn.enabled { opacity: 1; cursor: pointer; }
-    .btn:disabled { cursor: default; }
-    /* Step 2 */
-    #step2 { display: none; }
-    .compare-area {
-      display: flex;
+    .btn:enabled { opacity: 1; }
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 1rem;
-      justify-content: center;
-      margin-bottom: 1.5rem;
+      margin: 1rem 0;
     }
-    .compare-card {
-      background: var(--card-bg);
-      border: 2px solid var(--dark-teal);
+    .card {
+      background: var(--text-white);
       border-radius: 8px;
       padding: 1rem;
-      width: 200px;
+      height: 150px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       cursor: pointer;
+      border: 2px solid transparent;
+      overflow-wrap: break-word;
     }
-    .compare-card .card-title { font-size: 1rem; }
-    #restartBtn {
-      margin-bottom: 1.5rem;
-      background: transparent;
-      color: var(--dark-teal);
-      border: 2px solid var(--dark-teal);
-      border-radius: 50px;
-      padding: .5rem 1rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    #resultImage { display: block; margin: 0 auto; border:1px solid #ccc; }
+    .card.selected { border-color: var(--mint-green); }
+    .card-title { font-weight: 700; text-transform: uppercase; font-size: 0.9rem; }
+    .card-def { font-weight: 300; font-size: 0.8rem; }
+    #step2, #result { display: none; }
+    #compareArea { display: flex; gap: 1rem; justify-content: center; margin: 2rem 0; }
+    #compareArea .card { height: auto; flex: 1; }
+    #resultList { background: var(--text-white); padding: 1rem; border-radius: 8px; }
+    #resultList ol { padding-left: 1.5rem; }
   </style>
 </head>
 <body>
   <header>
-    <span>Motiva- Mind &amp; Motion Lab</span>
-  </header>
-
-  <div class="container" id="step1">
-    <h1>Személyes Értékek Feltérképezése</h1>
-    <p class="instruction">Válassz ki 10-15 értéket a listából, ami számodra különösen fontos!</p>
-    <div class="cards-grid" id="cardsGrid"></div>
-    <button id="nextBtn" class="btn" disabled>Tovább</button>
-  </div>
-
-  <div class="container" id="step2">
-    <p class="instruction">Melyik értéket részesíted előnyben?</p>
-    <div class="compare-area">
-      <div class="compare-card" id="leftCard"></div>
-      <div class="compare-card" id="rightCard"></div>
+    <div class="header-inner container">
+      <h1>Motiva - Mind & Motion Lab</h1>
     </div>
-    <button id="restartBtn">Újrakezdés</button>
-    <canvas id="resultCanvas" width="400" height="300" style="display:none;"></canvas>
-    <img id="resultImage" alt="Top 5 érték" />
+  </header>
+  <div class="container">
+    <section id="step1">
+      <h1>Személyes Értékek Feltérképezése</h1>
+      <p>Válassz ki 10-15 értéket a listából, ami számodra különösen fontos!</p>
+      <div class="values-grid" id="valuesGrid"></div>
+      <button id="nextBtn" class="btn" disabled>Tovább</button>
+    </section>
+
+    <section id="step2">
+      <h2>Melyik értéket részesíted előnyben?</h2>
+      <div id="compareArea"></div>
+      <button id="restartBtn" class="btn">újrakezdés</button>
+    </section>
+
+    <section id="result">
+      <h2>Az 5 legfőbb értékem</h2>
+      <div id="resultList"></div>
+      <button id="downloadBtn" class="btn">Letöltés</button>
+    </section>
   </div>
 
+  <!-- html2canvas for image export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
-    const allValues = [
-      {name:'EGÉSZSÉG', def:'A testi és lelki jóllét állapota.'},
-      {name:'CSALÁD', def:'A biztonságot és szeretetet nyújtó közösség.'},
-      {name:'SZABADSÁG', def:'A döntés és cselekvés szabadsága.'},
-      {name:'BIZTONSÁG', def:'A kiszámíthatóság és stabilitás érzése.'},
-      {name:'SIKER', def:'A kitűzött célok elérése.'},
-      {name:'KREATIVITÁS', def:'Új ötletek és megoldások létrehozása.'},
-      {name:'ŐSZINTESÉG', def:'Valódi és nyílt kommunikáció.'},
-      {name:'BARÁTSÁG', def:'Kölcsönös támogatáson alapuló kapcsolat.'},
-      {name:'FEJLŐDÉS', def:'Folyamatos tanulás és növekedés.'},
-      {name:'BÁTORSÁG', def:'Félelem leküzdése nehézségek közepette.'},
-      {name:'EGYENSÚLY', def:'Harmónia munka és magánélet között.'},
-      {name:'HARMÓNIA', def:'Belső béke és nyugalom.'},
-      {name:'TISZTELET', def:'Mások értékeinek elismerése.'},
-      {name:'FELELŐSSÉG', def:'Kötelezettségeid vállalása és teljesítése.'},
-      {name:'KAPCSOLAT', def:'Kommunikáció és érzelmi kötődés másokkal.'},
-      {name:'ÉLETERŐ', def:'Fizikai és mentális vitalitás.'},
-      {name:'BOLDOGSÁG', def:'Általános jó közérzet és öröm.'},
-      {name:'ELISMERÉS', def:'Mások értékelése és megbecsülése.'},
-      {name:'FÜGGETLENSÉG', def:'Önálló döntések és cselekvések.'},
-      {name:'ÉRTÉKÁTVITEL', def:'Tudás és tapasztalat átadása másoknak.'},
-      {name:'SZERETET', def:'Mélységes kötődés és törődés.'},
-      {name:'KÖSZÖNÖM', def:'Hála kifejezése mások felé.'},
-      {name:'BŐLCSESSÉG', def:'Tapasztalatból fakadó körültekintés.'},
-      {name:'CÉLTUDATOSSÁG', def:'Tudatos irányelvek követése.'},
-      {name:'JÓKEDV', def:'Pozitív hozzáállás és derű.'},
-      {name:'KOCKÁZAT', def:'Új lehetőségek vállalása bizonytalanság árán.'},
-      {name:'GONDOSKODÁS', def:'Mások szükségleteinek figyelembevétele.'},
-      {name:'EGYSÉG', def:'Közös célok és értékek megélése.'},
-      {name:'KÖZÖSSÉG', def:'Összetartó társadalmi csoport.'}
+    const values = [
+      { name: 'SZABADSÁG', def: 'Saját döntések és cselekedetek függetlensége.' },
+      { name: 'ŐSZINTESÉG', def: 'Nyílt és igaz kommunikáció.' },
+      { name: 'BIZTONSÁG', def: 'Stabilitás és kiszámíthatóság érzése.' },
+      { name: 'FELELŐSSÉG', def: 'Kötelességek vállalása és beteljesítése.' },
+      { name: 'TISZTELET', def: 'Mások és önmagam megbecsülése.' },
+      { name: 'EGYENSÚLY', def: 'Munka és magánélet harmonikus aránya.' },
+      { name: 'KREATIVITÁS', def: 'Új ötletek és megoldások keresése.' },
+      { name: 'EGÉSZSÉG', def: 'Fizikai és mentális jóllét fenntartása.' },
+      { name: 'NÖVEKEDÉS', def: 'Személyes és szakmai fejlődés.' },
+      { name: 'KÖZÖSSÉG', def: 'Kapcsolatok és társas támogatás.' },
+      { name: 'SZERETET', def: 'Önzetlen törődés másokkal.' },
+      { name: 'HÁLÁ', def: 'Elismerés és köszönet érzése.' },
+      { name: 'BOLDOGSÁG', def: 'Pozitív érzelmek és öröm megélése.' },
+      { name: 'FEJLŐDÉS', def: 'Folyamatos tanulás és kihívások vállalása.' },
+      { name: 'INTEGRITÁS', def: 'Erkölcsi elvek tiszteletben tartása.' },
+      { name: 'BÁTORSÁG', def: 'Félelem leküzdése és kockázatvállalás.' },
+      { name: 'ÍTÉLETKÉSZ', def: 'Megfontolt döntéshozatal.' },
+      { name: 'FELELŐSSÉG', def: 'Cselekedeteim következményeinek vállalása.' },
+      { name: 'NYITOTTSÁG', def: 'Új tapasztalatok és nézőpontok befogadása.' },
+      { name: 'ÉRTÉKELÉS', def: 'Mások teljesítményének elismerése.' },
+      { name: 'BIZALOM', def: 'Megbízhatóság és hitelesség.' },
+      { name: 'EGYEDISÉG', def: 'Sajátosságok és különlegességek elismerése.' },
+      { name: 'HARMÓNIA', def: 'Belső és külső egyensúly.' },
+      { name: 'FÜGGETLENSÉG', def: 'Önálló döntések és cselekvések.' },
+      { name: 'RUGALMASSÁG', def: 'Alkalmazkodás a változásokhoz.' },
+      { name: 'KÖNNYEDSÉG', def: 'Stresszmentes, laza életvitel.' },
+      { name: 'TUDATOSSÁG', def: 'Cselekedeteim és gondolataim figyelemmel követése.' },
+      { name: 'JÓVÁTEVÉS', def: 'Mások segítése és támogatása.' },
+      { name: 'SZABADSÁG', def: 'Korlátozások nélküli cselekvés.' },
+      { name: 'BELSŐ BÉKE', def: 'Nyugodt és kiegyensúlyozott állapot.' }
     ];
-
-    const cardsGrid = document.getElementById('cardsGrid');
-    const nextBtn = document.getElementById('nextBtn');
     let selected = [];
+    const grid = document.getElementById('valuesGrid');
+    const nextBtn = document.getElementById('nextBtn');
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const compareArea = document.getElementById('compareArea');
+    const restartBtn = document.getElementById('restartBtn');
+    const resultSec = document.getElementById('result');
+    const resultList = document.getElementById('resultList');
+    const downloadBtn = document.getElementById('downloadBtn');
 
-    allValues.forEach((v,i)=>{
-      const c = document.createElement('div');
-      c.className = 'card';
-      c.dataset.index = i;
-      c.innerHTML = `<div class="card-title">${v.name}</div><div class="card-def">${v.def}</div>`;
-      c.addEventListener('click',()=>{
-        const idx = selected.indexOf(i);
-        if(idx>-1) {
-          selected.splice(idx,1);
-          c.classList.remove('selected');
-        } else {
-          if(selected.length>=15){
-            alert('you can pick a maximum of 15 cards.');
-            return;
-          }
-          selected.push(i);
-          c.classList.add('selected');
+    // Render cards
+    values.forEach((v, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<div class="card-title">${v.name}</div><div class="card-def">${v.def}</div>`;
+      card.addEventListener('click', () => toggleSelect(i, card));
+      grid.appendChild(card);
+    });
+
+    function toggleSelect(i, card) {
+      const idx = selected.indexOf(i);
+      if (idx > -1) {
+        selected.splice(idx, 1);
+        card.classList.remove('selected');
+      } else {
+        if (selected.length >= 15) {
+          alert('Maximum 15 kártyát választhatsz ki.');
+          return;
         }
-        nextBtn.disabled = selected.length<10;
-        nextBtn.classList.toggle('enabled', selected.length>=10);
-      });
-      cardsGrid.appendChild(c);
-    });
-
-    nextBtn.addEventListener('click',()=>{
-      if(selected.length<10) return;
-      startRanking(selected.map(i=>allValues[i]));
-      document.getElementById('step1').style.display='none';
-      document.getElementById('step2').style.display='block';
-    });
-
-    document.getElementById('restartBtn').addEventListener('click',()=>{
-      window.location.reload();
-    });
-
-    // Interactive merge sort
-    async function startRanking(arr){
-      const sorted = await interactiveMergeSort(arr);
-      showResult(sorted.slice(0,5));
-    }
-
-    function promptUser(a,b){
-      return new Promise(resolve=>{
-        const leftCard = document.getElementById('leftCard');
-        const rightCard = document.getElementById('rightCard');
-        leftCard.innerHTML = `<div class="card-title">${a.name}</div><div class="card-def">${a.def}</div>`;
-        rightCard.innerHTML = `<div class="card-title">${b.name}</div><div class="card-def">${b.def}</div>`;
-        leftCard.onclick = ()=>resolve('left');
-        rightCard.onclick = ()=>resolve('right');
-      });
-    }
-
-    async function interactiveMergeSort(array){
-      if(array.length<=1) return array;
-      const mid = Math.floor(array.length/2);
-      const left = await interactiveMergeSort(array.slice(0,mid));
-      const right = await interactiveMergeSort(array.slice(mid));
-      return await interactiveMerge(left,right);
-    }
-
-    async function interactiveMerge(left,right){
-      let result = [];
-      let i=0,j=0;
-      while(i<left.length && j<right.length){
-        const choice = await promptUser(left[i], right[j]);
-        if(choice==='left'){ result.push(left[i++]); }
-        else { result.push(right[j++]); }
+        selected.push(i);
+        card.classList.add('selected');
       }
-      return result.concat(left.slice(i)).concat(right.slice(j));
+      nextBtn.disabled = selected.length < 10;
     }
 
-    function showResult(top5){
-      const canvas = document.getElementById('resultCanvas');
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = '#222222';
-      ctx.font = 'bold 18px Poppins';
-      ctx.fillText('Top 5 Értékeid', 20, 30);
-      ctx.font = '16px Poppins';
-      top5.forEach((v,i)=>{
-        ctx.fillText(`${i+1}. ${v.name}`, 20, 60 + i* Thirty);
-      });
-      const dataURL = canvas.toDataURL();
-      document.getElementById('resultImage').src = dataURL;
-      canvas.style.display='none';
+    nextBtn.addEventListener('click', () => {
+      step1.style.display = 'none';
+      step2.style.display = 'block';
+      startRanking();
+    });
+
+    restartBtn.addEventListener('click', () => location.reload());
+
+    // Merge-sort style ranking
+    async function startRanking() {
+      const chosen = selected.map(i => values[i]);
+      const sorted = await mergeSort(chosen);
+      showResult(sorted);
     }
+    async function mergeSort(arr) {
+      if (arr.length <= 1) return arr;
+      const mid = Math.floor(arr.length / 2);
+      const left = await mergeSort(arr.slice(0, mid));
+      const right = await mergeSort(arr.slice(mid));
+      return await merge(left, right);
+    }
+    async function merge(left, right) {
+      const merged = [];
+      while (left.length && right.length) {
+        const a = left[0], b = right[0];
+        const choice = await userCompare(a, b);
+        if (choice === 'left') merged.push(left.shift()); else merged.push(right.shift());
+      }
+      return merged.concat(left, right);
+    }
+    function userCompare(a, b) {
+      return new Promise(resolve => {
+        compareArea.innerHTML = '';
+        [a, b].forEach((v, idx) => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `<div class="card-title">${v.name}</div><div class="card-def">${v.def}</div>`;
+          card.addEventListener('click', () => resolve(idx === 0 ? 'left' : 'right'));
+          compareArea.appendChild(card);
+        });
+      });
+    }
+
+    function showResult(sorted) {
+      step2.style.display = 'none';
+      resultSec.style.display = 'block';
+      const top5 = sorted.slice(0, 5);
+      resultList.innerHTML = '<ol>' + top5.map(v => `<li>${v.name}</li>`).join('') + '</ol>';
+    }
+
+    downloadBtn.addEventListener('click', () => {
+      html2canvas(resultList).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'top5_valeham.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    });
   </script>
 </body>
 </html>
