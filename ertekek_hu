@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Értékfeltérképező</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dark-teal:  #0A484A;
+      --mint-green: #83BCAC;
+      --gray-bg:    #E9EDF4;
+      --text-white: #FFFFFF;
+      --text-dark:  #222222;
+      --card-bg:    #FFFFFF;
+      --card-border: #CCCCCC;
+      --card-selected: #83BCAC33;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--gray-bg);
+      color: var(--text-dark);
+      line-height:1.5;
+    }
+    header {
+      background: var(--dark-teal);
+      color: var(--text-white);
+      padding: 1rem 2rem;
+    }
+    header h1 { font-size:1.25rem; }
+    .container { width: min(90%,900px); margin:2rem auto; }
+    h2 { font-size:1.75rem; margin-bottom:0.5rem; font-weight:700; }
+    p { margin-bottom:1rem; }
+    .btn {
+      padding:0.75rem 1.5rem;
+      background: var(--mint-green);
+      color: var(--text-white);
+      border:none;
+      border-radius:50px;
+      text-transform:uppercase;
+      font-weight:600;
+      cursor:pointer;
+      opacity:0.5;
+    }
+    .btn.enabled { opacity:1; }
+    .cards {
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px,1fr));
+      gap:1rem;
+      margin:1rem 0;
+    }
+    .card {
+      background: var(--card-bg);
+      border:2px solid var(--card-border);
+      padding:0.5rem;
+      border-radius:8px;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      min-height:120px;
+    }
+    .card.selected { background: var(--card-selected); border-color: var(--mint-green); }
+    .card-title { font-weight:700; text-transform:uppercase; margin-bottom:0.5rem; font-size:0.9rem; }
+    .comparison {
+      text-align:center;
+    }
+    .comparison .pair {
+      display:flex;
+      justify-content:space-around;
+      gap:1rem;
+      margin-top:2rem;
+    }
+    .comparison .pair .card {
+      width:40%;
+    }
+    #result-image { display:block; margin:2rem auto; max-width:300px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Motiva – Mind &amp; Motion Lab</h1>
+</header>
+
+<div class="container">
+
+  <!-- Step 1 -->
+  <div id="step1">
+    <h2>Személyes Értékek Feltérképezése</h2>
+    <p>Válassz ki 10–15 értéket a listából, ami számodra különösen fontos!</p>
+    <div class="cards" id="cards-container"></div>
+    <button id="next1" class="btn">Tovább</button>
+  </div>
+
+  <!-- Step 2 -->
+  <div id="step2" style="display:none;">
+    <h2>Melyik értéket részesíted előnyben?</h2>
+    <div class="comparison">
+      <div class="pair" id="pair-container"></div>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <canvas id="result-canvas" width="400" height="400" style="display:none;"></canvas>
+  <img id="result-image" alt="Top 5 értékeid képe">
+
+</div>
+
+<script>
+  // 30 érték listája definíciókkal
+  const allValues = [
+    { name: 'SZABADSÁG', def: 'A képesség önálló döntésekre és cselekvésre.' },
+    { name: 'BIZTONSÁG', def: 'A kiszámítható, védett életérzés.' },
+    { name: 'SZERETET', def: 'Az odaadó, meleg emberi kapcsolat.' },
+    { name: 'EGÉSZSÉG', def: 'Testi és lelki jóllét állapota.' },
+    { name: 'HARMÓNIA', def: 'Belső és külső egyensúly.' },
+    { name: 'FEJLŐDÉS', def: 'Folyamatos növekedés és tanulás.' },
+    { name: 'ŐSZINTESÉG', def: 'Igaz és nyílt kommunikáció.' },
+    { name: 'TISZTELET', def: 'Mások és önmagunk megbecsülése.' },
+    { name: 'FELELŐSSÉG', def: 'Tetteink következményeinek elfogadása.' },
+    { name: 'BÁTORSÁG', def: 'Az akadályokkal szembeni kiállás.' },
+    { name: 'KREATIVITÁS', def: 'Új ötletek megalkotásának képessége.' },
+    { name: 'KÖZÖSSÉG', def: 'Másokkal való együttműködés.' },
+    { name: 'BOLDOGSÁG', def: 'Öröm és elégedettség érzése.' },
+    { name: 'BÉKE', def: 'Nyugalom és konfliktusmentesség.' },
+    { name: 'TUDÁS', def: 'Információ és megértés birtoklása.' },
+    { name: 'INNOVÁCIÓ', def: 'Újszerű megoldások létrehozása.' },
+    { name: 'SIKER', def: 'Célok elérésének öröme.' },
+    { name: 'ÁTLÁTHATÓSÁG', def: 'Világos, érthető működés.' },
+    { name: 'EGYENSÚLY', def: 'Munka és magánélet harmóniája.' },
+    { name: 'MEGBÍZHATÓSÁG', def: 'Szavaink és tetteink konzisztenciája.' },
+    { name: 'GYAKORLATIASSÁG', def: 'Hatékony, valós megoldások.' },
+    { name: 'ÉLETERŐ', def: 'Energia és aktivitás érzete.' },
+    { name: 'ÖNMEGHATÁROZÁS', def: 'Belső motiváció szerinti cselekvés.' },
+    { name: 'ELISMERÉS', def: 'Mások megbecsülése munkánkért.' },
+    { name: 'BŐSÉG', def: 'Megfelelő erőforrások megléte.' },
+    { name: 'ALAPOSSÁG', def: 'Gondos odafigyelés a részletekre.' },
+    { name: 'RUGALMASSÁG', def: 'Alkalmazkodóképesség változásokhoz.' },
+    { name: 'EGYÜTTMŰKÖDÉS', def: 'Közös célokért való munka.' },
+    { name: 'ELHÍVOTTSÁG', def: 'Elszántság és kitartás.' },
+    { name: 'TISZTESSÉG', def: 'Etikus és korrekt viselkedés.' }
+  ];
+
+  const selected = new Set();
+  const container = document.getElementById('cards-container');
+  const next1 = document.getElementById('next1');
+
+  // render 30 kártya
+  allValues.forEach((v, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<div>
+        <div class="card-title">${v.name}</div>
+        <div class="card-def">${v.def}</div>
+      </div>`;
+    card.onclick = () => {
+      if (!card.classList.contains('selected') && selected.size >= 15) {
+        return alert('You can pick a maximum of 15 cards.');
+      }
+      card.classList.toggle('selected');
+      if (card.classList.contains('selected')) selected.add(i);
+      else selected.delete(i);
+      next1.classList.toggle('enabled', selected.size >= 10);
+    };
+    container.appendChild(card);
+  });
+
+  next1.onclick = () => {
+    if (selected.size < 10) return;
+    startRanking([...selected].map(i => allValues[i]));
+  };
+
+  // step2 UI
+  const step1 = document.getElementById('step1');
+  const step2 = document.getElementById('step2');
+  const pairContainer = document.getElementById('pair-container');
+  const canvas = document.getElementById('result-canvas');
+  const resultImg = document.getElementById('result-image');
+
+  // merge sort with user comparisons
+  async function compare(a, b) {
+    return new Promise(resolve => {
+      pairContainer.innerHTML = '';
+      ['first', 'second'].forEach((pos, idx) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<div class="card-title">${pos==='first'? a.name : b.name}</div>
+                          <div class="card-def">${pos==='first'? a.def : b.def}</div>`;
+        card.onclick = () => resolve(idx===0? -1: 1);
+        pairContainer.appendChild(card);
+      });
+    });
+  }
+
+  async function mergeSort(arr) {
+    if (arr.length <= 1) return arr;
+    const mid = Math.floor(arr.length/2);
+    const left = await mergeSort(arr.slice(0, mid));
+    const right = await mergeSort(arr.slice(mid));
+    const res = [];
+    let i=0, j=0;
+    while (i<left.length && j<right.length) {
+      const cmp = await compare(left[i], right[j]);
+      if (cmp <= 0) { res.push(left[i++]); }
+      else { res.push(right[j++]); }
+    }
+    return res.concat(left.slice(i), right.slice(j));
+  }
+
+  async function startRanking(arr) {
+    step1.style.display = 'none';
+    step2.style.display = 'block';
+    const ranked = await mergeSort(arr);
+    showResult(ranked.slice(0,5));
+  }
+
+  function showResult(top5) {
+    step2.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#222222';
+    ctx.font = '20px Poppins';
+    ctx.fillText('Top 5 Értékeid', 20, 40);
+    ctx.font = '16px Poppins';
+    top5.forEach((v, i) => {
+      ctx.fillText(`${i+1}. ${v.name}`, 20, 80 + i*30);
+    });
+    const dataURL = canvas.toDataURL('image/png');
+    resultImg.src = dataURL;
+  }
+</script>
+
+</body>
+</html>
