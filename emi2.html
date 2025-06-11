@@ -1,368 +1,176 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Exercise Motivation Inventory-2</title>
-
-  <!-- === Load Poppins from Google Fonts === -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
-    rel="stylesheet"
-  />
-
+  <title>Edzésmotivációk Kérdőív (EMI-2)</title>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <style>
-    /* === Brand Color Variables (from example.html) === */
     :root {
-      --dark-teal:      #0A484A;
-      --mint-green:     #83BCAC;
-      --gray-bg:        #E9EDF4;
-      --blue-bg:        #A5BAE0;
-      --pink-bg:        #FFAAAA;
-
-      --text-white:     #FFFFFF;
-      --text-dark:      #222222;
+      --dark-teal:  #0A484A;
+      --mint-green: #83BCAC;
+      --gray-bg:    #E9EDF4;
+      --blue-bg:    #A5BAE0;
+      --pink-bg:    #FFAAAA;
+      --text-white: #FFFFFF;
+      --text-dark:  #222222;
     }
-
-    /* === Global Reset & Typography (Poppins) === */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 300;
-      line-height: 1.5;
-      color: var(--text-dark);
-      background-color: var(--gray-bg);
-    }
-    h1, h2, h3 {
-      margin-bottom: 0.5rem;
-      line-height: 1.2;
-      font-weight: 700;
-      color: var(--dark-teal);
-    }
-    p {
-      margin-bottom: 1rem;
-      font-weight: 400;
-      color: var(--text-dark);
-    }
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-    .container {
-      width: min(90%, 900px);
-      margin: 0 auto;
-      padding: 2rem 0;
-    }
-
-    /* === Header === */
-    header {
-      background-color: var(--dark-teal);
-      color: var(--text-white);
-    }
-    .header-inner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem 2rem;
-    }
-    .header-title {
-      font-size: 1.5rem;
-      letter-spacing: 1px;
-    }
-
-    /* === Form Section === */
-    #formPage {
-      background-color: var(--text-white);
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      padding: 2rem;
-      margin-bottom: 2rem;
-    }
-    #formPage h1 {
-      text-align: center;
-      margin-bottom: 1rem;
-      font-size: 2rem;
-    }
-    #formPage p {
-      font-size: 1rem;
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    .question {
-      margin-bottom: 1.5rem;
-    }
-    .question label.question-text {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--dark-teal);
-    }
-    .options {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .options label {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-      font-weight: 400;
-      color: var(--text-dark);
-    }
-    .options input[type="radio"] {
-      transform: scale(1.2);
-    }
-    .btn {
-      display: inline-block;
-      padding: 0.75rem 1.5rem;
-      background-color: var(--mint-green);
-      color: var(--text-white);
-      font-weight: 600;
-      text-transform: uppercase;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-    .btn:hover {
-      opacity: 0.85;
-    }
-    .button-wrapper {
-      text-align: center;
-      margin-top: 1rem;
-    }
-
-    /* === Results Section === */
-    #resultsPage {
-      display: none;
-      background-color: var(--text-white);
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      padding: 2rem;
-    }
-    #resultsPage h1 {
-      text-align: center;
-      margin-bottom: 1rem;
-      font-size: 2rem;
-    }
-    #resultsTable {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-    #resultsTable th, 
-    #resultsTable td {
-      border: 1px solid #ccc;
-      padding: 0.75rem;
-      text-align: center;
-    }
-    #resultsTable th {
-      background-color: var(--dark-teal);
-      color: var(--text-white);
-      font-weight: 600;
-    }
-    #resultsTable td {
-      background-color: var(--gray-bg);
-      color: var(--text-dark);
-    }
-    .results-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 1.5rem;
-    }
-    .results-buttons button {
-      padding: 0.5rem 1.25rem;
-      background-color: var(--mint-green);
-      color: var(--text-white);
-      font-weight: 600;
-      text-transform: uppercase;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-    .results-buttons button:hover {
-      opacity: 0.85;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Poppins',sans-serif; font-weight:300; line-height:1.5; color:var(--text-dark); background:var(--gray-bg); }
+    .container { width:min(90%,900px); margin:0 auto; padding:2rem 0; }
+    header { background: var(--dark-teal); color: var(--text-white); }
+    .header-inner { display: flex; align-items: center; justify-content: center; padding: 1rem 2rem; }
+    .header-inner h1 { font-size: 1.5rem; font-weight: 600; }
+    h1 { font-weight:700; margin-bottom:1rem; }
+    p { margin-bottom:1rem; }
+    .instructions { background:var(--text-white); padding:2rem; border-radius:8px; margin-bottom:2rem; }
+    .instructions span.bold-underline { font-weight:600; text-decoration:underline; }
+    form { background:var(--text-white); padding:2rem; border-radius:8px; }
+    .question { margin-bottom:1.5rem; }
+    .question-label { display:block; margin-bottom:0.5rem; }
+    .radios { display:flex; gap:0.5rem; }
+    .radios label { font-weight:400; }
+    .btn { display:inline-block; padding:0.75rem 1.5rem; background:var(--mint-green); color:var(--text-white); font-weight:600; text-transform:uppercase; border:none; border-radius:50px; cursor:pointer; transition:opacity 0.2s; }
+    .btn:hover { opacity:0.85; }
+    .error { color:red; margin-bottom:1rem; }
+    .required { color:red; margin-left:4px; }
+    .hidden { display:none; }
+    #results { background:var(--text-white); padding:2rem; border-radius:8px; }
+    table { width:100%; border-collapse:collapse; margin-bottom:2rem; }
+    th, td { border:1px solid #ccc; padding:0.5rem; text-align:left; }
+    th { background:var(--gray-bg); }
   </style>
 </head>
 <body>
-  <!-- ========== Header ========== -->
   <header>
-    <div class="header-inner">
-      <div class="header-title">Motiva - Mind&Motion Lab</div>
+    <div class="header-inner container">
+      <h1>Motiva - Mind & Motion Lab</h1>
     </div>
   </header>
-
   <div class="container">
-    <!-- ========== Form Section ========== -->
-    <div id="formPage">
-      <h1>Exercise Motivation Inventory-2</h1>
-      <p>
-        Please read the statements carefully and circle the appropriate number that reflects whether each
-        statement is true for you personally or would be true if you exercised.<br />
-        Use '0' if the statement is not true for you at all and '5' if it is very true. For partly true statements,
-        choose '1', '2', '3', or '4' based on your feelings.
-      </p>
-      <form id="emiForm"></form>
-      <div class="button-wrapper">
-        <button type="button" id="nextButton" class="btn">Next</button>
+    <h1>Edzésmotivációk Kérdőív (EMI-2)</h1>
+    <div id="page1">
+      <div class="instructions">
+        <p>Ebben a kérdőívben olyan állításokat találsz, amelyek azokat az okokat fogalmazzák meg, amelyeket az emberek gyakran megadnak, amikor megkérdezik tőlük, miért mozognak, edzenek.</p>
+        <p>Függetlenül attól, hogy jelenleg rendszeresen edzel-e vagy sem, kérlek, olvasd el figyelmesen az egyes állításokat, és jelezd, mennyire igazak rád nézve, illetve mennyire lennének igazak rád, ha mozognál.</p>
+        <p>Ha egy állítást egyáltalán nem érzel igaznek magadra, karikázd be a 0-át. Ha úgy gondolod, hogy nagyon igaz rád, akkor a 5-öst karikázd be. Ha csak részben érzed igaznak, akkor válaszd az 1–4 közötti értékek egyikét attól függően, mennyire jellemző rád.</p>
+        <p>Ne azt értékeld, hogy szerinted ezek jó okok-e bárkinek a mozgásra, hanem azt, hogy <span class="bold-underline">számodra személyesen mennyire igazak vagy lehetnének igazak</span>.</p>
       </div>
+      <form id="quizForm">
+        <div id="errorMsg" class="error hidden">Minden állítás esetében adj választ!</div>
+        <!-- Questions -->
+        <div id="questions"></div>
+        <button type="button" id="continueBtn" class="btn">Tovább</button>
+      </form>
     </div>
-
-    <!-- ========== Results Section ========== -->
-    <div id="resultsPage">
-      <h1>EMI-2 Subscale Results</h1>
-      <table id="resultsTable">
-        <thead>
-          <tr>
-            <th>Subscale</th>
-            <th>Average Score</th>
-          </tr>
-        </thead>
-        <tbody id="results"></tbody>
-      </table>
-      <div class="results-buttons">
-        <button onclick="downloadResultsImage()">Download Results as Image</button>
-        <button onclick="location.reload()">Start Over</button>
+    <div id="page2" class="hidden">
+      <div id="results">
+        <h2>Edzésmotivációim</h2>
+        <div id="resultTable"></div>
+        <h3>Részletes pontszámok</h3>
+        <div id="detailedList"></div>
+        <button id="downloadBtn" class="btn">PDF letöltése</button>
       </div>
     </div>
   </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
   <script>
-    // === Questions & Subscales (unchanged text content) ===
-    const questions = [
-      "To stay slim", "To avoid ill-health", "Because it makes me feel good", "To help me look younger",
-      "To show my worth to others", "To give me space to think", "To have a healthy body", "To build up my strength",
-      "Because I enjoy the feeling of exerting myself", "To spend time with friends", "Because my doctor advised me to exercise",
-      "Because I like trying to win in physical activities", "To stay/become more agile", "To give me goals to work towards",
-      "To lose weight", "To prevent health problems", "Because I find exercise invigorating", "To have a good body",
-      "To compare my abilities with other peoples’", "Because it helps to reduce tension", "Because I want to maintain good health",
-      "To increase my endurance", "Because I find exercising satisfying in and of itself", "To enjoy the social aspects of exercising",
-      "To help prevent an illness that runs in my family", "Because I enjoy competing", "To maintain flexibility",
-      "To give me personal challenges to face", "To help control my weight", "To avoid heart disease", "To recharge my batteries",
-      "To improve my appearance", "To gain recognition for my accomplishments", "To help manage stress", "To feel more healthy",
-      "To get stronger", "For enjoyment of the experience of exercising", "To have fun being active with other people",
-      "To help recover from an illness/injury", "Because I enjoy physical competition", "To stay/become flexible",
-      "To develop personal skills", "Because exercise helps me to burn calories", "To look more attractive",
-      "To accomplish things that others are incapable of", "To release tension", "To develop my muscles",
-      "Because I feel at my best when exercising", "To make new friends", "Because I find physical activities fun, especially when competition is involved",
-      "To measure myself against personal standards"
+    const items = [
+      "Hogy karcsú maradjak", "Hogy elkerüljem a betegségeket", "Mert jól érzem magam tőle", "Hogy fiatalabbnak tűnjek",
+      "Hogy mások szemében értékesnek tűnjek", "Hogy legyen időm gondolkodni", "Hogy egészséges testem legyen", "Hogy növeljem az erőmet",
+      "Mert élvezem a megerőltetést", "Hogy a barátaimmal legyek", "Mert az orvosom tanácsolta", "Mert szeretek nyerni fizikai tevékenységekben",
+      "Hogy rugalmas maradjak vagy azzá váljak", "Hogy célokat tűzhessek ki magam elé", "Hogy lefogyjak", "Hogy megelőzzem az egészségügyi problémákat",
+      "Mert felfrissít a mozgás", "Hogy szép testem legyen", "Hogy másokhoz mérhessem a képességeimet", "Mert segít oldani a feszültséget",
+      "Mert meg akarom őrizni az egészségemet", "Hogy növeljem az állóképességemet", "Mert önmagában kielégítő számomra az edzés",
+      "Hogy élvezzem a mozgás társasági oldalát", "Hogy megelőzzem a családban előforduló betegségeket", "Mert élvezem a versengést",
+      "Hogy megőrizzem a hajlékonyságomat", "Hogy személyes kihívásokkal nézhessek szembe", "Hogy kontrolláljam a testsúlyomat",
+      "Hogy elkerüljem a szívbetegséget", "Hogy feltöltődjek", "Hogy javítsam a megjelenésem", "Hogy elismerést szerezzek a teljesítményemért",
+      "Hogy kezeljem a stresszt", "Hogy egészségesebbnek érezzem magam", "Hogy erősebb legyek", "Mert élvezem magát a mozgás élményét",
+      "Hogy másokkal együtt mozogva jól érezzem magam", "Hogy felépüljek egy betegségből vagy sérülésből", "Mert élvezem a fizikai versenyt",
+      "Hogy rugalmas maradjak vagy azzá váljak", "Hogy fejlesszem a személyes készségeimet", "Mert segít kalóriát égetni",
+      "Hogy vonzóbbnak nézzek ki", "Hogy elérjek olyasmit, amit mások nem tudnak", "Hogy kiengedjem a feszültséget",
+      "Hogy fejlesszem az izmaimat", "Mert mozgás közben érzem magam a legjobban", "Hogy új barátokat szerezzek",
+      "Mert szórakoztató a mozgás, különösen ha verseny is van benne", "Hogy saját elvárásaimhoz mérjem magam"
     ];
-
-    const subscales = {
-      "Stress Management":         [6, 20, 34, 46],
-      "Revitalization":            [3, 17, 31],
-      "Enjoyment":                 [9, 23, 37, 48],
-      "Challenge":                 [14, 28, 42, 51],
-      "Social Recognition":        [5, 19, 33, 45],
-      "Affiliation":               [10, 24, 38, 49],
-      "Competition":               [12, 26, 40, 50],
-      "Health Pressures":          [11, 25, 39],
-      "Ill-health Avoidance":      [2, 16, 30],
-      "Positive Health":           [7, 21, 35],
-      "Weight Management":         [1, 15, 29, 43],
-      "Appearance":                [4, 18, 32, 44],
-      "Strength and Endurance":    [8, 22, 36, 47],
-      "Nimbleness":                [13, 27, 41]
+    const scales = {
+      "Stresszkezelés": [6,20,34,46],
+      "Felfrissülés": [3,17,31],
+      "Élvezet": [9,23,37,48],
+      "Kihívás": [14,28,42,51],
+      "Társas elismerés": [5,19,33,45],
+      "Kapcsolatteremtés": [10,24,38,49],
+      "Versengés": [12,26,40,50],
+      "Egészségügyi nyomás": [11,25,39],
+      "Betegségek elkerülése": [2,16,30],
+      "Pozitív egészség": [7,21,35],
+      "Testsúlykontroll": [1,15,29,43],
+      "Megjelenés": [4,18,32,44],
+      "Erő és állóképesség": [8,22,36,47],
+      "Hajlékonyság": [13,27,41]
     };
-
-    // === Build Question Form ===
-    const form = document.getElementById('emiForm');
-    questions.forEach((text, idx) => {
-      const qNum = idx + 1;
-
-      const questionDiv = document.createElement('div');
-      questionDiv.className = 'question';
-
-      const label = document.createElement('label');
-      label.className = 'question-text';
-      label.textContent = `${qNum}. ${text}`;
-      questionDiv.appendChild(label);
-
-      const optionsDiv = document.createElement('div');
-      optionsDiv.className = 'options';
-
-      for (let value = 0; value <= 5; value++) {
-        const optionLabel = document.createElement('label');
-        const radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.name = `q${qNum}`;
-        radio.value = value;
-        radio.id = `q${qNum}_${value}`;
-
-        const span = document.createElement('span');
-        span.textContent = value;
-
-        optionLabel.appendChild(radio);
-        optionLabel.appendChild(span);
-        optionsDiv.appendChild(optionLabel);
+    const qContainer = document.getElementById('questions');
+    items.forEach((text,i)=>{
+      const idx = i+1;
+      const qDiv = document.createElement('div'); qDiv.className='question';
+      const label = document.createElement('label'); label.className='question-label'; label.htmlFor='q'+idx;
+      label.innerText = idx+'. '+text;
+      qDiv.appendChild(label);
+      const radios = document.createElement('div'); radios.className='radios';
+      for(let v=0;v<=5;v++){ const id=`q${idx}_${v}`;
+        const rLabel = document.createElement('label');
+        rLabel.innerHTML=`<input type='radio' name='q${idx}' value='${v}' id='${id}'> ${v}`;
+        radios.appendChild(rLabel);
       }
-
-      questionDiv.appendChild(optionsDiv);
-      form.appendChild(questionDiv);
+      qDiv.appendChild(radios);
+      qContainer.appendChild(qDiv);
     });
-
-    // === Next Button Handler ===
-    document.getElementById('nextButton').onclick = () => {
-      const scores = questions.map((_, i) => {
-        const radios = document.getElementsByName(`q${i + 1}`);
-        for (const r of radios) {
-          if (r.checked) return parseInt(r.value, 10);
-        }
-        return 0;
+    document.getElementById('continueBtn').onclick = ()=>{
+      const answers = {};
+      let missing=[];
+      items.forEach((_,i)=>{
+        const name='q'+(i+1);
+        const sel = document.querySelector(`input[name='${name}']:checked`);
+        if(sel) answers[i+1]=parseInt(sel.value);
+        else missing.push(i+1);
       });
-      showResults(scores);
-    };
-
-    // === Show Results ===
-    function showResults(scores) {
-      document.getElementById('formPage').style.display = 'none';
-      document.getElementById('resultsPage').style.display = 'block';
-      const resultsBody = document.getElementById('results');
-      resultsBody.innerHTML = '';
-
-      const computed = [];
-      for (const [label, indices] of Object.entries(subscales)) {
-        const vals = indices.map(i => scores[i - 1]);
-        const avg = (vals.reduce((sum, v) => sum + v, 0) / vals.length);
-        computed.push({ label, average: avg });
+      // clear previous marks
+      document.querySelectorAll('.required').forEach(el=>el.remove());
+      if(missing.length){ document.getElementById('errorMsg').classList.remove('hidden');
+        missing.forEach(i=>{
+          const lbl = document.querySelector(`.question:nth-child(${i}) .question-label`);
+          if(lbl) lbl.insertAdjacentHTML('beforeend',' <span class="required">*</span>');
+        }); return;
       }
-
-      // Sort by average descending, then label
-      computed.sort((a, b) => {
-        if (b.average !== a.average) return b.average - a.average;
-        return a.label.localeCompare(b.label);
-      });
-
-      computed.forEach(item => {
-        const tr = document.createElement('tr');
-        const tdLabel = document.createElement('td');
-        const tdAvg = document.createElement('td');
-        tdLabel.textContent = item.label;
-        tdAvg.textContent = item.average.toFixed(2);
-        tr.appendChild(tdLabel);
-        tr.appendChild(tdAvg);
-        resultsBody.appendChild(tr);
-      });
+      document.getElementById('errorMsg').classList.add('hidden');
+      showResults(answers);
+    };
+    function showResults(answers){
+      // calculate scale scores
+      const results = [];
+      for(const [name, idxs] of Object.entries(scales)){
+        const sum = idxs.reduce((a,i)=>a+answers[i],0);
+        results.push({name, score: sum});
+      }
+      results.sort((a,b)=>b.score-a.score);
+      // build table
+      let html='<table><thead><tr><th>Skála</th><th>Pontszám</th></tr></thead><tbody>';
+      results.forEach(r=>{ html+=`<tr><td>${r.name}</td><td>${r.score}</td></tr>` }); html+='</tbody></table>';
+      document.getElementById('resultTable').innerHTML = html;
+      // detailed list
+      let det='<ul>';
+      items.forEach((text,i)=>{
+        const val=answers[i+1]; det+=`<li>${i+1}. ${text}: ${val}</li>`;
+      }); det+='</ul>';
+      document.getElementById('detailedList').innerHTML = det;
+      document.getElementById('page1').classList.add('hidden');
+      document.getElementById('page2').classList.remove('hidden');
     }
-
-    // === Download Results as Image ===
-    function downloadResultsImage() {
-      const table = document.getElementById('resultsTable');
-      html2canvas(table).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'emi2_results.png';
-        link.href = canvas.toDataURL();
-        link.click();
-      });
-    }
+    document.getElementById('downloadBtn').onclick = ()=>{
+      const element = document.getElementById('results');
+      html2pdf().set({ margin:1, filename:'Edzésmotivációim.pdf', html2canvas:{ scale:2 }, jsPDF:{ unit:'mm', format:'a4' } }).from(element).save();
+    };
   </script>
 </body>
 </html>
