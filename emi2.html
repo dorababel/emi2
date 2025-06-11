@@ -3,43 +3,192 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Edzésmotivációk Kérdőív (EMI-2)</title>
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <title>Exercise Motivation Inventory-2</title>
+
+  <!-- === Load Poppins from Google Fonts === -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
   <style>
+    /* === Brand Color Variables (from example.html) === */
     :root {
-     --dark-teal:  #0A484A;
-      --mint-green: #83BCAC;
-      --gray-bg:    #E9EDF4;
-      --blue-bg:    #A5BAE0;
-      --pink-bg:    #FFAAAA;
-      --text-white: #FFFFFF;
-      --text-dark:  #222222;
+      --dark-teal:      #0A484A;
+      --mint-green:     #83BCAC;
+      --gray-bg:        #E9EDF4;
+      --blue-bg:        #A5BAE0;
+      --pink-bg:        #FFAAAA;
+
+      --text-white:     #FFFFFF;
+      --text-dark:      #222222;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Poppins',sans-serif; font-weight:300; line-height:1.5; color:var(--text-dark); background:var(--gray-bg); }
-    .container { width:min(90%,900px); margin:0 auto; padding:2rem 0; }
-    header { background: var(--dark-teal); color: var(--text-white); }
-    .header-inner { display: flex; align-items: center; justify-content: center; padding: 1rem 2rem; }
-    .header-inner h1 { font-size: 1.5rem; font-weight: 600; }
-    h1 { font-weight:700; margin-bottom:1rem; }
-    p { margin-bottom:1rem; }
-    .instructions { background:var(--text-white); padding:2rem; border-radius:8px; margin-bottom:2rem; }
-    .instructions span.bold-underline { font-weight:600; text-decoration:underline; }
-    form { background:var(--text-white); padding:2rem; border-radius:8px; }
-    .question { margin-bottom:1.5rem; }
-    .question-label { display:block; margin-bottom:0.5rem; }
-    .radios { display:flex; gap:0.5rem; }
-    .radios label { font-weight:400; }
-    .btn { display:inline-block; padding:0.75rem 1.5rem; background:var(--mint-green); color:var(--text-white); font-weight:600; text-transform:uppercase; border:none; border-radius:50px; cursor:pointer; transition:opacity 0.2s; }
-    .btn:hover { opacity:0.85; }
-    .error { color:red; margin-bottom:1rem; }
-    .required { color:red; margin-left:4px; }
-    .hidden { display:none; }
-    #results { background:var(--text-white); padding:2rem; border-radius:8px; }Add commentMore actions
-    table { width:100%; border-collapse:collapse; margin-bottom:2rem; }
-    th, td { border:1px solid #ccc; padding:0.5rem; text-align:left; }
-    th { background:var(--gray-bg); }
+
+    /* === Global Reset & Typography (Poppins) === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--text-dark);
+      background-color: var(--gray-bg);
+    }
+    h1, h2, h3 {
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+      font-weight: 700;
+      color: var(--dark-teal);
+    }
+    p {
+      margin-bottom: 1rem;
+      font-weight: 400;
+      color: var(--text-dark);
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .container {
+      width: min(90%, 900px);
+      margin: 0 auto;
+      padding: 2rem 0;
+    }
+
+    /* === Header === */
+    header {
+      background-color: var(--dark-teal);
+      color: var(--text-white);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2rem;
+    }
+    .header-title {
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    /* === Form Section === */
+    #formPage {
+      background-color: var(--text-white);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    #formPage h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+    }
+    #formPage p {
+      font-size: 1rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .question {
+      margin-bottom: 1.5rem;
+    }
+    .question label.question-text {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--dark-teal);
+    }
+    .options {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .options label {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-weight: 400;
+      color: var(--text-dark);
+    }
+    .options input[type="radio"] {
+      transform: scale(1.2);
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--mint-green);
+      color: var(--text-white);
+      font-weight: 600;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn:hover {
+      opacity: 0.85;
+    }
+    .button-wrapper {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    /* === Results Section === */
+    #resultsPage {
+      display: none;
+      background-color: var(--text-white);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+    }
+    #resultsPage h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+    }
+    #resultsTable {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    #resultsTable th, 
+    #resultsTable td {
+      border: 1px solid #ccc;
+      padding: 0.75rem;
+      text-align: center;
+    }
+    #resultsTable th {
+      background-color: var(--dark-teal);
+      color: var(--text-white);
+      font-weight: 600;
+    }
+    #resultsTable td {
+      background-color: var(--gray-bg);
+      color: var(--text-dark);
+    }
+    .results-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .results-buttons button {
+      padding: 0.5rem 1.25rem;
+      background-color: var(--mint-green);
+      color: var(--text-white);
+      font-weight: 600;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .results-buttons button:hover {
+      opacity: 0.85;
+    }
   </style>
 </head>
 <body>
