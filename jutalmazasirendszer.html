@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Saját MotivaPont Rendszer</title>
+  <title>Saját MotivaPont Rendszer Kialakítása</title>
 
   <!-- === Betűtípus === -->
   <link
@@ -45,6 +45,21 @@
       border-radius: 4px;
       font-size: 1rem;
     }
+    /* === Header === */
+    header {
+      background-color: var(--dark-teal);
+      color: var(--text-white);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2rem;
+    }
+    .header-title {
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
     .btn {
       display: inline-block;
       padding: 0.75rem 1.5rem;
@@ -72,6 +87,7 @@
       background-color: var(--mint-green);
       color: var(--text-white);
     }
+    
     /* A PDF tartalma fehér alapon */
     #pdf-content {
       display: none;
@@ -85,8 +101,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+  <header>
+    <div class="header-inner">
+      <div class="header-title">Motiva- Mind & Motion Lab</div>
+    </div>
+  </header>
   <div class="container">
-    <h1 style="text-align: center; margin-bottom: 2rem;">Saját MotivaPont Rendszer</h1>
+    <h1 style="text-align: center; margin-bottom: 2rem;">Saját MotivaPont Rendszer Kialakítása</h1>
 
     <p>Ez az oldal segít személyre szabott jutalmazási rendszered kialakításában. Gondold végig, mely tevékenységekért szeretnél jutalmat kapni és milyen külső megerősítők ösztönöznek majd a kitartó cselekvésre. Lássunk is hozzá!</p>
 
