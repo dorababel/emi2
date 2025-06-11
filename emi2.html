@@ -147,12 +147,13 @@
       showResults(answers);
     };
     function showResults(answers){
-      // calculate scale scores
-      const results = [];
-      for(const [name, idxs] of Object.entries(scales)){
-        const sum = idxs.reduce((a,i)=>a+answers[i],0);
-        results.push({name, score: sum});
-      }
+      // calculate scale scores (átlag)
+const results = [];
+for (const [name, idxs] of Object.entries(scales)) {
+  const sum = idxs.reduce((total, i) => total + answers[i], 0);
+  const avg = sum / idxs.length;
+  results.push({ name, score: avg });
+}
       results.sort((a,b)=>b.score-a.score);
       // build table
       let html='<table><thead><tr><th>Skála</th><th>Pontszám</th></tr></thead><tbody>';
