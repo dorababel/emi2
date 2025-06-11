@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Célkitűzési Sablon</title>
+
+  <!-- === Load Poppins from Google Fonts === -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --dark-teal:  #0A484A;
+      --mint-green: #83BCAC;
+      --gray-bg:    #E9EDF4;
+      --text-white: #FFFFFF;
+      --text-dark:  #222222;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--text-dark);
+      background-color: var(--gray-bg);
+    }
+
+    .container {
+      width: min(90%, 900px);
+      margin: 2rem auto;
+      padding: 0 1rem;
+      background-color: var(--text-white);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--dark-teal);
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      font-weight: 400;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      font-family: inherit;
+      font-size: 1rem;
+      resize: vertical;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--mint-green);
+      color: var(--text-white);
+      font-weight: 600;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 1rem;
+    }
+    .btn:hover {
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Célkitűzési Sablon – Gondold végig tudatosan a mozgással kapcsolatos céljaidat!</h1>
+    <form id="templateForm">
+      <h2>1. Hosszú távú cél</h2>
+      <p>Ha egy éven keresztül rendszeresen edzel, milyen eredményeket szeretnél látni? (Például: jobb állóképesség, erősebb test, jobb közérzet, kevesebb fájdalom, könnyebben végzett hétköznapi mozdulatok, stb.)</p>
+      <textarea id="longTerm" placeholder="Írd ide a válaszod..."></textarea>
+
+      <h2>2. Rövid távú folyamatcél</h2>
+      <p>Gondolj bele: milyen konkrét szokást vagy viselkedést tudsz rendszeresen megvalósítani, ami segít elérni a hosszú távú célod? Fogalmazz minél konkrétabban! Pontosan milyen tevékenységet fogsz végezni, milyen gyakorisággal, hol.</p>
+      <textarea id="shortTerm" placeholder="Írd ide a válaszod..."></textarea>
+
+      <h2>3. Nyomonkövetés</h2>
+      <p>Hogyan fogod nyomon követni a haladásodat? Honnan tudod, hogy megfelelően haladsz?</p>
+      <textarea id="tracking" placeholder="Írd ide a válaszod..."></textarea>
+
+      <h2>4. A cselekvés indításának megkönnyítése</h2>
+      <p>Milyen konkrét lépéseket fogsz tenni a tevékenység könnyebb betartása érdekében? (Pl. az előző nap kikészítem az edzőcuccot, átgondolom pontosan, mit fogok csinálni a teremben, beírom a naptáramba, stb.)</p>
+      <textarea id="kickoff" placeholder="Írd ide a válaszod..."></textarea>
+
+      <h2>5. Lehetséges akadályokra való felkészülés</h2>
+      <p>Senki sem halad tökéletesen. Fontos, hogy előre gondolkodj! Mi állhat az utadba? (pl. időhiány, fáradtság, motiváció csökkenése, betegség stb.)</p>
+      <textarea id="obstaclesPotential" placeholder="Írd ide a válaszod..."></textarea>
+      <p>Hogyan tudok ezekre felkészülni? (pl. előre tervezek, rövidebb edzést választok, pihenőt építek be stb.)</p>
+      <textarea id="obstaclesPrepare" placeholder="Írd ide a válaszod..."></textarea>
+
+      <h2>5. A te „Miérted”</h2>
+      <p>Mi az a belső motiváció, ami akkor is segíthet, amikor éppen nincs kedved folytatni? Miért fontos neked ez a cél? Gondolj az értékekről folytatott beszélgetésünkre! Hogyan fogod érezni magad, ha eléred? Mi történik, ha nem teszel semmit?</p>
+      <textarea id="why" placeholder="Írd ide a válaszod..."></textarea>
+
+      <p>Gratulálok, most már letisztult benned a kép, hogy pontosan mit szeretnél elérni, mit fogsz tenni érte és felkészültél a nehezebb időkre, amiken a belülről jövő motivációd tud továbblendíteni. Kattints a Letöltés gombra és küldd el nekem a kapott PDF fájlt, hogy a következő beszélgetésünk során átnézzük!</p>
+
+      <button type="button" id="downloadBtn" class="btn">Letöltés</button>
+    </form>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    const { jsPDF } = window.jspdf;
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+      let y = 40;
+      doc.setFontSize(20);
+      doc.setFont(undefined, 'bold');
+      doc.text("Célkitűzéseim", 40, y);
+      y += 30;
+
+      const sections = [
+        { title: "1. Hosszú távú cél", content: document.getElementById('longTerm').value },
+        { title: "2. Rövid távú folyamatcél", content: document.getElementById('shortTerm').value },
+        { title: "3. Nyomonkövetés", content: document.getElementById('tracking').value },
+        { title: "4. A cselekvés indításának megkönnyítése", content: document.getElementById('kickoff').value },
+        { title: "5. Lehetséges akadályokra való felkészülés", content: document.getElementById('obstaclesPotential').value + "\n\n" + document.getElementById('obstaclesPrepare').value },
+        { title: "5. A te „Miérted”", content: document.getElementById('why').value }
+      ];
+
+      sections.forEach(sec => {
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text(sec.title, 40, y);
+        y += 20;
+
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'normal');
+        const lines = doc.splitTextToSize(sec.content || "-", 500);
+        doc.text(lines, 40, y);
+        y += lines.length * 16 + 20;
+
+        // Add new page if near bottom
+        if (y > 750) {
+          doc.addPage();
+          y = 40;
+        }
+      });
+
+      doc.save('Célkitűzéseim.pdf');
+    });
+  </script>
+</body>
+</html>
