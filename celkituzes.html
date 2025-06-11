@@ -18,6 +18,21 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Poppins', sans-serif; font-weight: 300; line-height: 1.5; color: var(--text-dark); background-color: var(--gray-bg); }
     h1, h2 { margin-bottom: 0.5rem; line-height: 1.2; font-weight: 700; }
+    /* === Header === */
+    header {
+      background-color: var(--dark-teal);
+      color: var(--text-white);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2rem;
+    }
+    .header-title {
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
     p { margin-bottom: 1rem; font-weight: 400; }
     .container { width: min(90%, 900px); margin: 0 auto; padding: 2rem 0; }
     .hero { background-color: var(--dark-teal); color: var(--text-white); text-align: center; padding: 3rem 1rem; }
@@ -29,6 +44,11 @@
   </style>
 </head>
 <body>
+   <header>
+    <div class="header-inner">
+      <div class="header-title">Motiva- Mind & Motion Lab</div>
+    </div>
+  </header>
   <section class="hero">
     <div class="container">
       <h1>Célkitűzési Sablon – Gondold végig tudatosan a mozgással kapcsolatos céljaidat!</h1>
@@ -103,7 +123,7 @@
         y += split.length * 12;
         if (y > 800) { doc.addPage(); y = 40; }
       });
-      doc.save('celkituzesim.pdf');
+      doc.save('celkituzeseim.pdf');
     });
   </script>
 </body>
