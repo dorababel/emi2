@@ -245,7 +245,7 @@
     downloadBtn.addEventListener('click', () => {
       html2canvas(resultList).then(canvas => {
         const link = document.createElement('a');
-        link.download = 'top5_valeham.png';
+        link.download = 'ertekeim.png';
         link.href = canvas.toDataURL();
         link.click();
       });
