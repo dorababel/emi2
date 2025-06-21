@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Szokásformáló feladatlap</title>
+  <title>Szokásformáló Feladatlap</title>
 
-  <!-- === Load Poppins from Google Fonts === -->
+  <!-- === Google Font === -->
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
     rel="stylesheet"
@@ -21,11 +21,7 @@
       --text-white: #FFFFFF;
       --text-dark:  #222222;
     }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Poppins', sans-serif;
       font-weight: 300;
@@ -37,58 +33,43 @@
       width: min(90%, 900px);
       margin: 2rem auto;
       padding: 2rem;
-      background-color: var(--text-white);
+      background: var(--text-white);
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     h1 {
-      font-size: 1.75rem;
+      font-size: 2rem;
       font-weight: 700;
       margin-bottom: 1rem;
       color: var(--dark-teal);
-      text-align: center;
     }
-    p.intro {
-      margin-bottom: 1.5rem;
-      font-weight: 400;
+    p {
+      margin-bottom: 1rem;
     }
-    .point {
-      margin-bottom: 2rem;
-    }
-    .point-title {
+    h3 {
       font-weight: 700;
+      margin-top: 1.5rem;
       margin-bottom: 0.5rem;
-    }
-    .point-description {
-      margin-bottom: 0.5rem;
-      font-weight: 400;
-    }
-    .point-examples {
-      margin-bottom: 0.5rem;
-      font-weight: 400;
     }
     em {
       font-style: italic;
     }
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 400;
+    ul {
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
     }
     textarea {
       width: 100%;
-      min-height: 80px;
+      min-height: 4rem;
       padding: 0.5rem;
       border: 1px solid #ccc;
       border-radius: 4px;
+      font-family: inherit;
+      margin-bottom: 1.5rem;
       resize: vertical;
-      font-family: 'Poppins', sans-serif;
-      font-size: 1rem;
-      margin-bottom: 1rem;
     }
     .btn {
-      display: block;
-      margin: 1rem auto 0;
+      display: inline-block;
       padding: 0.75rem 1.5rem;
       background-color: var(--mint-green);
       color: var(--text-white);
@@ -105,176 +86,134 @@
   </style>
 </head>
 <body>
-
   <div class="container">
     <h1>Szokásformáló technikák</h1>
-    <p class="intro">
-      Az új szokások bevezetése gyakran nem könnyű feladat, de léteznek olyan módszerek, amelyek megkönnyíthetik a folyamatot.
-      Most 7 technikát mutatok neked, amelyek segítségével hatékonyabban építheted be a kitűzött szokásokat az életedbe.
-      A te feladatod pedig az lesz, hogy végiggondold, hogyan segíthetne egy-egy pont a kitűzött szokások megvalósításában.
-    </p>
+    <p>Az új szokások bevezetése gyakran nem könnyű feladat, de léteznek olyan módszerek, amelyek megkönnyíthetik a folyamatot. Most 7 technikát mutatok, amelyek segítségével hatékonyabban építheted be a kitűzött szokásokat az életedbe. A te feladatod pedig az lesz, hogy végiggondold, hogyan segíthetne egy-egy pont a kitűzött szokások megvalósításában.</p>
 
-    <form id="habitForm">
-      <div class="point" id="point1">
-        <div class="point-title">1. Legyen pontos helye és ideje!</div>
-        <div class="point-description">
-          Ha lehet, mindig ugyanakkor és ugyanott végezd a tevékenységet. Ez csökkenti a döntéshozatal terhét, és támogatja a
-          szokás automatizálódását. Ha nem tudod minden héten ugyanakkor kivitelezni, előre ütemezd a naptáradban, és kezeld prioritásként.
-        </div>
-        <div class="point-examples">
-          <em>Például:</em><br>
-          - Keddenként munka után megyek az edzőterembe egy órát edzeni.<br>
-          - Minden reggel beágyazás közben átgondolom, melyik étkezésem része lesz valamilyen zöldség.
-        </div>
-        <label for="answer1">
-          Most gondold át és írd le, milyen pontos időpontot és helyszínt tudnál kijelölni a kitűzött szokásaidhoz, hogy minél könnyebben
-          beépüljenek a rutinodba! Ha nem találsz ilyet, azt próbáld meg meghatározni, mikor tudod majd pontosítani.
-        </label>
-        <textarea id="answer1" name="answer1"></textarea>
-      </div>
+    <!-- 1 -->
+    <h3>1. Legyen pontos helye és ideje!</h3>
+    <p>Ha lehet, mindig ugyanakkor és ugyanott végezd a tevékenységet. Ez csökkenti a döntéshozatal terhét, és támogatja a szokás automatizálódását. Ha nem tudod minden héten ugyanakkor kivitelezni, előre ütemezd a naptáradban, és kezeld prioritásként.</p>
+    <p><em>Például:</em></p>
+    <ul>
+      <li>Keddenként munka után megyek az edzőterembe egy órát edzeni.</li>
+      <li>Minden reggel beágyazás közben átgondolom, melyik étkezésem része lesz valamilyen zöldség.</li>
+    </ul>
+    <p>Most gondold át és írd le, milyen pontos időpontot és helyszínt tudnál kijelölni a kitűzött szokásaidhoz, hogy minél könnyebben beépüljenek a rutinodba! Ha nem találsz ilyet, azt próbáld meg meghatározni, mikor tudod majd pontosítani.</p>
+    <textarea id="resp1"></textarea>
 
-      <div class="point" id="point2">
-        <div class="point-title">2. Habit stacking – illeszd az új szokást egy meglévő rutinhoz!</div>
-        <div class="point-description">
-          Az új tevékenység csatolása egy már rendszeresen végzett rutinhoz erős asszociációt teremt, ezzel elősegítve a szokás
-          tartós beágyazódását.
-        </div>
-        <div class="point-examples">
-          <em>Például:</em><br>
-          - A vitaminokat minden reggel fogmosás után veszem be.<br>
-          - Ebéd után lépcsőzők 10 emeletet az épületben.
-        </div>
-        <label for="answer2">
-          Nézzük, mely meglévő rutinodhoz tudnád kapcsolni a kitűzött szokásaidat, hogy könnyebben rögzüljenek!
-        </label>
-        <textarea id="answer2" name="answer2"></textarea>
-      </div>
+    <!-- 2 -->
+    <h3>2. Habit stacking – illeszd az új szokást egy meglévő rutinhoz!</h3>
+    <p>Az új tevékenység csatolása egy már rendszeresen végzett rutinhoz erős asszociációt teremt, ezzel elősegítve a szokás tartós beágyazódását.</p>
+    <p><em>Például:</em></p>
+    <ul>
+      <li>A vitaminokat minden reggel fogmosás után veszem be.</li>
+      <li>Ebéd után lépcsőzők 10 emeletet az épületben.</li>
+    </ul>
+    <p>Nézzük, mely meglévő rutinodhoz tudnád kapcsolni a kitűzött szokásaidat, hogy könnyebben rögzüljenek!</p>
+    <textarea id="resp2"></textarea>
 
-      <div class="point" id="point3">
-        <div class="point-title">3. Tedd feltűnővé!</div>
-        <div class="point-description">
-          A vizuális vagy digitális emlékeztetők segítenek, hogy folyton “a szemed előtt lebegjen” a cél. Ez lehet a tevékenység tárgya
-          (gyümölcs az asztal közepén) vagy egy szorosan a cselekvéshez tartozó tárgy (edzőcucc a bejáratnál) vagy akár egy telefonos
-          emlékeztető is.
-        </div>
-        <div class="point-examples">
-          <em>Például:</em><br>
-          - Tedd a zöldséget a hűtő legkönnyebben látható és elérhető pontjára. Legyen “útban!”<br>
-          - A MotivaPont rendszered táblázatát és a követőt tedd feltűnő helyre.
-        </div>
-        <label for="answer3">
-          Gondold át, milyen szem előtt lévő tárgy(ak) vagy emlékeztető(k) segítenének, hogy észrevedd és elvégezd a szokásodat!
-        </label>
-        <textarea id="answer3" name="answer3"></textarea>
-      </div>
+    <!-- 3 -->
+    <h3>3. Tedd feltűnővé!</h3>
+    <p>A vizuális vagy digitális emlékeztetők segítenek, hogy folyton “a szemed előtt lebegjen” a cél. Ez lehet a tevékenység tárgya (gyümölcs az asztal közepén), egy szorosan a cselekvéshez tartozó tárgy (edzőcucc a bejáratnál) vagy akár egy telefonos emlékeztető is.</p>
+    <p><em>Például:</em></p>
+    <ul>
+      <li>Tedd a zöldséget a hűtő legkönnyebben látható és elérhető pontjára. Legyen “útban!”</li>
+      <li>A MotivaPont rendszered táblázatát és a követőt tedd feltűnő helyre.</li>
+    </ul>
+    <p>Gondold át, milyen szem előtt lévő tárgy(ak) vagy emlékeztető(k) segítenének, hogy észrevedd és elvégezd a szokásodat!</p>
+    <textarea id="resp3"></textarea>
 
-      <div class="point" id="point4">
-        <div class="point-title">4. Tedd jutalmazóvá!</div>
-        <div class="point-description">
-          A pozitív visszajelzés megerősíti a viselkedést. Akár egy pipa a checklisten, akár egy apró élvezet is elegendő lehet.
-        </div>
-        <div class="point-examples">
-          <em>Például:</em><br>
-          - Pipáld ki a naptáradban, ha elérted a napi 10 000 lépést.<br>
-          - Edzés után ajándékozd meg magad egy fehérjés turmixszal vagy egy sorozatrész megnézésével.
-        </div>
-        <label for="answer4">
-          Gondold át, milyen azonnali jutalom motiválhat a szokásaid következetes megtartására!
-        </label>
-        <textarea id="answer4" name="answer4"></textarea>
-      </div>
+    <!-- 4 -->
+    <h3>4. Tedd jutalmazóvá!</h3>
+    <p>A pozitív visszajelzés megerősíti a viselkedést. Akár egy pipa a checklisten, akár egy apró élvezet is elegendő lehet.</p>
+    <p><em>Például:</em></p>
+    <ul>
+      <li>Pipáld ki a naptáradban, ha elérted a napi 10 000 lépést.</li>
+      <li>Edzés után ajándékozd meg magad egy fehérjés turmixszal vagy egy sorozatrész megnézésével.</li>
+    </ul>
+    <p>Gondold át, milyen azonnali jutalom motiválhat a szokásaid következetes megtartására!</p>
+    <textarea id="resp4"></textarea>
 
-      <div class="point" id="point5">
-        <div class="point-title">5. Csökkentsd a súrlódást!</div>
-        <div class="point-description">
-          Minimalizáld az akadályokat a tevékenység megkezdése előtt, hogy ne legyen kifogás.
-        </div>
-        <div class="point-examples">
-          <em>Például:</em><br>
-          - Válaszd ki és pakold be előző este az edzőcuccodat.<br>
-          - Tervezd meg előre étkezéseidet! Írj össze néhány könnyen elkészíthető, céljaidnak megfelelő receptet, amihez mindig lesz otthon hozzávaló!
-        </div>
-        <label for="answer5">
-          Gondold át, hogyan tudnád eltávolítani vagy leegyszerűsíteni azokat a lépéseket, amelyek a szokás elindítását nehezítik!
-        </label>
-        <textarea id="answer5" name="answer5"></textarea>
-      </div>
+    <!-- 5 -->
+    <h3>5. Csökkentsd a súrlódást!</h3>
+    <p>Minimalizáld az akadályokat a tevékenység megkezdése előtt, hogy ne legyen kifogás.</p>
+    <p><em>Például:</em></p>
+    <ul>
+      <li>Válaszd ki és pakold be előző este az edzőcuccodat.</li>
+      <li>Tervezd meg előre étkezéseidet! Írj össze néhány könnyen elkészíthető, céljaidnak megfelelő receptet, amihez mindig lesz otthon hozzávaló!</li>
+    </ul>
+    <p>Gondold át, hogyan tudnád eltávolítani vagy leegyszerűsíteni azokat a lépéseket, amelyek a szokás elindítását nehezítik!</p>
+    <textarea id="resp5"></textarea>
 
-      <div class="point" id="point6">
-        <div class="point-title">6. Növeld a súrlódást a nem kívánt cselekvéseknél!</div>
-        <div class="point-description">
-          A nem kívánt viselkedést tedd nehezebben elérhetővé, így csökkented az impulzív szokáskövetés esélyét.
-        </div>
-        <div class="point-examples">
-          <em>Például:</em><br>
-          - Ne tarts otthon édességet; ha mégis kívánod, csak bevásárláskor vegyél egy adagot.<br>
-          - Rejtsd el a közösségi média applikációk ikonját a telefonodon!
-        </div>
-        <label for="answer6">
-          Gondold át, hogyan tudod megnehezíteni a nem kívánt viselkedést, és milyen gondolatokkal vagy kívánt cselekvéssel helyettesítheted azt!
-        </label>
-        <textarea id="answer6" name="answer6"></textarea>
-      </div>
+    <!-- 6 -->
+    <h3>6. Növeld a súrlódást a nem kívánt cselekvéseknél!</h3>
+    <p>A nem kívánt viselkedést tedd nehezebben elérhetővé, így csökkented az impulzív szokáskövetés esélyét.</p>
+    <p><em>Például:</em></p>
+    <ul>
+      <li>Ne tarts otthon édességet; ha mégis kívánod, csak bevásárláskor vegyél egy adagot.</li>
+      <li>Rejtsd el a közösségi média applikációk ikonját a telefonodon!</li>
+    </ul>
+    <p>Gondold át, hogyan tudod megnehezíteni a nem kívánt viselkedést, és milyen gondolatokkal vagy kívánt cselekvéssel helyettesítheted azt!</p>
+    <textarea id="resp6"></textarea>
 
-      <div class="point" id="point7">
-        <div class="point-title">7. Kösd össze valami kellemessel!</div>
-        <div class="point-description">
-          Ha a tevékenység unalmas vagy kényelmetlen, társítsd hozzá a kedvelt szórakozást, így szívesebben végzed.
-        </div>
-        <div class="point-examples">
-          <em>Például:</em><br>
-          - Lépcsőzés vagy edzés közben hallgass podcastot vagy kedvenc zenéidet.
-        </div>
-        <label for="answer7">
-          Gondold át, milyen kellemes tevékenységet tudnál párosítani a szokásodhoz, hogy élvezetesebb legyen a megvalósítása!
-        </label>
-        <textarea id="answer7" name="answer7"></textarea>
-      </div>
+    <!-- 7 -->
+    <h3>7. Kösd össze valami kellemessel!</h3>
+    <p>Ha a tevékenység unalmas vagy kényelmetlen, társítsd hozzá a kedvelt szórakozást, így szívesebben végzed.</p>
+    <p><em>Például:</em></p>
+    <ul>
+      <li>Lépcsőzés vagy edzés közben hallgass podcastot vagy kedvenc zenéidet.</li>
+    </ul>
+    <p>Gondold át, milyen kellemes tevékenységet tudnál párosítani a szokásodhoz, hogy élvezetesebb legyen a megvalósítása.</p>
+    <textarea id="resp7"></textarea>
 
-      <button type="button" id="generate" class="btn">Kész vagyok!</button>
-    </form>
+    <button class="btn" id="generate-pdf">Kész vagyok!</button>
   </div>
 
+  <!-- jsPDF & autotable -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
   <script>
     const { jsPDF } = window.jspdf;
+    document.getElementById('generate-pdf').addEventListener('click', () => {
+      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+      const margin = 40;
+      doc.setFont('Helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.setTextColor(10, 72, 74);
+      doc.text('Szokásformáló technikáim', margin, 60);
 
-    document.getElementById('generate').addEventListener('click', () => {
-      const doc = new jsPDF();
-      const margin = 15;
-      const pageWidth = doc.internal.pageSize.getWidth();
-      let y = 20;
-
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(16);
-      doc.text('Szokásformáló technikáim', pageWidth / 2, y, { align: 'center' });
-      y += 10;
-
+      const rows = [];
       for (let i = 1; i <= 7; i++) {
-        const titleElem = document.querySelector(`#point${i} .point-title`);
-        const titleText = titleElem.textContent.replace(/^\d+\.\s/, '');
-        const answer = document.getElementById(`answer${i}`).value.trim();
-
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(12);
-        if (y > 270) { doc.addPage(); y = 20; }
-        doc.text(`${i}. ${titleText}`, margin, y);
-        y += 6;
-
-        const boxWidth = pageWidth - margin * 2;
-        const boxHeight = 40;
-        doc.rect(margin, y, boxWidth, boxHeight);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(11);
-
-        const textLines = doc.splitTextToSize(answer, boxWidth - 4);
-        doc.text(textLines, margin + 2, y + 6);
-        y += boxHeight + 8;
+        const title = document.querySelector(`#resp${i}`).previousElementSibling.previousElementSibling.textContent.trim();
+        const resp = document.getElementById(`resp${i}`).value || '-';
+        rows.push([title, resp]);
       }
 
-      doc.save('Szokásformáló technikáim.pdf');
+      doc.autoTable({
+        startY: 80,
+        head: [['Technika', 'Saját válasz']],
+        body: rows,
+        theme: 'grid',
+        headStyles: {
+          fillColor: [10, 72, 74],
+          textColor: 255,
+          halign: 'center',
+          fontStyle: 'bold'
+        },
+        styles: {
+          font: 'Helvetica',
+          fontSize: 12,
+          cellPadding: 6
+        },
+        columnStyles: {
+          0: { cellWidth: 150 },
+          1: { cellWidth: 350 }
+        },
+        margin: { left: margin, right: margin }
+      });
+
+      doc.save('Szokásformáló_technikáim.pdf');
     });
   </script>
-
 </body>
 </html>
