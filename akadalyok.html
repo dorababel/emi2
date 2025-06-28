@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Akadálylista és Ha–akkor tervezés</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --dark-teal: #0A484A;
+      --mint-green: #83BCAC;
+      --gray-bg: #E9EDF4;
+      --blue-bg: #A5BAE0;
+      --pink-bg: #FFAAAA;
+      --text-white: #FFFFFF;
+      --text-dark: #222222;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; font-weight: 300; line-height: 1.5; color: var(--text-dark); background: var(--gray-bg); }
+    .container { width: min(90%, 900px); margin: 0 auto; padding: 2rem 0; }
+    header { background-color: var(--dark-teal); color: var(--text-white); }
+    header .container { display: flex; align-items: center; justify-content: center; }
+    header h1 { font-size: 1.5rem; font-weight: 700; }
+    section { display: none; }
+    section.active { display: block; }
+    h1 { margin-bottom: 1rem; font-size: 1.75rem; }
+    p { margin-bottom: 1rem; }
+    .checkbox-item { margin-bottom: 0.75rem; }
+    .checkbox-item input { margin-right: 0.5rem; }
+    #custom-obstacles-container .custom-obstacle { width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; border:1px solid #ccc; border-radius:4px; }
+    .btn { display: inline-block; padding: 0.5rem 1rem; background-color: var(--mint-green); color: var(--text-white); font-weight: 600; text-transform: uppercase; border: none; border-radius: 50px; cursor: pointer; transition: opacity 0.2s; margin: 0.5rem 0 0; }
+    .btn:hover { opacity: 0.85; }
+    .input-field { width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; border:1px solid #ccc; border-radius:4px; }
+    .if-then-block { margin-bottom: 1.5rem; }
+    .solutions-container { margin-top: 0.5rem; }
+    .solution-input { width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; border:1px solid #ccc; border-radius:4px; }
+  </style>
+</head>
+<body>
+  <header><div class="container"><h1>Motiva- Mind & Motion Lab</h1></div></header>
+
+  <!-- Page 1 -->
+  <section id="page1" class="active"><div class="container">
+    <h1>Akadályok és Ha–akkor tervezés</h1>
+    <p>Fontos, hogy előre felkészüljünk nehezebb időszakokra és átgondoljuk, hogyan reagálhatunk ezekben a helyzetekben és ezáltal kész válaszokkal könnyíthetjük a döntéshozatalt. Gondold végig, téged érinthetnek-e a következő akadályok a szokásaid kialakítása során, majd jelöld be azokat!</p>
+    <div id="obstacles-list"></div>
+    <div>
+      <p>Gondold át, van-e még olyan akadály, ami nem szerepel a listán! Ha van, írd be ide:</p>
+      <div id="custom-obstacles-container">
+        <input type="text" class="custom-obstacle input-field" placeholder="Írd be az akadályt">
+      </div>
+      <button type="button" id="add-custom-obstacle" class="btn">+</button>
+    </div>
+    <button type="button" id="to-page2" class="btn">Tovább »</button>
+  </div></section>
+
+  <!-- Page 2 -->
+  <section id="page2"><div class="container">
+    <p>Most arra kérlek, gondold végig, hogyan küzdenéd le a kiválasztott akadályokat a kitűzött szokások esetén! Mindegyikhez fejezd be a mondatot, és adj meg minél több lehetséges megoldást.</p>
+    <div id="pdf-content">
+      <h1 style="font-size:1.5rem; margin-bottom:1rem;">Ha–akkor tervezésem</h1>
+      <div id="if-then-container"></div>
+    </div>
+    <p>Fontos, hogy előre felkészüljünk minden eshetőségre – így az átgondolt ha–akkor tervek garantálják, hogy mindig legyen működőképes, könnyen alkalmazható válaszod.</p>
+    <button type="button" id="generate-pdf" class="btn">Kész vagyok!</button>
+    <button type="button" id="back-to-page1" class="btn">Vissza az előző oldalra</button>
+  </div></section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+  <script>
+    // Initial obstacles
+    const initialObstacles = [
+      { title: 'Időhiány', text: 'Nincs elég időm a napi teendőim mellett a szokásom gyakorlására.' },
+      { title: 'Energiahiány', text: 'Annyira elfáradok, hogy nincs erőm belevágni.' },
+      { title: 'Motivációhiány', text: 'Hiányzik belőlem a belső késztetés a rendszeres mozgáshoz.' },
+      { title: 'Akaraterő hiánya', text: 'Nem érzem magamban a kellő kitartást az új szokás fenntartásához.' },
+      { title: 'Figyelemelvonó tényezők', text: 'Gyakran elvonja a figyelmemet a telefonom vagy a közösségi média.' },
+      { title: 'Támogatás hiánya', text: 'Úgy érzem, nincs, aki bátorítson és támogasson a céljaim elérésében.' },
+      { title: 'Felszerelés/erőforrás hiány', text: 'Nincs hozzáférésem a szükséges eszközökhöz vagy helyszínhez.' },
+      { title: 'Sérüléstől való félelem', text: 'Attól félek, hogy megsérülhetek edzés közben.' },
+      { title: 'Bizonytalanság/kényelmetlenség', text: 'Bizonytalan vagyok abban, hogyan kezdjek hozzá, és kényelmetlenül érzem magam.' },
+      { title: 'Pénzügyi korlátok', text: 'Aggódom a részvétel költségei vagy a felszerelés ára miatt.' },
+      { title: 'Időjárás', text: 'A rossz idő gyakran megakadályoz abban, hogy kimenjek.' },
+      { title: 'Gyakori utazás', text: 'Sokat utazom, ezért nehéz következetesen gyakorolnom.' },
+      { title: 'Gyermekfelügyelet', text: 'A gyerekek ellátása mellett nehéz időt szakítanom a szokásomra.' },
+      { title: 'Kor', text: 'Úgy érzem, túl idős vagyok az új szokások bevezetéséhez.' },
+      { title: 'Unalom', text: 'Monotonnak találom a tevékenységet, ezért unatkozom közben.' },
+      { title: 'Megítéléstől való félelem', text: 'Félek, hogy mások kinéznek, kinevetnek vagy ítélkeznek felettem.' },
+      { title: 'Kudarctól való félelem', text: 'Attól tartok, hogy nem fogom elérni a kitűzött célt.' },
+      { title: 'Nincs azonnali jutalom', text: 'Nem kapok azonnali pozitív visszajelzést, ezért nehéz motiválnom magam.' },
+      { title: 'Reális elvárások hiánya', text: 'Nem tudom, mennyi idő alatt alakul ki egy új szokás, és ezért hajlamos vagyok feladni.' },
+      { title: 'Halogatás', text: 'Hajlamos vagyok elhalasztani és odébb tolni a gyakorlást.' }
+    ];
+
+    // Render obstacles list
+    const listContainer = document.getElementById('obstacles-list');
+    initialObstacles.forEach(o => {
+      const div = document.createElement('div');
+      div.className = 'checkbox-item';
+      div.innerHTML = `<label><input type="checkbox"><strong>${o.title}:</strong> ${o.text}</label>`;
+      listContainer.appendChild(div);
+    });
+
+    // Add custom obstacle fields
+    document.getElementById('add-custom-obstacle').addEventListener('click', () => {
+      const container = document.getElementById('custom-obstacles-container');
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'custom-obstacle input-field';
+      input.placeholder = 'Írd be az akadályt';
+      container.appendChild(input);
+    });
+
+    // Navigation and dynamic rendering
+    const page1 = document.getElementById('page1');
+    const page2 = document.getElementById('page2');
+    const ifThenContainer = document.getElementById('if-then-container');
+
+    document.getElementById('to-page2').addEventListener('click', () => {
+      // Gather selected obstacles
+      const selected = [];
+      document.querySelectorAll('#obstacles-list input[type="checkbox"]').forEach(cb => {
+        if (cb.checked) {
+          let txt = cb.parentElement.textContent.split(':')[1].trim();
+          if (txt.endsWith('.')) txt = txt.slice(0, -1);
+          txt = txt.charAt(0).toLowerCase() + txt.slice(1);
+          selected.push(txt);
+        }
+      });
+      document.querySelectorAll('.custom-obstacle').forEach(inp => {
+        const val = inp.value.trim();
+        if (val) selected.push(val.charAt(0).toLowerCase() + val.slice(1));
+      });
+      if (selected.length === 0) return alert('Kérlek válassz ki vagy adj meg legalább egy akadályt.');
+
+      // Build If–Then blocks
+      ifThenContainer.innerHTML = '';
+      selected.forEach(text => {
+        const block = document.createElement('div');
+        block.className = 'if-then-block';
+        const p = document.createElement('p');
+        p.innerHTML = `Ha ${text}, akkor`;
+        block.appendChild(p);
+        const solContainer = document.createElement('div');
+        solContainer.className = 'solutions-container';
+        // initial two inputs
+        for (let i = 0; i < 2; i++) addSolutionInput(solContainer);
+        block.appendChild(solContainer);
+        const addBtn = document.createElement('button');
+        addBtn.type = 'button';
+        addBtn.className = 'btn';
+        addBtn.textContent = '+';
+        addBtn.addEventListener('click', () => addSolutionInput(solContainer));
+        block.appendChild(addBtn);
+        ifThenContainer.appendChild(block);
+      });
+
+      page1.classList.remove('active');
+      page2.classList.add('active');
+    });
+
+    document.getElementById('back-to-page1').addEventListener('click', () => {
+      page2.classList.remove('active');
+      page1.classList.add('active');
+    });
+
+    function addSolutionInput(container) {
+      const inp = document.createElement('input');
+      inp.type = 'text';
+      inp.className = 'solution-input';
+      inp.placeholder = 'Írd be az megoldást';
+      container.appendChild(inp);
+    }
+
+    // PDF generation
+    document.getElementById('generate-pdf').addEventListener('click', () => {
+      const element = document.getElementById('pdf-content');
+      html2pdf().set({ margin: 0.5, filename: 'Ha–akkor_tervezésem.pdf', html2canvas: { scale: 2 } }).from(element).save();
+    });
+  </script>
+</body>
+</html>
