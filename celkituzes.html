@@ -168,46 +168,44 @@
 <script>
   document.getElementById('downloadBtn').addEventListener('click', () => {
     const sections = [
-      { title: '1. Hosszú távú célom',             id: 'longTerm'  },
-      { title: '2. Rövid távú folyamatcélom',      id: 'shortTerm' },
-      { title: '3. Nyomonkövetés',                 id: 'tracking'  },
+      { title: '1. Hosszú távú cél',                id: 'longTerm'  },
+      { title: '2. Rövid távú folyamatcél',          id: 'shortTerm' },
+      { title: '3. Nyomonkövetés',                   id: 'tracking'  },
       { title: '4. A cselekvés indításának megkönnyítése', id: 'easeAction' },
-      { title: '5. Lehetséges akadályok',           id: 'obstacles' },
-      { title: '– Felkészülés',                    id: 'prepare'   },
-      { title: '6. A te „Miérted”',                id: 'why'       }
+      { title: '5. Lehetséges akadályokra való felkészülés', id: 'obstacles' },
+      { title: '   – Felkészülés',                   id: 'prepare'   },
+      { title: '6. A te „Miérted”',                   id: 'why'       }
     ];
 
-    // 1) létrehozok egy container‐t, amire a példastílus CSS is hat
+    // 1) létrehozok egy pdfContainer-t, amire érvényesül a teljes example-stílus
     const pdfContainer = document.createElement('div');
-    pdfContainer.className = 'container';
-    document.body.appendChild(pdfContainer);
+    pdfContainer.style.padding = '1rem';
+    pdfContainer.innerHTML = '<h1>Célkitűzési Sablon</h1>';
 
-    // 2) form-section osztállyal építem fel a cím+válasz blokkot
+    // 2) minden szekcióhoz egy h2 + egy 1×1-es táblázat
     sections.forEach(sec => {
-      const sectionDiv = document.createElement('div');
-      sectionDiv.className = 'form-section';
-
       const h2 = document.createElement('h2');
       h2.textContent = sec.title;
-      sectionDiv.appendChild(h2);
+      pdfContainer.appendChild(h2);
 
-      const p = document.createElement('p');
-      p.textContent = document.getElementById(sec.id).value.trim() || '-';
-      sectionDiv.appendChild(p);
-
-      pdfContainer.appendChild(sectionDiv);
+      const table = document.createElement('table');
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.textContent = document.getElementById(sec.id).value.trim() || '-';
+      tr.appendChild(td);
+      table.appendChild(tr);
+      pdfContainer.appendChild(table);
     });
 
-    // 3) HTML–>PDF, majd cleanup
+    // 3) html2pdf-generálás Szokásépítő-ül
     html2pdf()
       .set({
         margin:      0.5,
-        filename:    'Celkituzeseim.pdf',
+        filename:    'Célkituzeseim.pdf',
         html2canvas: { scale: 2, useCORS: true },
         jsPDF:       { unit: 'in', format: 'a4', orientation: 'portrait' }
       })
       .from(pdfContainer)
-      .save()
-      .then(() => document.body.removeChild(pdfContainer));
+      .save();
   });
 </script>
