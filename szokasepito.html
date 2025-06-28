@@ -13,104 +13,109 @@
 
   <style>
     /* === Brand Color Variables === */
-:root {
-  --dark-teal:  #0A484A;
-  --mint-green: #83BCAC;
-  --gray-bg:    #E9EDF4;
-  --blue-bg:    #A5BAE0;
-  --pink-bg:    #FFAAAA;
-  --text-white: #FFFFFF;
-  --text-dark:  #222222;
-}
+    :root {
+      --dark-teal:  #0A484A;
+      --mint-green: #83BCAC;
+      --gray-bg:    #E9EDF4;
+      --blue-bg:    #A5BAE0;
+      --pink-bg:    #FFAAAA;
+      --text-white: #FFFFFF;
+      --text-dark:  #222222;
+    }
 
-/* === Global Reset & Typography === */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-body {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 300;
-  line-height: 1.5;
-  color: var(--text-dark);
-  background-color: var(--gray-bg);
-}
+    /* === Global Reset & Typography === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--text-dark);
+      background-color: var(--gray-bg);
+    }header {
+      background-color: var(--dark-teal);
+      color: var(--text-white);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2rem;
+    }
+    .header-title {
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+    h1, h2, h3 {
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+    p {
+      margin-bottom: 1rem;
+      font-weight: 400;
+    }
+    ul {
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+    }
+    em {
+      font-style: italic;
+    }
+    .container {
+      width: min(90%, 900px);
+      margin: 0 auto;
+      padding: 2rem 0;
+    }
 
-/* === Layout === */
-.container {
-  width: min(90%, 900px);
-  margin: 0 auto;
-  padding: 2rem 0;
-  background-color: var(--gray-bg);
-}
-.form-section {
-  margin-bottom: 2rem;
-}
+    /* === Button === */
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--mint-green);
+      color: var(--text-white);
+      font-weight: 600;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 1rem;
+    }
+    .btn:hover {
+      opacity: 0.85;
+    }
 
-/* === Headings & Text === */
-h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-h2 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-p {
-  font-size: 1rem;
-  font-weight: 400;
-  margin-bottom: 1rem;
-}
+    /* === Form Elements === */
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.5rem;
+      margin-bottom: 1.5rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 300;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+    }
 
-/* === Header (ha benne van a PDF-ben) === */
-header {
-  background-color: var(--dark-teal);
-  color: var(--text-white);
-}
-.header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem 2rem;
-}
-.header-title {
-  font-size: 1.5rem;
-  letter-spacing: 1px;
-}
-
-/* === Button === */
-.btn {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  background-color: var(--mint-green);
-  color: var(--text-white);
-  font-weight: 600;
-  text-transform: uppercase;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: opacity 0.2s;
-  margin-top: 1rem;
-}
-.btn:hover {
-  opacity: 0.85;
-}
-
-/* === Textarea (ha kell) === */
-textarea {
-  width: 100%;
-  min-height: 100px;
-  padding: 0.5rem;
-  margin-bottom: 1.5rem;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 300;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  resize: vertical;
-}
+    /* === PDF Table Styling (for html2pdf capture) === */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+    }
+    th, td {
+      border: 1px solid var(--text-dark);
+      padding: 0.5rem;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
@@ -217,49 +222,48 @@ textarea {
     <button id="generatePdfButton" class="btn">Kész vagyok!</button>
   </div>
 
- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
-<script>
-  document.getElementById('downloadBtn').addEventListener('click', () => {
-    const sections = [
-      { title: '1. Hosszú távú célom',             id: 'longTerm'  },
-      { title: '2. Rövid távú folyamatcélom',      id: 'shortTerm' },
-      { title: '3. Nyomonkövetés',                 id: 'tracking'  },
-      { title: '4. A cselekvés indításának megkönnyítése', id: 'easeAction' },
-      { title: '5. Lehetséges akadályok',           id: 'obstacles' },
-      { title: '– Felkészülés',                    id: 'prepare'   },
-      { title: '6. A te „Miérted”',                id: 'why'       }
+  <!-- html2pdf.js könyvtár -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+  <script>
+    const points = [
+      'Legyen pontos helye és ideje!',
+      'Habit stacking – illeszd az új szokást egy meglévő rutinhoz!',
+      'Tedd feltűnővé!',
+      'Tedd jutalmazóvá!',
+      'Csökkentsd a súrlódást!',
+      'Növeld a súrlódást a nem kívánt cselekvéseknél!',
+      'Kösd össze valami kellemessel!'
     ];
 
-    const pdfContainer = document.createElement('div');
-    pdfContainer.className = 'container';
-    document.body.appendChild(pdfContainer);
+    document.getElementById('generatePdfButton').addEventListener('click', () => {
+      const pdfContainer = document.createElement('div');
+      pdfContainer.style.padding = '1rem';
+      pdfContainer.innerHTML = '<h1>Szokásformáló technikáim</h1>';
 
-    sections.forEach(sec => {
-      const sectionDiv = document.createElement('div');
-      sectionDiv.className = 'form-section';
+      points.forEach((title, index) => {
+        const tableTitle = document.createElement('h2');
+        tableTitle.textContent = title;
+        pdfContainer.appendChild(tableTitle);
 
-      const h2 = document.createElement('h2');
-      h2.textContent = sec.title;
-      sectionDiv.appendChild(h2);
+        const table = document.createElement('table');
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.textContent = document.getElementById(`input-${index}`).value || '';
+        tr.appendChild(td);
+        table.appendChild(tr);
+        pdfContainer.appendChild(table);
+      });
 
-      const p = document.createElement('p');
-      p.textContent = document.getElementById(sec.id).value.trim() || '-';
-      sectionDiv.appendChild(p);
+      const opt = {
+        margin:       0.5,
+        filename:     'Szokásformáló_technikáim.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
 
-      pdfContainer.appendChild(sectionDiv);
+      html2pdf().set(opt).from(pdfContainer).save();
     });
-
-    html2pdf()
-      .set({
-        margin:      0.5,
-        filename:    'Celkituzeseim.pdf',
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF:       { unit: 'in', format: 'a4', orientation: 'portrait' }
-      })
-      .from(pdfContainer)
-      .save()
-      .then(() => document.body.removeChild(pdfContainer));
-  });
-</script>
+  </script>
 </body>
 </html>
