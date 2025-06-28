@@ -61,7 +61,7 @@
       <h1 style="font-size:1.5rem; margin-bottom:1rem;">Ha–akkor tervezés</h1>
       <div id="if-then-container"></div>
     </div>
-    <p>Fontos, hogy előre felkészüljünk minden eshetőségre – így az átgondolt ha–akkor tervek garantálják, hogy mindig legyen működőképes, könnyen alkalmazható válaszod.</p>
+    <p>Szép munka! A most felállított ha–akkor terveid garantálják, hogy minden eshetőségre legyen működőképes, könnyen alkalmazható válaszod. Kattints a 'Kész vagyok!' gombra a véglegesítéshez és küldd el nekem a kapott PDF-et emailben!</p>
     <button type="button" id="generate-pdf" class="btn">Kész vagyok!</button>
     <button type="button" id="back-to-page1" class="btn">Vissza az előző oldalra</button>
   </div></section>
@@ -175,7 +175,7 @@
     // PDF generation
     document.getElementById('generate-pdf').addEventListener('click', () => {
       const element = document.getElementById('pdf-content');
-      html2pdf().set({ margin: 0.5, filename: 'Ha–akkor_tervezésem.pdf', html2canvas: { scale: 2 } }).from(element).save();
+      html2pdf().set({ margin: 0.5, filename: 'Ha–akkor_terveim.pdf', html2canvas: { scale: 2 } }).from(element).save();
     });
   </script>
 </body>
