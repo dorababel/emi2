@@ -92,44 +92,50 @@
     <button class="btn" id="downloadBtn">Letöltés</button>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
 <script>
   document.getElementById('downloadBtn').addEventListener('click', () => {
-    // 1. Pontok definiálása
     const sections = [
-      { title: '1. Hosszú távú célom',           id: 'longTerm'  },
-      { title: '2. Rövid távú folyamatcélom',     id: 'shortTerm' },
-      { title: '3. Nyomonkövetés',                id: 'tracking'  },
+      { title: '1. Hosszú távú célom',             id: 'longTerm'  },
+      { title: '2. Rövid távú folyamatcélom',      id: 'shortTerm' },
+      { title: '3. Nyomonkövetés',                 id: 'tracking'  },
       { title: '4. A cselekvés indításának megkönnyítése', id: 'easeAction' },
-      { title: '5. Lehetséges akadályokra való felkészülés', id: 'obstacles' },
-      { title: '   – Felkészülés',                id: 'prepare'   },
+      { title: '5. Lehetséges akadályok',           id: 'obstacles' },
+      { title: '– Felkészülés',                    id: 'prepare'   },
       { title: '6. A te „Miérted”',                id: 'why'       }
     ];
 
-    // 2. pdfContainer összeállítása
+    // 1) létrehozok egy container‐t, amire a példastílus CSS is hat
     const pdfContainer = document.createElement('div');
-    pdfContainer.style.padding = '1rem';
-    pdfContainer.innerHTML = '<h1>Célkitűzéseim</h1>';
+    pdfContainer.className = 'container';
+    document.body.appendChild(pdfContainer);
 
+    // 2) form-section osztállyal építem fel a cím+válasz blokkot
     sections.forEach(sec => {
+      const sectionDiv = document.createElement('div');
+      sectionDiv.className = 'form-section';
+
       const h2 = document.createElement('h2');
       h2.textContent = sec.title;
-      pdfContainer.appendChild(h2);
+      sectionDiv.appendChild(h2);
 
       const p = document.createElement('p');
       p.textContent = document.getElementById(sec.id).value.trim() || '-';
-      pdfContainer.appendChild(p);
+      sectionDiv.appendChild(p);
+
+      pdfContainer.appendChild(sectionDiv);
     });
 
-    // 3. PDF generálás a szűrt tartalommal
+    // 3) HTML–>PDF, majd cleanup
     html2pdf()
       .set({
-        margin:       0.5,
-        filename:     'Célkituzeseim.pdf',
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        margin:      0.5,
+        filename:    'Celkituzeseim.pdf',
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF:       { unit: 'in', format: 'a4', orientation: 'portrait' }
       })
       .from(pdfContainer)
-      .save();
+      .save()
+      .then(() => document.body.removeChild(pdfContainer));
   });
 </script>
