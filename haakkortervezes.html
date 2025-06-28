@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ha–akkor tervezés | Motiva</title>
+  
+  <!-- === Google Font (Poppins) === -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- === html2pdf.js === -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+
+  <style>
+    /* ===== Brand Color Variables ===== */
+    :root {
+      --dark-teal: #0A484A;
+      --mint-green: #83BCAC;
+      --gray-bg: #E9EDF4;
+      --blue-bg: #A5BAE0;
+      --pink-bg: #FFAAAA;
+      --text-white: #FFFFFF;
+      --text-dark: #222222;
+    }
+
+    /* ===== Global Reset & Typography ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--gray-bg);
+      color: var(--text-dark);
+      line-height: 1.5;
+    }
+
+    /* ===== Header ===== */
+    header {
+      background-color: var(--dark-teal);
+      color: var(--text-white);
+      text-align: center;
+      padding: 1rem;
+    }
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== Layout ===== */
+    main {
+      width: min(92%, 900px);
+      margin: 0 auto;
+      padding: 1.5rem 0 3rem;
+    }
+    section { display: none; }
+    section.active { display: block; }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--dark-teal);
+    }
+    p.desc { margin-bottom: 1.25rem; }
+
+    /* ===== Lists & Inputs ===== */
+    ul { list-style: none; margin-bottom: 1.25rem; }
+    li { margin-bottom: 0.5rem; display: flex; align-items: flex-start; gap: 0.5rem; }
+    li label { flex: 1; font-weight: 400; }
+    li label b { font-weight: 600; }
+    input[type="checkbox"] { transform: translateY(0.2rem) scale(1.2); cursor: pointer; }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-family: inherit;
+      font-size: 1rem;
+    }
+
+    .flex-row { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1rem; }
+
+    /* ===== Buttons ===== */
+    .btn {
+      background-color: var(--mint-green);
+      color: var(--text-white);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: opacity 0.25s;
+    }
+    .btn:hover { opacity: 0.85; }
+
+    .plus-btn {
+      background: none;
+      border: 2px solid var(--mint-green);
+      color: var(--mint-green);
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      font-size: 1.25rem;
+      line-height: 0.9;
+      cursor: pointer;
+      transition: background 0.25s, color 0.25s;
+    }
+    .plus-btn:hover {
+      background: var(--mint-green);
+      color: var(--text-white);
+    }
+
+    .solutions { margin-top: 0.75rem; margin-left: 1rem; }
+
+    footer.note {
+      font-size: 0.9rem;
+      margin-top: 1.5rem;
+      color: #555;
+      line-height: 1.4;
+    }
+
+    @media (min-width: 700px) {
+      header h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <header>
+    <h1>Motiva‑ Mind &amp; Motion Lab</h1>
+  </header>
+
+  <!-- ===== Main App ===== -->
+  <main>
+    <!-- === Page 1 === -->
+    <section id="page1" class="active">
+      <h2>Akadályok és Ha–akkor tervezés</h2>
+      <p class="desc">Gondold végig, téged érinthetnek‑e a következő akadályok a szokásaid kialakítása során és jelöld be, ami igen!</p>
+
+      <form id="obstacleForm">
+        <ul id="presetList"></ul>
+
+        <p class="desc">Gondold át, van‑e még olyan akadály, ami nem szerepel a listán! Ha van, írd be ide:</p>
+        <div id="customObstacles"></div>
+        <button type="button" id="addCustom" class="plus-btn" aria-label="Új mező hozzáadása">+</button>
+      </form>
+
+      <div style="margin-top: 2rem; text-align: right;">
+        <button class="btn" id="toPage2">Tovább »</button>
+      </div>
+    </section>
+
+    <!-- === Page 2 === -->
+    <section id="page2">
+      <p class="desc">Most arra kérlek, gondold végig, hogyan küzdenéd le a kiválasztott akadályokat a kitűzött szokások esetén! Mindegyikhez fejezd be a mondatot, és adj meg minél több lehetséges megoldást.</p>
+      <div id="planContainer"></div>
+
+      <footer class="note">
+        Fontos, hogy előre felkészüljünk minden eshetőségre – így az átgondolt ha–akkor tervek garantálják, hogy mindig legyen működőképes, könnyen alkalmazható válaszod. Kattints a 'Kész vagyok' gombra és küld el nekem a kapott PDF-et.
+      </footer>
+
+      <div style="margin-top: 2rem; text-align: right;">
+        <button class="btn" id="generatePdf">Kész vagyok!</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Application Script ===== -->
+  <script>
+    /* ---------- Data ---------- */
+    const presetObstacles = [
+      ["Időhiány", "Nincs elég időm a napi teendőim mellett a szokásom gyakorlására."],
+      ["Energiahiány", "Annyira elfáradok, hogy nincs erőm belevágni."],
+      ["Motivációhiány", "Hiányzik belőlem a belső késztetés a rendszeres mozgáshoz."],
+      ["Akaraterő hiánya", "Nem érzem magamban a kellő kitartást az új szokás fenntartásához."],
+      ["Figyelemelvonó tényezők", "Gyakran elvonja a figyelmemet a telefonom vagy a közösségi média."],
+      ["Támogatás hiánya", "Úgy érzem, nincs, aki bátorítson és támogasson a céljaim elérésében."],
+      ["Felszerelés/erőforrás hiány", "Nincs hozzáférésem a szükséges eszközökhöz vagy helyszínhez."],
+      ["Sérüléstől való félelem", "Attól félek, hogy megsérülhetek edzés közben."],
+      ["Bizonytalanság", "Bizonytalan vagyok abban, hogyan kezdjek hozzá, mit csináljak."],
+      ["Pénzügyi korlátok", "Aggódom a részvétel költségei vagy a felszerelés ára miatt."],
+      ["Időjárás", "A rossz idő gyakran megakadályoz abban, hogy kimenjek."],
+      ["Gyakori utazás", "Sokat utazom, ezért nehéz következetesen gyakorolnom."],
+      ["Gyermekfelügyelet", "A gyerekek ellátása mellett nehéz időt szakítanom a szokásomra."],
+      ["Kor", "Úgy érzem, túl idős vagyok az új szokások bevezetéséhez."],
+      ["Unalom", "Monotonnak találom a tevékenységet, ezért unatkozom közben."],
+      ["Megítéléstől való félelem", "Félek, hogy mások kinevetnek vagy ítélkeznek felettem."],
+      ["Kudarctól való félelem", "Attól tartok, hogy nem fogom elérni a kitűzött célt."],
+      ["Nincs azonnali jutalom", "Nem kapok azonnali pozitív visszajelzést, ezért nehéz motiválnom magam."],
+      ["Reális elvárások hiánya", "Nem tudom, mennyi idő alatt alakul ki egy új szokás, és ezért hajlamos vagyok feladni."],
+      ["Halogatás", "Hajlamos vagyok elhalasztani és odébb tolni a gyakorlást."]
+    ];
+
+    /* ---------- Helpers ---------- */
+    const qs = sel => document.querySelector(sel);
+    const ce = (tag, attrs = {}, ...kids) => {
+      const el = document.createElement(tag);
+      Object.entries(attrs).forEach(([k, v]) => {
+        if (k === 'class') el.className = v;
+        else if (k === 'html') el.innerHTML = v;
+        else if (k.startsWith('data-')) el.setAttribute(k, v);
+        else el[k] = v;
+      });
+      kids.forEach(k => k && el.appendChild(k));
+      return el;
+    };
+
+    /* ---------- Build Preset Check‑list ---------- */
+    function buildPresetList() {
+      const ul = qs('#presetList');
+      presetObstacles.forEach(([label, text], idx) => {
+        const id = `ob${idx}`;
+        const li = document.createElement('li');
+        const checkbox = ce('input', { type: 'checkbox', id, value: `${label}: ${text}` });
+        const span = ce('span', { html: `<b>${label}:</b> ${text}` });
+        const labelEl = ce('label', { html: '', htmlFor: id });
+        labelEl.appendChild(span);
+        li.appendChild(checkbox);
+        li.appendChild(labelEl);
+        ul.appendChild(li);
+      });
+    }
+
+    /* ---------- Custom Obstacles ---------- */
+    function addCustomInput(val = '') {
+      const wrapper = ce('div', { class: 'flex-row' });
+      const inp = ce('input', { type: 'text', placeholder: 'Egyéb akadály...', value: val });
+      wrapper.appendChild(inp);
+      qs('#customObstacles').appendChild(wrapper);
+    }
+
+    /* ---------- Solutions ---------- */
+    function addSolutionInput(container) {
+      const row = ce('div', { class: 'flex-row' });
+      const inp = ce('input', { type: 'text', placeholder: 'Megoldási lehetőség' });
+      row.appendChild(inp);
+      container.appendChild(row);
+    }
+
+    /* ---------- Navigation to Page 2 ---------- */
+    function toPage2() {
+      const selected = [...document.querySelectorAll('#presetList input:checked')].map(cb => cb.value);
+      const customVals = [...document.querySelectorAll('#customObstacles input')]
+        .map(i => i.value.trim())
+        .filter(Boolean);
+      const obstacles = [...selected, ...customVals];
+
+      if (!obstacles.length) {
+        alert('Kérlek válassz vagy írj legalább egy akadályt!');
+        return;
+      }
+
+      const planContainer = qs('#planContainer');
+      planContainer.innerHTML = '';
+
+      obstacles.forEach(obst => {
+        const block = ce('div', { class: 'obstacle-block', 'data-obst': obst });
+        const title = ce('p', { html: `Ha <b>${obst}</b>, akkor` });
+        block.appendChild(title);
+
+        const solWrap = ce('div', { class: 'solutions' });
+        addSolutionInput(solWrap);
+        addSolutionInput(solWrap);
+
+        const addBtn = ce('button', { type: 'button', class: 'plus-btn', title: 'Új megoldásmező' }, '+');
+        addBtn.addEventListener('click', () => addSolutionInput(solWrap));
+
+        block.appendChild(solWrap);
+        block.appendChild(addBtn);
+        planContainer.appendChild(block);
+      });
+
+      // Show page 2
+      qs('#page1').classList.remove('active');
+      qs('#page2').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ---------- PDF Generation ---------- */
+    function generatePdf() {
+      const blocks = [...document.querySelectorAll('.obstacle-block')];
+      if (!blocks.length) return;
+
+      // Build export container
+      const printable = ce('div', {
+        html: '<h1 style="font-family:Poppins, sans-serif; color:#0A484A; font-size:1.4rem; margin-bottom:1rem;">Ha–akor tervezésem</h1>'
+      });
+
+      blocks.forEach(b => {
+        const obst = b.getAttribute('data-obst');
+        const sols = [...b.querySelectorAll('.solutions input')]
+          .map(i => i.value.trim())
+          .filter(Boolean);
+        if (!sols.length) return;
+
+        printable.appendChild(ce('h2', {
+          html: obst,
+          style: 'color:#0A484A; font-family:Poppins, sans-serif; font-size:1.1rem; margin-bottom:0.3rem;'
+        }));
+        const ul = ce('ul', { style: 'margin-bottom:0.8rem; padding-left:1rem;' });
+        sols.forEach(s => ul.appendChild(ce('li', { html: s, style: 'margin-bottom:0.25rem;' })));
+        printable.appendChild(ul);
+      });
+
+      html2pdf().from(printable).set({
+        margin: 10,
+        filename: 'ha-akkor-tervem.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      }).save();
+    }
+
+    /* ---------- Initialise ---------- */
+    buildPresetList();
+    addCustomInput(); addCustomInput(); addCustomInput();
+
+    // Event Listeners
+    qs('#addCustom').addEventListener('click', () => addCustomInput());
+    qs('#toPage2').addEventListener('click', toPage2);
+    qs('#generatePdf').addEventListener('click', generatePdf);
+  </script>
+</body>
+</html>
