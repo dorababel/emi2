@@ -92,36 +92,24 @@
     <button class="btn" id="downloadBtn">Letöltés</button>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     document.getElementById('downloadBtn').addEventListener('click', function() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ unit: 'pt', format: 'a4' });
-      let y = 40;
-      doc.setFontSize(18);
-      const sections = [
-        { title: '1. Hosszú távú célom', id: 'longTerm' },
-        { title: '2. Rövid távú folyamatcélom', id: 'shortTerm' },
-        { title: '3. Nyomonkövetés', id: 'tracking' },
-        { title: '4. A cselekvés indításának megkönnyítése', id: 'easeAction' },
-        { title: '5. Lehetséges akadályok', id: 'obstacles' },
-        { title: 'Felkészülés', id: 'prepare' },
-        { title: '6. A „Miértem”', id: 'why' }
-      ];
-      doc.setFontSize(14);
-      sections.forEach(sec => {
-        y += 30;
-        doc.setFont(undefined, 'bold');
-        doc.text(sec.title, 40, y);
-        doc.setFont(undefined, 'normal');
-        const text = document.getElementById(sec.id).value || '-';
-        const split = doc.splitTextToSize(text, 500);
-        y += 20;
-        doc.text(split, 40, y);
-        y += split.length * 12;
-        if (y > 800) { doc.addPage(); y = 40; }
+
+      // Render the HTML content with styles into PDF
+      doc.html(document.body, {
+        callback: function (doc) {
+          doc.save('celkituzeseim.pdf');
+        },
+        x: 20,
+        y: 20,
+        html2canvas: {
+          scale: 0.6,
+          useCORS: true
+        }
       });
-      doc.save('celkituzeseim.pdf');
     });
   </script>
 </body>
