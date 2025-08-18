@@ -83,7 +83,7 @@
     </section>
 
     <section id="result">
-      <h2>Az 5 legfőbb értékem</h2>
+      <h2>A 10 legfőbb értékem</h2>
       <div id="resultList"></div>
       <button id="downloadBtn" class="btn">Letöltés</button>
     </section>
@@ -238,8 +238,8 @@
     function showResult(sorted) {
       step2.style.display = 'none';
       resultSec.style.display = 'block';
-      const top5 = sorted.slice(0, 5);
-      resultList.innerHTML = '<ol>' + top5.map(v => `<li>${v.name}</li>`).join('') + '</ol>';
+      const top10 = sorted.slice(0, 10);
+      resultList.innerHTML = '<ol>' + top10.map(v => `<li>${v.name}</li>`).join('') + '</ol>';
     }
 
     downloadBtn.addEventListener('click', () => {
