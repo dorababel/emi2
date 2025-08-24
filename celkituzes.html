@@ -128,39 +128,34 @@
   <div class="container">
     <form id="form">
       <div class="form-section">
-        <h2>1. Hosszú távú cél</h2>
-        <p>Ha egy éven keresztül rendszeresen edzel, milyen eredményeket szeretnél látni? (Például: jobb állóképesség, erősebb test, jobb közérzet, kevesebb fájdalom, könnyebben végzett hétköznapi mozdulatok, stb.)</p>
+        <h2>1. Hosszú távú céljaid</h2>
+        <p>Képzeld el magad egy év múlva: milyen ember vagy, ha rendszeresen edzel? Hogyan nézel ki? Hogyan érzed magad a bőrödben? Hogyan változik a mindennapi életed és kapcsolataid? Milyen visszajelzéseket kapsz?</p>
         <textarea id="longTerm"></textarea>
       </div>
       <div class="form-section">
-        <h2>2. Rövid távú folyamatcél</h2>
-        <p>Gondolj bele: milyen konkrét szokást vagy viselkedést tudsz rendszeresen megvalósítani, ami segít elérni a hosszú távú célod? Fogalmazz minél konkrétabban! Pontosan milyen tevékenységet fogsz végezni, milyen gyakorisággal, hol.</p>
+        <h2>2. Rövid távú folyamatcélok</h2>
+        <p>Gondolj bele: milyen konkrét, rendszeres szokás vagy viselkedés segíthet neked abban, hogy mindezt elérd? Fogalmazz minél konkrétabban! Pontosan milyen tevékenységet fogsz végezni, milyen gyakorisággal, hol.</p>
+        <p>Szokás #1</p>
+        <textarea id="shortTerm"></textarea>
+        <p>Szokás #2</p>
+        <textarea id="shortTerm"></textarea>
+        <p>Szokás #3</p>
+        <textarea id="shortTerm"></textarea>
+        <p>Szokás #4</p>
         <textarea id="shortTerm"></textarea>
       </div>
       <div class="form-section">
-        <h2>3. Nyomonkövetés</h2>
-        <p>Hogyan fogod nyomon követni a haladásodat? Honnan tudod, hogy megfelelően haladsz?</p>
-        <textarea id="tracking"></textarea>
-      </div>
-      <div class="form-section">
-        <h2>4. A cselekvés indításának megkönnyítése</h2>
-        <p>Milyen konkrét lépéseket fogsz tenni a tevékenység könnyebb betartása érdekében? (Pl. az előző nap kikészítem az edzőcuccot, átgondolom pontosan, mit fogok csinálni a teremben, beírom a naptáramba, stb.)</p>
-        <textarea id="easeAction"></textarea>
-      </div>
-      <div class="form-section">
-        <h2>5. Lehetséges akadályokra való felkészülés</h2>
-        <p>Senki sem halad tökéletesen. Fontos, hogy előre gondolkodj! Mi állhat az utadba? (pl. időhiány, fáradtság, motiváció csökkenése, betegség stb.)</p>
-        <textarea id="obstacles"></textarea>
-        <p>Hogyan tudsz ezekre felkészülni? (pl. előre tervezek, rövidebb edzést választok, pihenőt építek be stb.)</p>
-        <textarea id="prepare"></textarea>
-      </div>
-      <div class="form-section">
-        <h2>6. A te „Miérted”</h2>
-        <p>Mi az a belső motiváció, ami akkor is segíthet, amikor éppen nincs kedved folytatni? Miért fontos neked ez a cél? Gondolj az értékekről folytatott beszélgetésünkre! Hogyan fogod érezni magad, ha eléred? Mi történik, ha nem teszel semmit?</p>
+        <h2>3. A „Miérted”</h2>
+        <p>Mi az a belső motiváció, ami akkor is segíthet, amikor éppen nincs kedved folytatni? Miért fontos neked ez a cél? Gondolj az értékekről folytatott beszélgetésünkre!</p>
         <textarea id="why"></textarea>
       </div>
+      <div class="form-section">
+        <h2>4. A változatlanság ára</h2>
+        <p>Most fogalmazd meg, mi történne akkor, ha minden maradna a régiben. Hogyan érzed magad a bőrödben? Hogyan tudsz részt venni a szeretteid életében? </p>
+        <textarea id="unchanged"></textarea>
+      </div>
     </form>
-    <p>Gratulálok, most már egy tisztább kép él benned, hogy mit szeretnél elérni, mit fogsz tenni érte és hogyan készülj a nehezebb időkre, amiken a belülről jövő motivációd tud továbblendíteni. Kattints a Letöltés gombra és küldd el nekem a kapott PDF fájlt, hogy a következő beszélgetésünk során átnézzük!</p>
+    <p>Gratulálok, most már egy tisztább kép él benned, hogy mit és miért szeretnél elérni és mit fogsz tenni érte. Kattints a Letöltés gombra és osszd meg velem a kapott PDF fájlt, hogy a következő beszélgetésünk során átnézzük!</p>
     <button class="btn" id="downloadBtn">Letöltés</button>
   </div>
 
@@ -168,13 +163,10 @@
 <script>
   document.getElementById('downloadBtn').addEventListener('click', () => {
     const sections = [
-      { title: '1. Hosszú távú cél',                id: 'longTerm'  },
-      { title: '2. Rövid távú folyamatcél',          id: 'shortTerm' },
-      { title: '3. Nyomonkövetés',                   id: 'tracking'  },
-      { title: '4. A cselekvés indításának megkönnyítése', id: 'easeAction' },
-      { title: '5. Lehetséges akadályokra való felkészülés', id: 'obstacles' },
-      { title: '   – Felkészülés',                   id: 'prepare'   },
-      { title: '6. A te „Miérted”',                   id: 'why'       }
+      { title: '1. Hosszú távú célok',                id: 'longTerm'  },
+      { title: '2. Rövid távú folyamatcélok',          id: 'shortTerm' },
+      { title: '3. A „Miérted”',                   id: 'why'  },
+      { title: '4. A változatlanság ára', id: 'unchanged' },
     ];
 
     // 1) létrehozok egy pdfContainer-t, amire érvényesül a teljes example-stílus
