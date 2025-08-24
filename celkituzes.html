@@ -144,15 +144,15 @@
         <p>Szokás #4</p>
         <textarea id="shortTerm"></textarea>
       </div>
-      <div class="form-section">
-        <h2>3. A „Miérted”</h2>
-        <p>Mi az a belső motiváció, ami akkor is segíthet, amikor éppen nincs kedved folytatni? Miért fontos neked ez a cél? Gondolj az értékekről folytatott beszélgetésünkre!</p>
-        <textarea id="why"></textarea>
-      </div>
-      <div class="form-section">
-        <h2>4. A változatlanság ára</h2>
+       <div class="form-section">
+        <h2>3. A változatlanság ára</h2>
         <p>Most fogalmazd meg, mi történne akkor, ha minden maradna a régiben. Hogyan érzed magad a bőrödben? Hogyan tudsz részt venni a szeretteid életében? </p>
         <textarea id="unchanged"></textarea>
+      </div>
+      <div class="form-section">
+        <h2>4. A „Miérted”</h2>
+        <p> Az egészséges élet kialakításához és fenntartásához nem egy egyenes út vezet. Lesznek hullámvölgyek: időhiány, fáradtság, kedvtelenség, önkritikus hangok.  Próbáld megfogalmazni, mi az a belső motiváció, ami akkor is segíthet, amikor éppen nincs kedved folytatni? Miért fontos neked ez a cél? Gondolj az értékekről folytatott beszélgetésünkre!</p>
+        <textarea id="why"></textarea>
       </div>
     </form>
     <p>Gratulálok, most már egy tisztább kép él benned, hogy mit és miért szeretnél elérni és mit fogsz tenni érte. Kattints a Letöltés gombra és osszd meg velem a kapott PDF fájlt, hogy a következő beszélgetésünk során átnézzük!</p>
@@ -165,8 +165,8 @@
     const sections = [
       { title: '1. Hosszú távú célok',                id: 'longTerm'  },
       { title: '2. Rövid távú folyamatcélok',          id: 'shortTerm' },
-      { title: '3. A „Miérted”',                   id: 'why'  },
-      { title: '4. A változatlanság ára', id: 'unchanged' },
+      { title: '3. A változatlanság ára', id: 'unchanged' },
+      { title: '4. A „Miérted”',                   id: 'why'  },
     ];
 
     // 1) létrehozok egy pdfContainer-t, amire érvényesül a teljes example-stílus
