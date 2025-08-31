@@ -95,7 +95,7 @@
         Így amikor felismered az ismerős helyzetet, kész terved lesz az egészséges alternatívára.
       </p>
 
-      <div class="note"><strong>Feladat:</strong> Azonosítsd a tipikus stresszhelyzeteket és az ezekhez kapcsolódó jellemző nassolást!</div>
+      <div class="note"><strong>Feladat:</strong> Azonosítsd a tipikus stresszhelyzeteket és az ezekhez kapcsolódó nassolást!</div>
 
       <div id="pairs"></div>
 
@@ -163,7 +163,6 @@
 
     const f1 = document.createElement('div');
     f1.className = 'field';
-    const l1 = document.createElement('label'); l1.textContent = `Stresszhelyzet #${index+1}`;
     const i1 = document.createElement('input'); i1.type='text'; i1.placeholder='Stresszhelyzet';
     i1.value = state.pairs[index]?.stress || '';
     i1.addEventListener('input', e => state.pairs[index].stress = e.target.value);
@@ -171,7 +170,6 @@
 
     const f2 = document.createElement('div');
     f2.className = 'field';
-    const l2 = document.createElement('label'); l2.textContent = `Jellemző nasi #${index+1}`;
     const i2 = document.createElement('input'); i2.type='text'; i2.placeholder='Jellemző nasi';
     i2.value = state.pairs[index]?.snack || '';
     i2.addEventListener('input', e => state.pairs[index].snack = e.target.value);
