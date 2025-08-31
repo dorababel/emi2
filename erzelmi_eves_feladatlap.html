@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Érzelmi evés — Feladatlap</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#0A484A; --mint:#83BCAC; --gray:#E9EDF4; --ink:#0b132b; --paper:#ffffff; --line:#e2e8f0;
+    --max:980px; --r:16px; --shadow:0 8px 24px rgba(2,6,23,.08);
+    --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px; --s6:24px; --s8:32px; --s10:40px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:linear-gradient(180deg,#f8fafc,#eef2ff);
+    font-family:Poppins,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+    color:var(--ink);
+  }
+  .container{max-width:var(--max); margin:0 auto; padding:var(--s8) var(--s6)}
+  .hero{
+    background: radial-gradient(1200px 400px at 10% -10%, #e0f2fe 0%, transparent 60%),
+                radial-gradient(800px 300px at 90% -40%, #dbeafe 0%, transparent 60%);
+    border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow);
+    padding:var(--s8); color:#0a1f1f;
+  }
+  .hero h1{margin:0 0 var(--s2); font-size:28px; color:var(--teal); letter-spacing:.2px}
+  .hero p{margin:0; color:#475569}
+  .step{display:none}
+  .step.active{display:block}
+  .card{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow);
+    padding:var(--s8); margin-top:var(--s8);
+  }
+  h2{margin:0 0 var(--s3); color:var(--teal); font-size:22px}
+  p.lead{margin:0 0 var(--s4); color:#334155}
+  label{display:block; font-weight:600; margin:var(--s3) 0 var(--s2)}
+  input[type="text"], textarea{
+    width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:10px; background:#fff; font:inherit;
+  }
+  input::placeholder, textarea::placeholder{color:#94a3b8}
+  .pair{display:grid; grid-template-columns:1fr 1fr; gap:var(--s4); align-items:end; margin-bottom:var(--s4)}
+  .pair .field{display:flex; flex-direction:column}
+  .add-row{
+    display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border:1px dashed var(--mint);
+    color:#0a1f1f; background:#f5fffb; border-radius:10px; cursor:pointer; font-weight:600;
+  }
+  .actions{display:flex; gap:var(--s4); justify-content:flex-end; margin-top:var(--s6)}
+  .btn{
+    appearance:none; border:0; border-radius:12px; padding:12px 18px; font-weight:700; cursor:pointer;
+    background:var(--teal); color:#fff; box-shadow:0 6px 14px rgba(10,72,74,.15);
+  }
+  .btn.secondary{background:#0b132b}
+  .btn.ghost{background:#fff; color:var(--teal); border:1px solid var(--mint)}
+  .muted{color:#475569}
+  .drag-area{display:grid; gap:var(--s4)}
+  .dnd-row{display:grid; grid-template-columns:1fr 260px 260px; gap:var(--s4); align-items:center}
+  .dnd-row .stress{background:#f8fafc; border:1px solid var(--line); border-radius:10px; padding:12px 14px}
+  .dropzone{
+    min-height:48px; border:2px dashed #cbd5e1; border-radius:10px; background:#fff; display:flex; align-items:center; padding:8px;
+  }
+  .chip{
+    display:inline-flex; align-items:center; padding:8px 12px; border:1px solid var(--line); border-radius:999px; background:#f1f5f9;
+    cursor:grab; user-select:none;
+  }
+  .chips{display:flex; flex-wrap:wrap; gap:10px}
+  .note{
+    border-left:4px solid var(--mint); background:#f1fff8; padding:12px 14px; border-radius:10px; color:#0a1f1f; margin:var(--s4) 0;
+  }
+  .footer{text-align:center; color:#64748b; font-size:13px; margin-top:var(--s8)}
+  @media (max-width:880px){
+    .pair{grid-template-columns:1fr}
+    .dnd-row{grid-template-columns:1fr; align-items:stretch}
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>Érzelmi evés <span class="muted">— feladatlap</span></h1>
+      <p>Ha–Akkor tervezéssel a stresszhelyzetekben is könnyebb az egészséges választás.</p>
+    </section>
+
+    <!-- STEP 1 -->
+    <section class="card step active" id="step1" aria-labelledby="s1-title">
+      <h2 id="s1-title">Miért eszünk, amikor stresszesek vagyunk?</h2>
+      <p class="lead">
+        Amikor stresszesek vagyunk, a szervezet kortizolt termel, ami növelheti az édesség, a sós vagy zsíros ételek iránti vágyat.
+        Ez egy automatikus kört indít be: <strong>stressz → nassolás → rövid megkönnyebbülés → megbánás</strong>.
+      </p>
+      <p class="lead">
+        A kutatások szerint a nem kívánt szokásokat könnyebb lecserélni egy új, kívánatos cselekvéssel, mint pusztán megpróbálni elhagyni.
+        A <strong>Ha–Akkor tervezés</strong> ebben segít: összekapcsolsz egy stresszes helyzetet (Ha…) egy egészséges válasszal (Akkor…).
+        Így amikor felismered az ismerős helyzetet, kész terved lesz az egészséges alternatívára.
+      </p>
+
+      <div class="note"><strong>Feladat:</strong> Azonosítsd a tipikus stresszhelyzeteket és az ezekhez kapcsolódó jellemző nassolást!</div>
+
+      <div id="pairs"></div>
+
+      <button id="addPair" class="add-row" type="button">➕ Új helyzet hozzáadása</button>
+
+      <div class="actions">
+        <button class="btn" id="toStep2" type="button">Tovább</button>
+      </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="card step" id="step2" aria-labelledby="s2-title">
+      <h2 id="s2-title">Ha–Akkor tervezés</h2>
+      <p class="lead">Most minden stresszhelyzethez jelölj ki egy egészséges nassolnivalót vagy viselkedést, amit legközelebb alkalmazni fogsz.</p>
+      <div id="plans"></div>
+      <div class="actions">
+        <button class="btn ghost" id="back1" type="button">Vissza</button>
+        <button class="btn" id="toStep3" type="button">Tovább</button>
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="card step" id="step3" aria-labelledby="s3-title">
+      <h2 id="s3-title">Vizualizáció</h2>
+      <p class="lead">
+        Képzeld el a stresszes helyzetet, és <strong>húzd rá</strong> az általad választott egészséges reakciót. Közben lásd magad előtt,
+        ahogy valóban az új alternatívát választod a megszokott válasz helyett.
+      </p>
+
+      <div class="note"><strong>Miértem:</strong> Miért fontos számodra, hogy a stresszhelyzetekre ne evéssel reagálj és egészségtudatosan étkezz?</div>
+      <label for="why">Írd le röviden (ez megjelenik a letöltött terv tetején):</label>
+      <textarea id="why" rows="3" placeholder="a miértem"></textarea>
+
+      <h3 style="margin:24px 0 8px">Párosítás: stresszhelyzet → egészséges reakció</h3>
+      <div class="drag-area" id="dndArea"></div>
+
+      <h3 style="margin:24px 0 8px">Reakciók (fogd és vidd):</h3>
+      <div class="chips" id="chipPool"></div>
+
+      <div class="actions">
+        <button class="btn ghost" id="back2" type="button">Vissza</button>
+        <button class="btn secondary" id="downloadPlan" type="button">Ha–akkor tervem letöltése érzelmi evés esetére</button>
+      </div>
+    </section>
+
+    <p class="footer">Motiva stílus • Ez a feladatlap tájékoztató jellegű, és nem helyettesíti az orvosi vagy dietetikai tanácsadást.</p>
+  </div>
+
+<script>
+  // -------- STATE --------
+  const state = {
+    pairs: [
+      {stress:'', snack:''},
+      {stress:'', snack:''},
+      {stress:'', snack:''}
+    ],
+    plans: [], // [{stress, response}]
+  };
+
+  // -------- HELPERS --------
+  const el = sel => document.querySelector(sel);
+
+  function createPairRow(index){
+    const wrap = document.createElement('div');
+    wrap.className = 'pair';
+    wrap.dataset.index = index;
+
+    const f1 = document.createElement('div');
+    f1.className = 'field';
+    const l1 = document.createElement('label'); l1.textContent = `Stresszhelyzet #${index+1}`;
+    const i1 = document.createElement('input'); i1.type='text'; i1.placeholder='Stresszhelyzet';
+    i1.value = state.pairs[index]?.stress || '';
+    i1.addEventListener('input', e => state.pairs[index].stress = e.target.value);
+    f1.appendChild(l1); f1.appendChild(i1);
+
+    const f2 = document.createElement('div');
+    f2.className = 'field';
+    const l2 = document.createElement('label'); l2.textContent = `Jellemző nasi #${index+1}`;
+    const i2 = document.createElement('input'); i2.type='text'; i2.placeholder='Jellemző nasi';
+    i2.value = state.pairs[index]?.snack || '';
+    i2.addEventListener('input', e => state.pairs[index].snack = e.target.value);
+    f2.appendChild(l2); f2.appendChild(i2);
+
+    wrap.appendChild(f1); wrap.appendChild(f2);
+    return wrap;
+  }
+
+  function renderPairs(){
+    const host = el('#pairs');
+    host.innerHTML = '';
+    state.pairs.forEach((_, idx) => host.appendChild(createPairRow(idx)));
+  }
+
+  function renderPlans(){
+    const host = el('#plans');
+    host.innerHTML = '';
+    // build from current pairs (unique, non-empty)
+    const items = state.pairs.filter(p => (p.stress||'').trim() !== '');
+    state.plans = items.map(p => ({stress: p.stress.trim(), response: ''}));
+
+    items.forEach((p, i) => {
+      const row = document.createElement('div');
+      row.className = 'pair';
+      const f1 = document.createElement('div'); f1.className='field';
+      const l1 = document.createElement('label'); l1.textContent = `Ha ebben a stresszhelyzetben találom magam:`;
+      const s = document.createElement('div'); s.className='note'; s.textContent = p.stress || '—';
+      f1.appendChild(l1); f1.appendChild(s);
+
+      const f2 = document.createElement('div'); f2.className='field';
+      const l2 = document.createElement('label'); l2.textContent = 'Akkor így reagálok (egészségtudatos válasz):';
+      const in2 = document.createElement('input'); in2.type='text'; in2.placeholder='Egészségtudatos válasz';
+      in2.addEventListener('input', e => state.plans[i].response = e.target.value);
+      f2.appendChild(l2); f2.appendChild(in2);
+
+      row.appendChild(f1); row.appendChild(f2);
+      host.appendChild(row);
+    });
+  }
+
+  // --- Drag & Drop for step 3 ---
+  function renderDnd(){
+    const dndArea = el('#dndArea');
+    const pool = el('#chipPool');
+    dndArea.innerHTML=''; pool.innerHTML='';
+
+    const plans = state.plans.filter(p => (p.stress||'').trim() !== '');
+    // Build droppable rows
+    plans.forEach((p, i) => {
+      const row = document.createElement('div'); row.className='dnd-row'; row.dataset.row = i;
+
+      const stress = document.createElement('div'); stress.className='stress'; stress.textContent = p.stress;
+      const drop = document.createElement('div'); drop.className='dropzone'; drop.dataset.index = i;
+      drop.addEventListener('dragover', ev => { ev.preventDefault(); drop.style.background='#f8fff9'; });
+      drop.addEventListener('dragleave', ev => { drop.style.background='#fff'; });
+      drop.addEventListener('drop', ev => {
+        ev.preventDefault();
+        drop.style.background='#fff';
+        const text = ev.dataTransfer.getData('text/plain') || '';
+        drop.textContent = text;
+        // also update plans so that final image uses this matched text
+        state.plans[i].response = text;
+      });
+
+      const label = document.createElement('div'); label.className='muted'; label.textContent='Húzd ide a reakciót →';
+      row.appendChild(stress); row.appendChild(label); row.appendChild(drop);
+      dndArea.appendChild(row);
+    });
+
+    // Build draggable chips from filled responses
+    const responses = plans.map(p => p.response).filter(t => (t||'').trim()!=='');
+    if(responses.length === 0){
+      const tip = document.createElement('div');
+      tip.className='muted';
+      tip.textContent='Előbb add meg a reakciókat a 2. oldalon (Ha–Akkor), majd itt húzd a megfelelő helyzethez.';
+      pool.appendChild(tip);
+      return;
+    }
+    responses.forEach((txt, i) => {
+      const chip = document.createElement('div'); chip.className='chip'; chip.textContent = txt;
+      chip.setAttribute('draggable', 'true');
+      chip.addEventListener('dragstart', ev => {
+        ev.dataTransfer.setData('text/plain', txt);
+      });
+      pool.appendChild(chip);
+    });
+  }
+
+  // ---- Image (PNG) generation without external libs ----
+  function downloadPlanImage(){
+    const whyRaw = (el('#why').value || '').trim();
+    const whyLower = whyRaw ? whyRaw.charAt(0).toLowerCase() + whyRaw.slice(1) : '';
+
+    const rows = state.plans
+      .filter(p => (p.stress||'').trim()!=='' && (p.response||'').trim()!=='')
+      .map(p => ({stress: p.stress.trim(), response: p.response.trim()}));
+
+    const w = 1200, h = Math.max(900, 400 + rows.length*70);
+    const pad = 60;
+    const col1 = pad, col2 = w/2 + 20;
+    const lineH = 42;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0,0,w,h);
+
+    ctx.fillStyle = '#0A484A';
+    ctx.font = '700 32px Poppins, Arial, sans-serif';
+    ctx.fillText('Ha–akkor tervezésem érzelmi evés esetére', pad, pad+10);
+
+    ctx.fillStyle = '#0b132b';
+    ctx.font = '400 18px Poppins, Arial, sans-serif';
+    const whyLine = 'Szeretnék az étellel egy egészséges és tudatos viszonyt kialakítani, mert ' + (whyLower || '...');
+    wrapText(ctx, whyLine, pad, pad+60, w - pad*2, 26);
+
+    ctx.font = '400 18px Poppins, Arial, sans-serif';
+    ctx.fillText('Emiatt a lehetséges stresszhelyzetekben igyekszem a következőképpen cselekedni:', pad, pad+120);
+
+    const tableTop = pad+170;
+    ctx.fillStyle = '#E9EDF4'; ctx.fillRect(pad-10, tableTop-34, w - pad*2 + 20, 40);
+    ctx.strokeStyle = '#e2e8f0'; ctx.strokeRect(pad-10, tableTop-34, w - pad*2 + 20, 40);
+
+    ctx.fillStyle = '#0A484A';
+    ctx.font = '600 18px Poppins, Arial, sans-serif';
+    ctx.fillText('Ebben a stresszhelyzetben', col1, tableTop - 8);
+    ctx.fillText('Így reagálok', col2, tableTop - 8);
+
+    ctx.font = '400 18px Poppins, Arial, sans-serif';
+    let y = tableTop + 16;
+    rows.forEach(r => {
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.beginPath(); ctx.moveTo(pad-10, y-30); ctx.lineTo(w-pad+10, y-30); ctx.stroke();
+
+      drawWrap(ctx, r.stress, col1, y, w/2 - pad - 20, lineH-4);
+      drawWrap(ctx, r.response, col2, y, w/2 - pad - 20, lineH-4);
+
+      y += 70;
+    });
+
+    const link = document.createElement('a');
+    link.download = 'ha-akkor_tervem_erzelmi_eves.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+      const words = text.split(' ');
+      let line = '', yy = y;
+      for(let n=0;n<words.length;n++){
+        const testLine = line + words[n] + ' ';
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxWidth && n>0){
+          ctx.fillText(line, x, yy);
+          line = words[n] + ' ';
+          yy += lineHeight;
+        } else line = testLine;
+      }
+      ctx.fillText(line, x, yy);
+    }
+    function drawWrap(ctx, text, x, y, maxW, lineH){
+      const words = text.split(' ');
+      let line = '', yy = y;
+      for(let n=0;n<words.length;n++){
+        const testLine = line + words[n] + ' ';
+        if (ctx.measureText(testLine).width > maxW && n>0){
+          ctx.fillText(line, x, yy);
+          line = words[n] + ' ';
+          yy += lineH;
+        } else line = testLine;
+      }
+      ctx.fillText(line, x, yy);
+    }
+  }
+
+  function goto(stepId){
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(stepId).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function renderPairs(){
+    const host = document.getElementById('pairs');
+    host.innerHTML = '';
+    state.pairs.forEach((_, idx) => host.appendChild(createPairRow(idx)));
+  }
+
+  document.getElementById('addPair').addEventListener('click', () => {
+    state.pairs.push({stress:'', snack:''});
+    renderPairs();
+  });
+
+  document.getElementById('toStep2').addEventListener('click', () => {
+    if(!state.pairs.some(p => (p.stress||'').trim()!=='')){
+      alert('Adj meg legalább egy stresszhelyzetet!'); return;
+    }
+    renderPlans();
+    goto('step2');
+  });
+
+  document.getElementById('back1').addEventListener('click', () => goto('step1'));
+
+  document.getElementById('toStep3').addEventListener('click', () => {
+    if(!state.plans.some(p => (p.response||'').trim()!=='')){
+      alert('Adj meg legalább egy egészségtudatos választ!'); return;
+    }
+    renderDnd();
+    goto('step3');
+  });
+
+  document.getElementById('back2').addEventListener('click', () => goto('step2'));
+
+  document.getElementById('downloadPlan').addEventListener('click', () => {
+    const anyRow = state.plans.some(p => (p.stress||'').trim()!=='' && (p.response||'').trim()!=='');
+    if(!anyRow){ alert('Párosíts legalább egy stresszhelyzetet egy reakcióval a fenti húzd-és-vidd felületen!'); return; }
+    downloadPlanImage();
+  });
+
+  // initial render
+  renderPairs();
+</script>
+</body>
+</html>
