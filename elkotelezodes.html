@@ -82,25 +82,8 @@
     .clear-sign{ align-self: start; padding: 6px 10px; font-size: 12px; border-radius: 10px; border: 1px solid #ddd; background: #f8f8f8; cursor: pointer; }
 
     .full-sign{ width: 100%; height: 180px; border: 2px dashed #ccc; border-radius: 14px; background: #fff; }
-  .sig-section {
-  display: grid;
-  gap: 10px;
-  margin-top: 16px;
-  }
 
-  .name-label {
-  font-weight: 500;
-  color: var(--dark-teal);
-  font-size: 14px;
-  }
-
-  .name-input {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  font: inherit;
-  }
+  .name-input { width: 100%; height: 180px; border: 2px dashed #ccc; border-radius: 14px; background: #fff; }
     .meta-row{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
     .meta-row input{ width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 12px; font: inherit; }
 
@@ -277,8 +260,7 @@ Az elakadások, a visszalépések mind növekedési pontok. A lényeg, hogy elk�
         <div class="actions" style="justify-content:flex-start; margin-top:8px;">
           <button type="button" class="clear-sign no-export" data-target="fullSignature">Törlés</button>
         </div>
-        <label for="fullName" class="name-label">Teljes név:</label>
-  <input type="text" id="fullName" class="name-input" placeholder="Írd be a teljes nevedet">
+  <input type="text" id="fullName" class="name-input" placeholder="Add meg a teljes nevedet">
         
         <div class="meta-row">
           <input type="text" id="placeInput" placeholder="Hely">
