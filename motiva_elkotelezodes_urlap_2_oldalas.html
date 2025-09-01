@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Motiva – Elköteleződés a fejlődés mellett</title>
+  <!-- Google Font: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- jsPDF & html2canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNa5Hq3GQbVg3l1c6yA3P4aI1b8vSduv3g0Yk3j8W8bqF2xWm4i6rF8QZzqz7C1Vv3g0g9HkV7GQF0l0bL7e3w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-/FZ5Wc0eQ3uCwqf7X8cA0Xl4gqj6j8o0Kkz9L1m5yZl0kX3o9i4o7f2b2e7h9k0m9x8V0G2w2j1r0Q2nEo0XQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    :root{
+      --dark-teal:  #0A484A;
+      --mint-green: #83BCAC;
+      --gray-bg:    #E9EDF4;
+      --text-dark:  #222222;
+      --text-white: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin:0; font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: var(--text-dark);
+      background: var(--gray-bg);
+    }
+
+    .container{ max-width: 980px; margin: 0 auto; padding: 24px; }
+
+    .card{
+      background: #fff; border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.08);
+      padding: clamp(16px, 2.5vw, 28px);
+    }
+
+    header h1{ color: var(--dark-teal); margin: 0 0 12px; font-size: clamp(22px, 3.2vw, 34px); }
+    header p.lead{ margin: 0 0 18px; line-height: 1.6; }
+
+    h2{ color: var(--dark-teal); font-size: clamp(18px, 2.5vw, 24px); margin: 24px 0 10px; }
+    h3{ color: var(--dark-teal); font-size: clamp(16px, 2vw, 20px); margin: 18px 0 8px; }
+
+    .grid{ display: grid; gap: 16px; }
+    @media(min-width: 860px){
+      .grid-2{ grid-template-columns: 1fr 1fr; }
+    }
+
+    .commitment-list{ list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+    .commitment-item{ display: grid; grid-template-columns: auto 1fr auto; align-items: start; gap: 10px; padding: 12px; border: 1px solid #e7e7e7; border-radius: 14px; background: #fafafa; }
+    .commitment-item input[type="checkbox"]{ transform: translateY(3px) scale(1.1); }
+    .commit-text{ line-height: 1.5; padding: 6px 8px; border-radius: 10px; }
+    .commit-text[contenteditable="true"]{ outline: 2px dashed #bbb; background: #fff; }
+    .edit-btn{ border: 0; background: transparent; cursor: pointer; font-size: 18px; color: #555; padding: 4px 6px; }
+    .edit-btn:hover{ color: #333; }
+    .edit-btn .pencil{ font-size: 20px; }
+
+    .commitment-item.other{ grid-template-columns: 1fr; }
+    .commitment-item.other label{ font-weight: 500; }
+    .commitment-item.other input[type="text"]{ width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 12px; font: inherit; }
+
+    .section{ margin-top: 10px; }
+    .muted{ color: #555; }
+
+    .channels label, .q1 label, .q2 label{ display: inline-flex; align-items: center; gap: 8px; margin: 6px 12px 6px 0; }
+    .freq select, .time-pref input{ padding: 8px 10px; border: 1px solid #ddd; border-radius: 10px; font: inherit; }
+
+    .actions{ display: flex; gap: 12px; justify-content: flex-end; margin-top: 18px; }
+    .btn{
+      background: var(--mint-green); color: var(--text-white); border: none; border-radius: 999px; padding: 12px 20px; font-weight: 600; cursor: pointer; transition: transform .05s ease, box-shadow .2s ease;
+      box-shadow: 0 6px 14px rgba(131,188,172,.35);
+    }
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 10px 18px rgba(131,188,172,.35); }
+    .btn:active{ transform: translateY(0); box-shadow: 0 4px 9px rgba(131,188,172,.35); }
+
+    .btn.secondary{ background: #e7f4f1; color: var(--dark-teal); box-shadow: none; }
+
+    .page{ display: none; }
+    .page.active{ display: block; }
+
+    .summary-list{ list-style: decimal; padding-left: 22px; display: grid; gap: 16px; }
+    .sig-row{ display: grid; grid-template-columns: 1fr minmax(180px, 260px); gap: 10px; align-items: center; }
+    .sig-wrap{ display: grid; gap: 6px; justify-items: stretch; }
+    canvas.sig{ width: 100%; height: 86px; border: 1px dashed #ccc; border-radius: 10px; background: #fff; }
+    .clear-sign{ align-self: start; padding: 6px 10px; font-size: 12px; border-radius: 10px; border: 1px solid #ddd; background: #f8f8f8; cursor: pointer; }
+
+    .full-sign{ width: 100%; height: 180px; border: 2px dashed #ccc; border-radius: 14px; background: #fff; }
+
+    .meta-row{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .meta-row input{ width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 12px; font: inherit; }
+
+    .no-export{ /* hidden only during export via .exporting on body */ }
+    body.exporting .no-export{ visibility: hidden !important; height: 0 !important; overflow: hidden !important; margin: 0 !important; padding: 0 !important; }
+
+    footer.small{ text-align:center; font-size: 12px; color:#777; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- PAGE 1 -->
+    <div id="page1" class="page active card">
+      <header>
+        <h1>Elköteleződés a fejlődés mellett</h1>
+        <p class="lead">
+          A valódi változás nem könnyű. A fejlődés útján mindig vannak nehézségek. Az elakadások, a visszalépések mind növekedési pontok. A lényeg, hogy elköteleződj az egészségtudatosabb éned mellett, és mindig visszatérj az útra. A kis lépések összeadódnak – és nagy eredményekhez vezetnek.
+        </p>
+        <p class="lead">
+          A Motiva program célja, hogy ebben a folyamatban támogasson. De ehhez együttműködésre, nyitottságra és önmagad iránti elköteleződésre van szükség.
+        </p>
+        <p class="muted">Olvasd végig a következő vállalásokat és pipáld ki, ha egyetértesz vele. A ceruza (✏) ikonra kattintva módosíthatod a szöveget.</p>
+      </header>
+
+      <section class="section">
+        <h2>✅ Vállalások</h2>
+        <ul class="commitment-list" id="commitmentList">
+          <!-- Items injected statically below for readability -->
+          <li class="commitment-item">
+            <input type="checkbox" class="commit-check" id="c1">
+            <span class="commit-text" data-id="c1" contenteditable="false">Hiszek abban, hogy képes vagyok a változásra.</span>
+            <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
+          </li>
+          <li class="commitment-item">
+            <input type="checkbox" class="commit-check" id="c2">
+            <span class="commit-text" data-id="c2" contenteditable="false">A hibákra és elakadásokra nem bukásként tekintek, hanem lehetőségként a tanulásra.</span>
+            <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
+          </li>
+          <li class="commitment-item">
+            <input type="checkbox" class="commit-check" id="c3">
+            <span class="commit-text" data-id="c3" contenteditable="false">Nem azonnali tökéletességre, hanem fokozatos fejlődésre törekszem.</span>
+            <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
+          </li>
+          <li class="commitment-item">
+            <input type="checkbox" class="commit-check" id="c4">
+            <span class="commit-text" data-id="c4" contenteditable="false">Időt adok magamnak a változásra — nem siettetem a fejlődést.</span>
+            <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
+          </li>
+          <li class="commitment-item">
+            <input type="checkbox" class="commit-check" id="c5">
+            <span class="commit-text" data-id="c5" contenteditable="false">Tudatosítom, hogy már azzal is teszek magamért, ha foglalkozom a témával.</span>
+            <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
+          </li>
+          <li class="commitment-item">
+            <input type="checkbox" class="commit-check" id="c6">
+            <span class="commit-text" data-id="c6" contenteditable="false">Elfogadom, hogy nem kell tökéletesnek lennem a haladáshoz.</span>
+            <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
+          </li>
+          <li class="commitment-item">
+            <input type="checkbox" class="commit-check" id="c7">
+            <span class="commit-text" data-id="c7" contenteditable="false">Elfogadom, hogy a motiváció hullámzik — és a szokások segítenek átvészelni a mélypontokat.</span>
+            <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
+          </li>
+          <li class="commitment-item">
+            <input type="checkbox" class="commit-check" id="c8">
+            <span class="commit-text" data-id="c8" contenteditable="false">Készen állok időről időre újratervezni és finomhangolni az utamat.</span>
+            <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
+          </li>
+          <li class="commitment-item">
+            <input type="checkbox" class="commit-check" id="c9">
+            <span class="commit-text" data-id="c9" contenteditable="false">Visszatérek a tudatos útra, ha le is térek róla időnként.</span>
+            <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
+          </li>
+          <li class="commitment-item">
+            <input type="checkbox" class="commit-check" id="c10">
+            <span class="commit-text" data-id="c10" contenteditable="false">Erőfeszítést teszek és megjelenek önmagamért.</span>
+            <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
+          </li>
+          <li class="commitment-item">
+            <input type="checkbox" class="commit-check" id="c11">
+            <span class="commit-text" data-id="c11" contenteditable="false">Készen állok kísérletező szemlélettel dolgozni magamon.</span>
+            <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
+          </li>
+          <li class="commitment-item">
+            <input type="checkbox" class="commit-check" id="c12">
+            <span class="commit-text" data-id="c12" contenteditable="false">A tervezett tevékenységekre úgy tekintek, mintha egy barátommal megbeszélt időpont lenne.</span>
+            <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
+          </li>
+          <li class="commitment-item">
+            <input type="checkbox" class="commit-check" id="c13">
+            <span class="commit-text" data-id="c13" contenteditable="false">Az egészséges szokásokra nem büntetésként, hanem öngondoskodásként tekintek.</span>
+            <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
+          </li>
+          <li class="commitment-item">
+            <input type="checkbox" class="commit-check" id="c14">
+            <span class="commit-text" data-id="c14" contenteditable="false">Megünneplem a kis sikereket, mert ezek visznek előre.</span>
+            <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
+          </li>
+          <li class="commitment-item other">
+            <label for="otherCommit">„Egyéb vállalás”</label>
+            <input type="text" id="otherCommit" placeholder="Írd ide a saját vállalásod…" />
+          </li>
+        </ul>
+      </section>
+
+      <section class="section card" style="margin-top:16px;">
+        <h2>Kapcsolattartás</h2>
+        <div class="channels">
+          <label><input type="checkbox" name="channel" value="Email">Email</label>
+          <label><input type="checkbox" name="channel" value="Messenger">Messenger</label>
+          <label><input type="checkbox" name="channel" value="WhatsApp">WhatsApp</label>
+          <label><input type="checkbox" name="channel" value="SMS">SMS</label>
+        </div>
+        <div class="freq" style="margin-top:8px;">
+          <label for="frequency"><strong>Gyakoriság:</strong></label>
+          <select id="frequency" style="margin-left:8px;">
+            <option>Heti 1x</option>
+            <option>Heti 2x</option>
+            <option>Rugalmas</option>
+          </select>
+        </div>
+        <div class="time-pref" style="margin-top:8px;">
+          <label for="timePref"><strong>Preferált időablak:</strong></label>
+          <input id="timePref" type="text" placeholder="pl. H–Cs 9–12 vagy Este 18–20" style="margin-left:8px;" />
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Bejelentkezés fontossága</h2>
+        <p class="muted">
+          Lesznek stresszes és elfoglalt időszakok. Lesznek napok, amikor nem tudod teljesíteni, amit elterveztél. Épp ezekben az időszakokban van a legnagyobb szükség a bejelentkezésre és a reflexióra, akkor is, ha ez alternatív formában és rövidebben történik.
+        </p>
+        <div class="q1" style="margin-top:10px;">
+          <h3>Kérdés 1</h3>
+          <p>Számíthatok rád, hogy ilyenkor is, hogy valamilyen formában bejelentkezel?</p>
+          <label><input type="radio" name="q1" value="Igen"> Igen</label>
+          <label><input type="radio" name="q1" value="Nem"> Nem</label>
+        </div>
+        <div class="q2" style="margin-top:10px;">
+          <h3>Kérdés 2</h3>
+          <p>Ha kihagysz egy check-in alkalmat, és nem jelzed előre – hogyan szeretnéd, hogy reagáljak?</p>
+          <label><input type="checkbox" name="q2" value="Csak nagyon elfoglalt vagyok, hamarosan úgyis jelentkezem."> Csak nagyon elfoglalt vagyok, hamarosan úgyis jelentkezem.</label><br/>
+          <label><input type="checkbox" name="q2" value="Kerüllek, de jól esne egy finom, bátorító üzenet."> Kerüllek, de jól esne egy finom, bátorító üzenet.</label><br/>
+          <label><input type="checkbox" name="q2" value="Írj és keressünk egy új határidőt, amikor jelentkezem."> Írj és keressünk egy új határidőt, amikor jelentkezem.</label><br/>
+          <label><input type="checkbox" name="q2" value="Szeretném, ha emlékeztetnél, miért fontos ez nekem."> Szeretném, ha emlékeztetnél, miért fontos ez nekem.</label><br/>
+          <label><input type="checkbox" name="q2" value="Jó lenne, ha rákérdeznél, mi okozta a kimaradást – segítene tudatosítani."> Jó lenne, ha rákérdeznél, mi okozta a kimaradást – segítene tudatosítani.</label><br/>
+          <label>Más: <input id="q2_other" type="text" placeholder="Írd le röviden…" style="margin-left:6px; max-width: 420px;"></label>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button id="nextBtn" class="btn">Kész vagyok →</button>
+      </div>
+      <footer class="small muted">Motiva • Elköteleződés a fejlődés mellett</footer>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div id="page2" class="page card">
+      <header>
+        <h1>Elköteleződés véglegesítése</h1>
+      </header>
+
+      <section>
+        <h2>Kiválasztott vállalások és aláírások</h2>
+        <ol id="summary-commitments" class="summary-list"></ol>
+      </section>
+
+      <section class="section">
+        <h2>Kapcsolattartás (preferenciák)</h2>
+        <div id="summary-contact" class="card" style="padding:12px;"></div>
+      </section>
+
+      <section class="section">
+        <h2>Bejelentkezés – válaszaid</h2>
+        <div id="summary-checkins" class="card" style="padding:12px;"></div>
+      </section>
+
+      <section class="section">
+        <h2>Teljes aláírás</h2>
+        <canvas id="fullSignature" class="full-sign" width="1200" height="360"></canvas>
+        <div class="actions" style="justify-content:flex-start; margin-top:8px;">
+          <button type="button" class="clear-sign no-export" data-target="fullSignature">Törlés</button>
+        </div>
+        <div class="meta-row">
+          <input type="text" id="placeInput" placeholder="Hely (pl. Budapest)">
+          <input type="date" id="dateInput">
+        </div>
+      </section>
+
+      <div class="actions">
+        <button id="backBtn" class="btn secondary no-export">⬅️ Vissza</button>
+        <button id="downloadBtn" class="btn no-export">📄 Letöltés PDF-ben</button>
+      </div>
+      <footer class="small muted">Motiva • Elköteleződés véglegesítése</footer>
+    </div>
+  </div>
+
+  <script>
+    // Utility: toggle pages
+    const page1 = document.getElementById('page1');
+    const page2 = document.getElementById('page2');
+    const nextBtn = document.getElementById('nextBtn');
+    const backBtn = document.getElementById('backBtn');
+    const summaryList = document.getElementById('summary-commitments');
+    const summaryContact = document.getElementById('summary-contact');
+    const summaryCheckins = document.getElementById('summary-checkins');
+
+    // Prefill date input with today (local)
+    const dateInput = document.getElementById('dateInput');
+    (function setToday(){
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      dateInput.value = `${y}-${m}-${dd}`;
+    })();
+
+    // Handle editable texts via ✏ buttons
+    document.getElementById('commitmentList').addEventListener('click', (e)=>{
+      const btn = e.target.closest('.edit-btn');
+      if(!btn) return;
+      const item = btn.closest('.commitment-item');
+      const textEl = item.querySelector('.commit-text');
+      const isEditing = textEl.getAttribute('contenteditable') === 'true';
+      if(!isEditing){
+        // enable editing
+        textEl.setAttribute('contenteditable','true');
+        textEl.focus();
+        placeCaretAtEnd(textEl);
+      } else {
+        // disable editing
+        textEl.setAttribute('contenteditable','false');
+      }
+    });
+
+    // End edit on Enter
+    document.getElementById('commitmentList').addEventListener('keydown', (e)=>{
+      if(e.target.classList.contains('commit-text') && e.key === 'Enter'){
+        e.preventDefault();
+        e.target.blur();
+        e.target.setAttribute('contenteditable','false');
+      }
+    });
+
+    function placeCaretAtEnd(el){
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      range.collapse(false);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+
+    // Build summary (page 2)
+    nextBtn.addEventListener('click', ()=>{
+      buildSummary();
+      page1.classList.remove('active');
+      page2.classList.add('active');
+      // Scroll to top for UX
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+
+    backBtn.addEventListener('click', ()=>{
+      page2.classList.remove('active');
+      page1.classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+
+    function buildSummary(){
+      // Clear previous
+      summaryList.innerHTML = '';
+      summaryContact.innerHTML = '';
+      summaryCheckins.innerHTML = '';
+
+      // Commitments
+      const items = [...document.querySelectorAll('#commitmentList .commitment-item')];
+      const checked = [];
+      items.forEach(li=>{
+        const check = li.querySelector('.commit-check');
+        const textEl = li.querySelector('.commit-text');
+        const otherInput = li.querySelector('#otherCommit');
+        if(check && check.checked){
+          checked.push(textEl.innerText.trim());
+        } else if(otherInput && otherInput.value.trim() !== ''){
+          checked.push(otherInput.value.trim());
+        }
+      });
+
+      if(checked.length === 0){
+        const warn = document.createElement('div');
+        warn.textContent = 'Nem jelöltél ki vállalást. Visszalépve pipálj ki legalább egyet, vagy töltsd ki az „Egyéb vállalás” mezőt!';
+        warn.className = 'muted';
+        summaryList.appendChild(warn);
+      }
+
+      checked.forEach((text, idx)=>{
+        const li = document.createElement('li');
+        li.className = 'sig-row';
+        const p = document.createElement('div');
+        p.textContent = text;
+        const sigWrap = document.createElement('div');
+        sigWrap.className = 'sig-wrap';
+        const c = document.createElement('canvas');
+        c.className = 'sig';
+        // Choose a reasonable pixel size, scale for DPR
+        setupSignatureCanvas(c, 260, 86);
+        const clearBtn = document.createElement('button');
+        clearBtn.type = 'button';
+        clearBtn.className = 'clear-sign no-export';
+        clearBtn.textContent = 'Törlés';
+        clearBtn.addEventListener('click', ()=>clearCanvas(c));
+        sigWrap.appendChild(c);
+        sigWrap.appendChild(clearBtn);
+        li.appendChild(p);
+        li.appendChild(sigWrap);
+        summaryList.appendChild(li);
+      });
+
+      // Contact prefs
+      const channels = [...document.querySelectorAll('input[name="channel"]:checked')].map(el=>el.value);
+      const freq = document.getElementById('frequency').value;
+      const timePref = document.getElementById('timePref').value.trim();
+      const contactLines = [];
+      contactLines.push(`Csatornák: ${channels.length? channels.join(', ') : '—'}`);
+      contactLines.push(`Gyakoriság: ${freq}`);
+      contactLines.push(`Preferált időablak: ${timePref || '—'}`);
+      summaryContact.innerHTML = `<div>${contactLines.join('<br>')}</div>`;
+
+      // Check-in answers
+      const q1 = (document.querySelector('input[name="q1"]:checked')||{}).value || '—';
+      const q2 = [...document.querySelectorAll('input[name="q2"]:checked')].map(el=>el.value);
+      const q2other = document.getElementById('q2_other').value.trim();
+      if(q2other) q2.push('Más: '+q2other);
+      const q2Text = q2.length? '<ul style="margin:6px 0 0 20px;">'+ q2.map(t=>`<li>${t}</li>`).join('') + '</ul>' : '—';
+      summaryCheckins.innerHTML = `
+        <div><strong>Kérdés 1:</strong> ${q1}</div>
+        <div style="margin-top:6px;"><strong>Kérdés 2:</strong> ${q2Text}</div>
+      `;
+
+      // Prepare the big signature canvas
+      setupSignatureCanvas(document.getElementById('fullSignature'), 1000, 300);
+    }
+
+    // Signature helpers
+    function setupSignatureCanvas(canvas, cssW, cssH){
+      // set CSS size
+      canvas.style.width = cssW + 'px';
+      canvas.style.height = cssH + 'px';
+      // set actual pixel size for crisp lines
+      const dpr = Math.max(window.devicePixelRatio || 1, 1);
+      canvas.width = Math.floor(cssW * dpr);
+      canvas.height = Math.floor(cssH * dpr);
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#111';
+      // White background for export clarity
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+
+      let drawing = false; let last = null;
+      const getPos = (evt)=>{
+        const rect = canvas.getBoundingClientRect();
+        if(evt.touches && evt.touches[0]){
+          return { x: (evt.touches[0].clientX - rect.left), y: (evt.touches[0].clientY - rect.top) };
+        } else {
+          return { x: (evt.clientX - rect.left), y: (evt.clientY - rect.top) };
+        }
+      };
+      const start = (e)=>{ drawing = true; last = getPos(e); e.preventDefault(); };
+      const move  = (e)=>{
+        if(!drawing) return; const pos = getPos(e); const ctx = canvas.getContext('2d');
+        ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(pos.x, pos.y); ctx.stroke(); last = pos; e.preventDefault();
+      };
+      const end   = ()=>{ drawing = false; };
+
+      canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', end);
+      canvas.addEventListener('touchstart', start, {passive:false}); canvas.addEventListener('touchmove', move, {passive:false}); window.addEventListener('touchend', end);
+    }
+
+    function clearCanvas(canvas){
+      const ctx = canvas.getContext('2d');
+      ctx.save();
+      ctx.setTransform(1,0,0,1,0,0);
+      ctx.clearRect(0,0,canvas.width, canvas.height);
+      ctx.restore();
+      // restore white bg
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+    }
+
+    // PDF generation
+    document.getElementById('downloadBtn').addEventListener('click', async ()=>{
+      try{
+        document.body.classList.add('exporting');
+        await generatePDF();
+      } finally {
+        document.body.classList.remove('exporting');
+      }
+    });
+
+    async function generatePDF(){
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p','mm','a4');
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+
+      // Ensure page 2 is visible when capturing
+      if(!page2.classList.contains('active')){
+        page1.classList.remove('active'); page2.classList.add('active');
+      }
+
+      const element = page2; // capture the confirmation page
+      const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = pageWidth; // mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 0;
+      doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight; // move up for the next slice
+        doc.addPage();
+        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      const place = document.getElementById('placeInput').value || '';
+      const date  = document.getElementById('dateInput').value || '';
+      // Add footer info on the last page (place & date)
+      doc.setFontSize(10);
+      const footer = `Hely: ${place || '—'}    Dátum: ${date || '—'}`;
+      doc.text(footer, 10, pageHeight - 8);
+
+      doc.save('Motiva_elkotlezodes.pdf');
+    }
+  </script>
+</body>
+</html>
