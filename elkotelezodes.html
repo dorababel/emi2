@@ -7,8 +7,8 @@
   <!-- Google Font: Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- jsPDF & html2canvas -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNa5Hq3GQbVg3l1c6yA3P4aI1b8vSduv3g0Yk3j8W8bqF2xWm4i6rF8QZzqz7C1Vv3g0g9HkV7GQF0l0bL7e3w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-/FZ5Wc0eQ3uCwqf7X8cA0Xl4gqj6j8o0Kkz9L1m5yZl0kX3o9i4o7f2b2e7h9k0m9x8V0G2w2j1r0Q2nEo0XQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" referrerpolicy="no-referrer"></script>
   <style>
     :root{
       --dark-teal:  #0A484A;
@@ -262,7 +262,7 @@
 
       <section class="section">
         <h2>Teljes aláírás</h2>
-        <canvas id="fullSignature" class="full-sign" width="1200" height="360"></canvas>
+        <canvas id="fullSignature" class="full-sign" width="700" height="160"></canvas>
         <div class="actions" style="justify-content:flex-start; margin-top:8px;">
           <button type="button" class="clear-sign no-export" data-target="fullSignature">Törlés</button>
         </div>
@@ -423,7 +423,7 @@
       `;
 
       // Prepare the big signature canvas
-      setupSignatureCanvas(document.getElementById('fullSignature'), 1000, 300);
+      setupSignatureCanvas(document.getElementById('fullSignature'), 300, 100);
     }
 
     // Signature helpers
