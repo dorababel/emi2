@@ -182,32 +182,28 @@
             <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
           </li>
           <li class="commitment-item other">
-            <input type="text" id="otherCommit" placeholder="Írd ide a saját vállalásod…" />
+            <input type="text" id="otherCommit" placeholder="Van-e olyan személyes vállalásod, amihez szeretnéd tartani magad?" />
           </li>
         </ul>
       </section>
 
-      
-
       <section class="section">
-        <h2>Bejelentkezés fontossága</h2>
+        <h2>A Bejelentkezés fontos.</h2>
         <p class="muted">
           Lesznek stresszes és elfoglalt időszakok. Lesznek napok, amikor nem tudod teljesíteni, amit elterveztél. Épp ezekben az időszakokban van a legnagyobb szükség a bejelentkezésre és a reflexióra, akkor is, ha ez alternatív formában és rövidebben történik.
         </p>
         <div class="q1" style="margin-top:10px;">
-          <h3>Kérdés 1</h3>
-          <p>Számíthatok rád, hogy ilyenkor is, hogy valamilyen formában bejelentkezel?</p>
+          <p><strong>Számíthatok rád, hogy ilyenkor is, hogy valamilyen formában bejelentkezel?</strong></p>
           <label><input type="radio" name="q1" value="Igen"> Igen</label>
           <label><input type="radio" name="q1" value="Nem"> Nem</label>
         </div>
         <div class="q2" style="margin-top:10px;">
-          <h3>Kérdés 2</h3>
-          <p>Ha kihagysz egy check-in alkalmat, és nem jelzed előre – hogyan szeretnéd, hogy reagáljak?</p>
+          <p><strong>Ha kihagysz egy bejelentkezést, és nem jelzed előre, hogyan szeretnéd, hogy reagáljak?</strong></p>
           <label><input type="checkbox" name="q2" value="Csak nagyon elfoglalt vagyok, hamarosan úgyis jelentkezem."> Csak nagyon elfoglalt vagyok, hamarosan úgyis jelentkezem.</label><br/>
           <label><input type="checkbox" name="q2" value="Kerüllek, de jól esne egy finom, bátorító üzenet."> Kerüllek, de jól esne egy finom, bátorító üzenet.</label><br/>
           <label><input type="checkbox" name="q2" value="Írj és keressünk egy új határidőt, amikor jelentkezem."> Írj és keressünk egy új határidőt, amikor jelentkezem.</label><br/>
           <label><input type="checkbox" name="q2" value="Szeretném, ha emlékeztetnél, miért fontos ez nekem."> Szeretném, ha emlékeztetnél, miért fontos ez nekem.</label><br/>
-          <label><input type="checkbox" name="q2" value="Jó lenne, ha rákérdeznél, mi okozta a kimaradást – segítene tudatosítani."> Jó lenne, ha rákérdeznél, mi okozta a kimaradást – segítene tudatosítani.</label><br/>
+          <label><input type="checkbox" name="q2" value="Jó lenne, ha rákérdeznél, mi okozta a kimaradást. Segítene tudatosítani."> Jó lenne, ha rákérdeznél, mi okozta a kimaradást – segítene tudatosítani.</label><br/>
           <label>Más: <input id="q2_other" type="text" placeholder="Írd le röviden…" style="margin-left:6px; max-width: 420px;"></label>
         </div>
       </section>
@@ -222,10 +218,12 @@
         </div>
         <div class="freq" style="margin-top:8px;">
           <label for="frequency"><strong>Gyakoriság:</strong></label>
-          <select id="frequency" style="margin-left:8px;">
+          <select id="frequency" style="margin-left:8px;"> 
             <option>Heti 1x</option>
             <option>Heti 2x</option>
-            <option>Rugalmas</option>
+            <option>Heti 3x</option>
+            <option>Naponta</option>
+           
           </select>
         </div>
         <div class="time-pref" style="margin-top:8px;">
@@ -236,7 +234,6 @@
       <div class="actions">
         <button id="nextBtn" class="btn">Kész vagyok →</button>
       </div>
-      <footer class="small muted">Motiva • Elköteleződés a fejlődés mellett</footer>
     </div>
 
     <!-- PAGE 2 -->
