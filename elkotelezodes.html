@@ -76,7 +76,7 @@
     .page.active{ display: block; }
 
     .summary-list{ list-style: decimal; padding-left: 22px; display: grid; gap: 16px; }
-    .sig-row{ display: grid; grid-template-columns: 1fr minmax(120px, 180px); gap: 10px; align-items: center; }
+    .sig-row{ display: grid; grid-template-columns: 1fr minmax(180px, 120px); gap: 10px; align-items: center; }
     .sig-wrap{ display: grid; gap: 6px; justify-items: stretch; }
     canvas.sig{ width: 100%; height: 86px; border: 1px dashed #ccc; border-radius: 10px; background: #fff; }
     .clear-sign{ align-self: start; padding: 6px 10px; font-size: 12px; border-radius: 10px; border: 1px solid #ddd; background: #f8f8f8; cursor: pointer; }
@@ -592,20 +592,7 @@ page2.classList.remove('pdf-export');
     pageNum++;
   }
 
-  // Footer (last page)
-  const place = document.getElementById('placeInput')?.value || '';
-  const date  = document.getElementById('dateInput')?.value  || '';
-  if (place || date) {
-    doc.setFontSize(9);
-    doc.setTextColor(0, 0, 0);
-    doc.text(
-      `${place}${place && date ? ' • ' : ''}${date}`,
-      whiteX + innerPad,
-      whiteY + whiteH - 2
-    );
-  }
-
-  doc.save('Motiva_elkotlezodes.pdf');
+  doc.save('Motiva_elkotelezodes.pdf');
 }
 
   </script>
