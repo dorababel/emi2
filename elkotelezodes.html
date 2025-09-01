@@ -487,15 +487,15 @@ async function generatePDF() {
   const pageH = doc.internal.pageSize.getHeight();   // ~297
 
   // Colors
-  const MINT = { r: 168, g: 230, b: 207 };
-  const TEAL = { r:   0, g:  77, b:  77 };
+  const MINT = { r:168, g:230, b:207 };
+  const TEAL = { r:0,   g:77,  b:77  };
 
   // Layout
-  const outerMargin = 12;   // mint szegély
-  const frameStroke = 1.5;  // keret vastagság
-  const innerPad    = 6;    // fehér doboz belső padding
+  const outerMargin = 12;     // mint margin (mm)
+  const frameStroke = 1.5;    // teal frame (mm)
+  const innerPad    = 6;      // white box inner padding (mm)
 
-  // Belső hasznos rajzterület (mm)
+  // White content box
   const whiteX = outerMargin;
   const whiteY = outerMargin;
   const whiteW = pageW - outerMargin * 2;
@@ -503,15 +503,14 @@ async function generatePDF() {
   const availW = whiteW - innerPad * 2;
   const availH = whiteH - innerPad * 2;
 
-  // A 2. oldal legyen aktív a felvételhez
+  // Ensure page2 visible
   if (!page2.classList.contains('active')) {
     page1.classList.remove('active');
     page2.classList.add('active');
   }
-
   const element = page2;
 
-  // Felbontás és canvas
+  // High-res render
   const canvas = await html2canvas(element, {
     scale: 2,
     backgroundColor: '#ffffff',
@@ -520,94 +519,82 @@ async function generatePDF() {
     windowHeight: element.scrollHeight
   });
 
-  const imgData = canvas.toDataURL('image/png');
+  const pxPerMM = canvas.width / availW;          // px per mm at target width
+  const slicePx = Math.floor(availH * pxPerMM);   // height of one page slice in px (rounded to int)
+  const overlapPx = 6;                             // small overlap to hide joins (px)
 
-  // Skálázás a belső szélességre
-  const scale = availW / canvas.width;                     // px -> mm
-  const drawW = +(canvas.width  * scale).toFixed(2);       // mm
-  const drawH = +(canvas.height * scale).toFixed(2);       // mm
-
-  // px<->mm konverziók
-  const pxPerMM = canvas.width / drawW;
-  const mmPerPX = 1 / pxPerMM;
-
-  // --- „Ne vágj itt” zónák gyűjtése (px koordinátákban) ---
-  const avoidRectsPx = Array.from(
-    element.querySelectorAll('.avoid-split')
-  ).map(el => {
+  // Collect “don’t split” bands
+  const rootTop = element.getBoundingClientRect().top + window.scrollY;
+  const avoidBands = Array.from(element.querySelectorAll('.avoid-split')).map(el => {
     const r = el.getBoundingClientRect();
-    return { top: r.top + window.scrollY, bottom: r.bottom + window.scrollY };
+    return { top: Math.round(r.top + window.scrollY - rootTop), bottom: Math.round(r.bottom + window.scrollY - rootTop) };
   });
 
-  // A canvas teteje dokumentum-koordinátában:
-  const rootTop = element.getBoundingClientRect().top + window.scrollY;
-
-  // Segédfüggvény: adott törés (mm) környékén keressen „tiszta” töréspontot,
-  // ne essen avoid-zónába. max ±15 mm-ig keresünk felfelé-lefelé, 0.5 mm lépésben.
-  function snapBreakMM(rawBreakMM) {
-    const rawBreakPx = (rawBreakMM * pxPerMM) + rootTop;
-    const maxDeltaMM = 15;
-    const stepMM = 0.5;
-
-    function isInAvoid(pxY) {
-      return avoidRectsPx.some(a => pxY >= a.top && pxY <= a.bottom);
+  function snapBreakPX(rawPx) {
+    // move the break away from avoid bands (±30mm window, 1mm steps)
+    const stepPx = Math.round(pxPerMM);             // ~1mm
+    const maxDeltaPx = Math.round(30 * pxPerMM);    // 30mm
+    const isBad = (y)=> avoidBands.some(b => y >= b.top && y <= b.bottom);
+    for (let d = 0; d <= maxDeltaPx; d += stepPx) {
+      const down = rawPx + d;
+      if (!isBad(down)) return down;
+      const up = rawPx - d;
+      if (!isBad(up)) return up;
     }
-
-    // preferáljuk a lefelé tolást (ne maradjon üres sáv a lap alján)
-    for (let d = 0; d <= maxDeltaMM / stepMM; d++) {
-      const downPx = rawBreakPx + (d * stepMM * pxPerMM);
-      if (!isInAvoid(downPx)) return rawBreakMM + d * stepMM;
-      const upPx = rawBreakPx - (d * stepMM * pxPerMM);
-      if (!isInAvoid(upPx))   return rawBreakMM - d * stepMM;
-    }
-    return rawBreakMM; // ha nem talál, marad az eredeti
+    return rawPx;
   }
 
-  // Átlapolás (mm) – eltünteti a hajszálvonalat a szeletek találkozásánál
-  const overlapMM = 2;
-
-  // Oldal króm (szín + keret) rajzolása
   function paintPageChrome() {
-    // Mint háttér
     doc.setFillColor(MINT.r, MINT.g, MINT.b);
     doc.rect(0, 0, pageW, pageH, 'F');
-    // Fehér doboz
     doc.setFillColor(255, 255, 255);
     doc.rect(whiteX, whiteY, whiteW, whiteH, 'F');
-    // Teal keret
     doc.setDrawColor(TEAL.r, TEAL.g, TEAL.b);
     doc.setLineWidth(frameStroke);
     doc.rect(whiteX, whiteY, whiteW, whiteH, 'S');
   }
 
-  let shownMM = 0;    // eddig megjelenített képmagasság (mm)
+  const totalPx = canvas.height;
+  let startPx = 0;
   let pageNum = 0;
 
-  while (shownMM < drawH - 0.01) {
+  while (startPx < totalPx) {
+    const rawEndPx = Math.min(startPx + slicePx, totalPx);
+    const endPx = snapBreakPX(rawEndPx);
+
+    // Crop (with overlap to hide the seam)
+    const cropStart = Math.max(0, startPx - (pageNum > 0 ? overlapPx : 0));
+    const cropEnd   = Math.min(totalPx, endPx + overlapPx);
+    const cropH     = cropEnd - cropStart;
+
+    const slice = document.createElement('canvas');
+    slice.width = canvas.width;
+    slice.height = cropH;
+
+    const sctx = slice.getContext('2d');
+    sctx.fillStyle = '#ffffff';
+    sctx.fillRect(0, 0, slice.width, slice.height);
+    sctx.drawImage(canvas, 0, -cropStart);
+
+    const imgData = slice.toDataURL('image/png');
+
     if (pageNum > 0) doc.addPage();
     paintPageChrome();
 
-    // Következő „nyers” töréspont (mennyi látszhat ezen a lapon)
-    let nextBreakMM = shownMM + availH;
+    // Place slice at fixed position (no vertical shifting)
+    const drawWmm = availW;
+    const drawHmm = +(cropH / pxPerMM).toFixed(2);
 
-    // Igazítsuk el, hogy ne essen avoid-zónába
-    nextBreakMM = snapBreakMM(nextBreakMM);
-
-    // A tényleges felső eltolás: az előző oldal vége mínusz az átlapolás
-    const offsetY = shownMM - (pageNum > 0 ? overlapMM : 0);
-
-    // Kép pozíciója: a fehér doboz tetejétől felfelé toljuk
     const imgX = whiteX + innerPad;
-    const imgY = whiteY + innerPad - offsetY;
+    const imgY = whiteY + innerPad;
 
-    doc.addImage(imgData, 'PNG', imgX, imgY, drawW, drawH);
+    doc.addImage(imgData, 'PNG', imgX, imgY, drawWmm, drawHmm);
 
-    // Következő oldalra lépés
-    shownMM = nextBreakMM;
-    pageNum += 1;
+    startPx = endPx;
+    pageNum++;
   }
 
-  // Lábléc az utolsó oldalon
+  // Footer (last page)
   const place = document.getElementById('placeInput')?.value || '';
   const date  = document.getElementById('dateInput')?.value  || '';
   if (place || date) {
@@ -620,10 +607,8 @@ async function generatePDF() {
     );
   }
 
-  doc.save('Motiva_elkotelezodes.pdf');
+  doc.save('Motiva_elkotlezodes.pdf');
 }
-
-
 
   </script>
 </body>
