@@ -293,26 +293,43 @@
     ctx.font = '400 18px Poppins, Arial, sans-serif';
     ctx.fillText('Emiatt a lehetséges stresszhelyzetekben igyekszem a következőképpen cselekedni:', pad, pad+120);
 
-    const tableTop = pad+170;
-    ctx.fillStyle = '#E9EDF4'; ctx.fillRect(pad-10, tableTop-34, w - pad*2 + 20, 40);
-    ctx.strokeStyle = '#e2e8f0'; ctx.strokeRect(pad-10, tableTop-34, w - pad*2 + 20, 40);
+    // --- Fejléc és oszlopcímek ---
+const headerRectTop = pad + 170;
+const headerHeight  = 44;  // magasabb fejléc
+const headerBaselineOffset = Math.round(headerHeight/2) + 6; // kényelmes függőleges pozíció
 
-    ctx.fillStyle = '#0A484A';
-    ctx.font = '600 18px Poppins, Arial, sans-serif';
-    ctx.fillText('Ebben a stresszhelyzetben', col1, tableTop - 8);
-    ctx.fillText('Így reagálok', col2, tableTop - 8);
+ctx.fillStyle = '#E9EDF4';
+ctx.fillRect(pad - 10, headerRectTop, w - pad*2 + 20, headerHeight);
+ctx.strokeStyle = '#e2e8f0';
+ctx.strokeRect(pad - 10, headerRectTop, w - pad*2 + 20, headerHeight);
 
-    ctx.font = '400 18px Poppins, Arial, sans-serif';
-    let y = tableTop + 16;
-    rows.forEach(r => {
-      ctx.strokeStyle = '#e2e8f0';
-      ctx.beginPath(); ctx.moveTo(pad-10, y-30); ctx.lineTo(w-pad+10, y-30); ctx.stroke();
+ctx.fillStyle = '#0A484A';
+ctx.font = '600 18px Poppins, Arial, sans-serif';
+ctx.fillText('Ebben a stresszhelyzetben', col1, headerRectTop + headerBaselineOffset);
+ctx.fillText('Így reagálok',               col2, headerRectTop + headerBaselineOffset);
 
-      drawWrap(ctx, r.stress, col1, y, w/2 - pad - 20, lineH-4);
-      drawWrap(ctx, r.response, col2, y, w/2 - pad - 20, lineH-4);
+// --- Első sor kezdő Y: a fejléc ALÁ kényelmes távolságra ---
+ctx.font = '400 18px Poppins, Arial, sans-serif';
+let y = headerRectTop + headerHeight + 24;  // +24px légrés a fejléc alatt
 
-      y += 70;
-    });
+rows.forEach((r, i) => {
+  // Csak a 2. sortól rajzoljunk felső szeparátort, hogy ne lógjon a fejlécbe
+  if (i > 0) {
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.beginPath();
+    ctx.moveTo(pad - 10, y - 18);  // finomabb pozíció a sor felett
+    ctx.lineTo(w - pad + 10, y - 18);
+    ctx.stroke();
+  }
+
+  // Szövegek (automatikus sortöréssel)
+  drawWrap(ctx, r.stress,   col1, y, w/2 - pad - 20, 38);
+  drawWrap(ctx, r.response, col2, y, w/2 - pad - 20, 38);
+
+  // Következő sor függőleges eltolása (ha hosszabb szövegek lesznek, ezt érdemes növelni)
+  y += 70;
+});
+
 
     const link = document.createElement('a');
     link.download = 'ha-akkor_tervem_erzelmi_eves.png';
