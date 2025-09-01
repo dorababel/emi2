@@ -481,148 +481,102 @@ Az elakadások, a visszalépések mind növekedési pontok. A lényeg, hogy elk�
 
 async function generatePDF() {
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('p','mm','a4');
+  const doc = new jsPDF('p', 'mm', 'a4');
 
-  const pageW = doc.internal.pageSize.getWidth();   // ~210
-  const pageH = doc.internal.pageSize.getHeight();  // ~297
+  const pageW = doc.internal.pageSize.getWidth();    // ~210
+  const pageH = doc.internal.pageSize.getHeight();   // ~297
 
   // Colors
-  const MINT = { r: 168, g: 230, b: 207 }; // mint green
-  const TEAL = { r:   0, g:  77, b:  77 }; // dark teal
+  const MINT = { r: 168, g: 230, b: 207 };           // mint green
+  const TEAL = { r:   0, g:  77, b:  77 };           // dark teal
 
   // Layout
-  const outerMargin = 12;   // mint margin (mm)
-  const frameStroke = 1.5;  // teal border (mm)
-  const innerPad    = 6;    // white padding inside border (mm)
+  const outerMargin = 12;    // mint margin width (mm)
+  const frameStroke = 1.5;   // teal frame line width (mm)
+  const innerPad    = 6;     // white box inner padding (mm)
 
-  // Helpers -------------------------------------------------------
-  function drawFramedPage() {
-    // mint background (margins)
-    doc.setFillColor(MINT.r, MINT.g, MINT.b);
-    doc.rect(0, 0, pageW, pageH, 'F');
+  // White content box
+  const whiteX = outerMargin;
+  const whiteY = outerMargin;
+  const whiteW = pageW - outerMargin * 2;
+  const whiteH = pageH - outerMargin * 2;
 
-    // white content box
-    const whiteX = outerMargin;
-    const whiteY = outerMargin;
-    const whiteW = pageW - outerMargin * 2;
-    const whiteH = pageH - outerMargin * 2;
-
-    doc.setFillColor(255, 255, 255);
-    doc.rect(whiteX, whiteY, whiteW, whiteH, 'F');
-
-    // dark teal frame
-    doc.setDrawColor(TEAL.r, TEAL.g, TEAL.b);
-    doc.setLineWidth(frameStroke);
-    doc.rect(whiteX, whiteY, whiteW, whiteH, 'S');
-
-    // inner content rect (after padding)
-    return {
-      x: whiteX + innerPad,
-      y: whiteY + innerPad,
-      w: whiteW - innerPad * 2,
-      h: whiteH - innerPad * 2
-    };
-  }
-
-  async function elementToCanvas(el) {
-    return await html2canvas(el, {
-      scale: 2,
-      backgroundColor: '#ffffff',
-      useCORS: true,
-      windowWidth: el.scrollWidth,
-      windowHeight: el.scrollHeight
-    });
-  }
-
-  function cropCanvas(srcCanvas, sx, sy, sw, sh) {
-    const out = document.createElement('canvas');
-    out.width  = sw;
-    out.height = sh;
-    const ctx = out.getContext('2d');
-    ctx.drawImage(srcCanvas, sx, sy, sw, sh, 0, 0, sw, sh);
-    return out;
-  }
-
-  function addCanvasFitted(canvas, contentRect, vCenter = true) {
-    const { x, y, w: availW, h: availH } = contentRect;
-    const imgData = canvas.toDataURL('image/png');
-
-    // scale to fit width, then check height
-    const scaleToFit = availW / canvas.width;           // mm per px (relative)
-    let drawW = availW;
-    let drawH = canvas.height * scaleToFit;
-
-    if (drawH > availH) {
-      // if taller than content area, fit by height instead
-      const scaleByH = availH / canvas.height;
-      drawH = availH;
-      drawW = canvas.width * scaleByH;
-    }
-
-    const offsetX = x + (availW - drawW) / 2;
-    const offsetY = vCenter ? y + (availH - drawH) / 2 : y;
-
-    doc.addImage(imgData, 'PNG', offsetX, offsetY, drawW, drawH);
-  }
-
-  // Page selection ------------------------------------------------
+  // Ensure page2 is visible for capture
   if (!page2.classList.contains('active')) {
     page1.classList.remove('active');
     page2.classList.add('active');
   }
 
-  // Try to find explicit sections for a clean 1+1 page layout
-  const commitmentEl =
-    document.querySelector('[data-section="commitment"], #commitment, .commitment, [data-part="commitment"], #elkovetkezes, .elkovetkezes');
-  const restEl =
-    document.querySelector('[data-section="rest"], #rest, .rest, [data-part="rest"], #reszletek, .reszletek');
+  const element = page2;
+  const canvas = await html2canvas(element, {
+    scale: 2,
+    backgroundColor: '#ffffff',
+    useCORS: true,
+    windowWidth: element.scrollWidth,
+    windowHeight: element.scrollHeight
+  });
 
-  if (commitmentEl && restEl) {
-    // --- Page 1: Commitment block
-    const canvas1 = await elementToCanvas(commitmentEl);
-    const content1 = drawFramedPage();
-    addCanvasFitted(canvas1, content1, /*vCenter=*/true);
+  const imgData = canvas.toDataURL('image/png');
 
-    // --- Page 2: The rest
-    doc.addPage();
-    const canvas2 = await elementToCanvas(restEl);
-    const content2 = drawFramedPage();
-    addCanvasFitted(canvas2, content2, /*vCenter=*/true);
-  } else {
-    // Fallback: auto-split the whole confirmation page into two slices
-    const fullCanvas = await elementToCanvas(page2);
+  // Scale the captured image to the inner width of the white box
+  const availW = whiteW - innerPad * 2;
+  const availH = whiteH - innerPad * 2;
+  const scale   = availW / canvas.width;
 
-    // Fit-by-width scaling factor to compute slice height in px
-    // so that the first slice exactly fills the content area height.
-    const probeContent = { ...drawFramedPage() }; // draws page 1 frame
-    const scaleToFit = probeContent.w / fullCanvas.width;
-    const slicePx = Math.max(1, Math.floor(probeContent.h / scaleToFit));
+  const drawW   = +(canvas.width  * scale).toFixed(2); // mm
+  const drawH   = +(canvas.height * scale).toFixed(2); // mm
 
-    // Slice 1: top part
-    const slice1 = cropCanvas(fullCanvas, 0, 0, fullCanvas.width, Math.min(slicePx, fullCanvas.height));
-    addCanvasFitted(slice1, probeContent, /*vCenter=*/false);
+  // We will draw the same (scaled) image on each page, shifting it up so only a "slice"
+  // appears inside the white content area. jsPDF will clip the rest.
+  let offsetY   = 0; // how much of the scaled image height we've already shown (mm)
+  let pageNum   = 0;
 
-    // Slice 2: remainder
-    doc.addPage();
-    const content2 = drawFramedPage();
-    const remainH = Math.max(1, fullCanvas.height - slicePx);
-    const slice2 = cropCanvas(fullCanvas, 0, slicePx, fullCanvas.width, remainH);
-    addCanvasFitted(slice2, content2, /*vCenter=*/false);
+  // Helper to paint the page chrome (mint background, white box, teal frame)
+  function paintPageChrome() {
+    // Mint full-page background
+    doc.setFillColor(MINT.r, MINT.g, MINT.b);
+    doc.rect(0, 0, pageW, pageH, 'F');
+
+    // White box
+    doc.setFillColor(255, 255, 255);
+    doc.rect(whiteX, whiteY, whiteW, whiteH, 'F');
+
+    // Teal frame
+    doc.setDrawColor(TEAL.r, TEAL.g, TEAL.b);
+    doc.setLineWidth(frameStroke);
+    doc.rect(whiteX, whiteY, whiteW, whiteH, 'S');
   }
 
-  // Optional footer on last page
+  while (offsetY < drawH - 0.01) {
+    if (pageNum > 0) doc.addPage();
+    paintPageChrome();
+
+    // Position the top-left of the (same) image so that only the slice we need appears
+    const imgX = whiteX + innerPad;
+    const imgY = whiteY + innerPad - offsetY;
+
+    doc.addImage(imgData, 'PNG', imgX, imgY, drawW, drawH);
+
+    offsetY += availH; // next slice
+    pageNum += 1;
+  }
+
+  // Footer on the last page (inside the white box)
   const place = document.getElementById('placeInput')?.value || '';
   const date  = document.getElementById('dateInput')?.value  || '';
   if (place || date) {
     doc.setFontSize(9);
     doc.setTextColor(0, 0, 0);
-    const { x, y, h } = { ...{ x: outerMargin + innerPad, y: outerMargin + innerPad, h: pageH - (outerMargin + innerPad) * 2 } };
-    // Write at the bottom inside the frame
-    doc.text(`${place}${place && date ? ' • ' : ''}${date}`, x, y + h - 2);
+    doc.text(
+      `${place}${place && date ? ' • ' : ''}${date}`,
+      whiteX + innerPad,
+      whiteY + whiteH - 2
+    );
   }
 
-  doc.save('Motiva_elkotlezodes.pdf');
+  doc.save('Motiva_elkotelezodes.pdf');
 }
+
 
   </script>
 </body>
