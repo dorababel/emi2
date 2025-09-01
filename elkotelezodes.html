@@ -127,11 +127,6 @@
             <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
           </li>
           <li class="commitment-item">
-            <input type="checkbox" class="commit-check" id="c4">
-            <span class="commit-text" data-id="c4" contenteditable="false">Időt adok magamnak a változásra — nem siettetem a fejlődést.</span>
-            <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
-          </li>
-          <li class="commitment-item">
             <input type="checkbox" class="commit-check" id="c5">
             <span class="commit-text" data-id="c5" contenteditable="false">Tudatosítom, hogy már azzal is teszek magamért, ha foglalkozom a témával.</span>
             <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
@@ -143,7 +138,7 @@
           </li>
           <li class="commitment-item">
             <input type="checkbox" class="commit-check" id="c7">
-            <span class="commit-text" data-id="c7" contenteditable="false">Elfogadom, hogy a motiváció hullámzik — és a szokások segítenek átvészelni a mélypontokat.</span>
+            <span class="commit-text" data-id="c7" contenteditable="false">Elfogadom, hogy a motiváció hullámzik és a szokások segítenek átvészelni a mélypontokat.</span>
             <button type="button" class="edit-btn" aria-label="Szerkesztés" title="Szerkesztés (✏)"><span class="pencil">✏</span></button>
           </li>
           <li class="commitment-item">
@@ -188,7 +183,7 @@
       </section>
 
       <section class="section">
-        <h2>A Bejelentkezés fontos.</h2>
+        <h2>A bejelentkezés fontos.</h2>
         <p class="muted">
           Lesznek stresszes és elfoglalt időszakok. Lesznek napok, amikor nem tudod teljesíteni, amit elterveztél. Épp ezekben az időszakokban van a legnagyobb szükség a bejelentkezésre és a reflexióra, akkor is, ha ez alternatív formában és rövidebben történik.
         </p>
@@ -214,7 +209,7 @@
           <label><input type="checkbox" name="channel" value="Email">Email</label>
           <label><input type="checkbox" name="channel" value="Messenger">Messenger</label>
           <label><input type="checkbox" name="channel" value="WhatsApp">WhatsApp</label>
-          <label><input type="checkbox" name="channel" value="SMS">SMS</label>
+          <label><input type="checkbox" name="channel" value="Viber">SMS</label>
         </div>
         <div class="freq" style="margin-top:8px;">
           <label for="frequency"><strong>Gyakoriság:</strong></label>
@@ -239,24 +234,25 @@
     <!-- PAGE 2 -->
     <div id="page2" class="page card">
       <header>
-        <h1>Elköteleződés véglegesítése</h1>
+        <h1>Elköteleződés a fejlődés mellett</h1>
       </header>
 
       <section>
-        <h2>Kiválasztott vállalások és aláírások</h2>
+        <p><strong>A valódi változás nem könnyű. A fejlődés útján mindig vannak nehézségek.
+Az elakadások, a visszalépések mind növekedési pontok. A lényeg, hogy elköteleződjek az egészségtudatosabb énem mellett, és mindig visszatérj az útra. A kis lépések összeadódnak és nagy eredményekhez vezetnek.</strong></p>
+        <p><strong>A fejlődés sikere érdekében:</strong></p>
         <ol id="summary-commitments" class="summary-list"></ol>
       </section>
 
       <section class="section">
+        <h2>A bejelentkezés fontos.</h2>
+         <p><strong>Lesznek stresszes és elfoglalt időszakok. Lesznek napok, amikor nem tudom teljesíteni, amit elterveztem. Épp ezekben az időszakokban van a legnagyobb szükség a bejelentkezésre és a reflexióra, akkor is, ha ez alternatív formában és rövidebben történik.</strong></p>
+        <div id="summary-checkins" class="card" style="padding:12px;"></div>
+      </section>
+ <section class="section">
         <h2>Kapcsolattartás (preferenciák)</h2>
         <div id="summary-contact" class="card" style="padding:12px;"></div>
       </section>
-
-      <section class="section">
-        <h2>Bejelentkezés – válaszaid</h2>
-        <div id="summary-checkins" class="card" style="padding:12px;"></div>
-      </section>
-
       <section class="section">
         <h2>Teljes aláírás</h2>
         <canvas id="fullSignature" class="full-sign" width="700" height="160"></canvas>
