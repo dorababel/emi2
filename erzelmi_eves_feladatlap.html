@@ -139,7 +139,9 @@
       </div>
     </section>
 
-    <p class="footer">A feladatlap </p>
+    <p class="footer">A feladatlap O’Connor, D. B., Armitage, C. J., & Ferguson, E. 
+  Randomized test of an implementation intention-based tool to reduce stress-induced eating című 
+ tanulmányának módszertana alapján készült.</p>
   </div>
 
 <script>
@@ -286,9 +288,15 @@
     ctx.fillText('Ha–akkor tervezésem érzelmi evés esetére', pad, pad+10);
 
     ctx.fillStyle = '#0b132b';
-    ctx.font = '400 18px Poppins, Arial, sans-serif';
-    const whyLine = 'Szeretnék az étellel egy egészséges és tudatos viszonyt kialakítani, mert ' + (whyLower || '...');
-    wrapText(ctx, whyLine, pad, pad+60, w - pad*2, 26);
+ctx.font = '400 18px Poppins, Arial, sans-serif';
+
+let whyLine = 'Szeretnék az étellel egy egészséges és tudatos viszonyt kialakítani, mert ';
+if (whyLower) {
+  whyLine += whyLower.endsWith('.') ? whyLower : (whyLower + '.');
+} else {
+  whyLine += '...';
+}
+wrapText(ctx, whyLine, pad, pad+60, w - pad*2, 26);
 
     ctx.font = '400 18px Poppins, Arial, sans-serif';
     ctx.fillText('Emiatt a lehetséges stresszhelyzetekben igyekszem a következőképpen cselekedni:', pad, pad+120);
