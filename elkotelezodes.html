@@ -81,9 +81,29 @@
     canvas.sig{ display: block; width: 100%; height: 86px; border: 1px dashed #ccc; border-radius: 10px; background: #fff; }
     .clear-sign{ align-self: start; padding: 6px 10px; font-size: 12px; border-radius: 10px; border: 1px solid #ddd; background: #f8f8f8; cursor: pointer; }
 
-    .full-sign{ width: 100%; height: 180px; border: 2px dashed #ccc; border-radius: 14px; background: #fff; }
+.sig-section {
+  display: grid;
+  gap: 10px;
+  max-width: 100%;     /* ne nőjön túl */
+}
 
-  .name-input { width: 100%; height: 180px; border: 2px dashed #ccc; border-radius: 14px; background: #fff; }
+.full-sign {
+  width: 100%;
+  height: 180px;
+  border: 2px dashed #ccc;
+  border-radius: 14px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.name-input {
+  width: 100%;         /* pontosan a canvas szélessége */
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font: inherit;
+  box-sizing: border-box;
+}
     .meta-row{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
     .meta-row input{ width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 12px; font: inherit; }
 
@@ -256,11 +276,13 @@ Az elakadások, a visszalépések mind növekedési pontok. A lényeg, hogy elk�
         <div id="summary-contact" class="card" style="padding:12px;"></div>
       </section>
       <section class="section">
+        <div class="sig-section">
         <canvas id="fullSignature" class="full-sign" width="700" height="160"></canvas>
         <div class="actions" style="justify-content:flex-start; margin-top:8px;">
           <button type="button" class="clear-sign no-export" data-target="fullSignature">Törlés</button>
         </div>
-  <input type="text" id="fullName" class="name-input" placeholder="Add meg a teljes nevedet">
+ <input type="text" id="fullName" class="name-input" placeholder="Írd be a teljes nevedet">
+</div>
         
         <div class="meta-row">
           <input type="text" id="placeInput" placeholder="Hely">
