@@ -185,7 +185,7 @@
       <section class="section">
         <h2>A bejelentkezés fontos.</h2>
         <p class="muted">
-          Lesznek stresszes és elfoglalt időszakok. Lesznek napok, amikor nem tudod teljesíteni, amit elterveztél. Épp ezekben az időszakokban van a legnagyobb szükség a bejelentkezésre és a reflexióra, akkor is, ha ez alternatív formában és rövidebben történik.
+          Lesznek stresszes és elfoglalt időszakok. Lesznek napok, amikor nem tudod teljesíteni, amit elterveztél. Épp ezekben az időszakokban van a legnagyobb szükség a bejelentkezésre és a reflexióra, akkor is, ha ez egy rövidebb, alternatív formában történik.
         </p>
         <div class="q1" style="margin-top:10px;">
           <p><strong>Számíthatok rád, hogy ilyenkor is, hogy valamilyen formában bejelentkezel?</strong></p>
@@ -507,8 +507,7 @@ Az elakadások, a visszalépések mind növekedési pontok. A lényeg, hogy elk�
       const date  = document.getElementById('dateInput').value || '';
       // Add footer info on the last page (place & date)
       doc.setFontSize(10);
-      const footer = `Hely: ${place || '—'}    Dátum: ${date || '—'}`;
-      doc.text(footer, 10, pageHeight - 8);
+
 
       doc.save('Motiva_elkotlezodes.pdf');
     }
