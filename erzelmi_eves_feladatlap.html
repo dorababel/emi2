@@ -163,7 +163,7 @@
 
     const f1 = document.createElement('div');
     f1.className = 'field';
-    const l1 = document.createElement('label'); l1.textContent = `Stresszhelyzet #${index+1}`;
+    const l1 = document.createElement('label'); l1.textContent = `Stresszhelyzet`;
     const i1 = document.createElement('input'); i1.type='text'; i1.placeholder='Stresszhelyzet';
     i1.value = state.pairs[index]?.stress || '';
     i1.addEventListener('input', e => state.pairs[index].stress = e.target.value);
@@ -171,7 +171,7 @@
 
     const f2 = document.createElement('div');
     f2.className = 'field';
-    const l2 = document.createElement('label'); l2.textContent = `Jellemző nasi #${index+1}`;
+    const l2 = document.createElement('label'); l2.textContent = `Jellemző nasi`;
     const i2 = document.createElement('input'); i2.type='text'; i2.placeholder='Jellemző nasi';
     i2.value = state.pairs[index]?.snack || '';
     i2.addEventListener('input', e => state.pairs[index].snack = e.target.value);
@@ -203,7 +203,7 @@
       f1.appendChild(l1); f1.appendChild(s);
 
       const f2 = document.createElement('div'); f2.className='field';
-      const l2 = document.createElement('label'); l2.textContent = 'Akkor így reagálok (egészségtudatos válasz):';
+      const l2 = document.createElement('label'); l2.textContent = 'Akkor így reagálok:';
       const in2 = document.createElement('input'); in2.type='text'; in2.placeholder='Egészségtudatos válasz';
       in2.addEventListener('input', e => state.plans[i].response = e.target.value);
       f2.appendChild(l2); f2.appendChild(in2);
