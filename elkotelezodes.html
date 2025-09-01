@@ -411,8 +411,8 @@ Az elakadások, a visszalépések mind növekedési pontok. A lényeg, hogy elk�
       if(q2other) q2.push('Más: '+q2other);
       const q2Text = q2.length? '<ul style="margin:6px 0 0 20px;">'+ q2.map(t=>`<li>${t}</li>`).join('') + '</ul>' : '—';
       summaryCheckins.innerHTML = `
-        <div><strong>Kérdés 1:</strong> ${q1}</div>
-        <div style="margin-top:6px;"><strong>Kérdés 2:</strong> ${q2Text}</div>
+        <div><strong>Számíthatsz rá, hogy ilyenkor is, hogy valamilyen formában bejelentkezem:</strong> ${q1}</div>
+        <div style="margin-top:6px;"><strong>Ha kihagyok egy bejelentkezést, és nem jelzem előre,</strong> ${q2Text}</div>
       `;
 
       // Prepare the big signature canvas
