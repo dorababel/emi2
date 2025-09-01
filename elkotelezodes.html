@@ -90,6 +90,10 @@
     body.exporting .no-export{ visibility: hidden !important; height: 0 !important; overflow: hidden !important; margin: 0 !important; padding: 0 !important; }
 
     footer.small{ text-align:center; font-size: 12px; color:#777; margin-top: 12px; }
+    .pdf-export {
+    font-size: 85%;
+    line-height: 1.25;
+  }
   </style>
 </head>
 <body>
@@ -476,41 +480,100 @@ Az elakadások, a visszalépések mind növekedési pontok. A lényeg, hogy elk�
     });
 
     async function generatePDF(){
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('p','mm','a4');
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p','mm','a4');
 
-      // Ensure page 2 is visible when capturing
-      if(!page2.classList.contains('active')){
-        page1.classList.remove('active'); page2.classList.add('active');
-      }
+  const pageW = doc.internal.pageSize.getWidth();   // ~210
+  const pageH = doc.internal.pageSize.getHeight();  // ~297
 
-      const element = page2; // capture the confirmation page
-      const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
-      const imgData = canvas.toDataURL('image/png');
-      const imgWidth = pageWidth; // mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  // Színek
+  const MINT = { r: 168, g: 230, b: 207 }; // mint green
+  const TEAL = { r:   0, g:  77, b:  77 }; // dark teal
 
-      let heightLeft = imgHeight;
-      let position = 0;
-      doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight; // move up for the next slice
-        doc.addPage();
-        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
+  // Margók és keret
+  const outerMargin = 12;     // menta margó szélessége (mm)
+  const frameStroke = 1.5;    // teal keret vonalvastagság (mm)
+  const innerPad    = 6;      // belső fehér “párna” (mm) a kép körül
 
-      const place = document.getElementById('placeInput').value || '';
-      const date  = document.getElementById('dateInput').value || '';
-      // Add footer info on the last page (place & date)
-      doc.setFontSize(10);
+  // 1) Oldal háttér kitöltése menta színnel (margók)
+  doc.setFillColor(MINT.r, MINT.g, MINT.b);
+  doc.rect(0, 0, pageW, pageH, 'F');
 
+  // 2) Fehér doboz a tartalomnak + sötét teal keret
+  const whiteX = outerMargin;
+  const whiteY = outerMargin;
+  const whiteW = pageW - outerMargin * 2;
+  const whiteH = pageH - outerMargin * 2;
 
-      doc.save('Motiva_elkotlezodes.pdf');
-    }
+  // Fehér kitöltés
+  doc.setFillColor(255, 255, 255);
+  doc.rect(whiteX, whiteY, whiteW, whiteH, 'F');
+
+  // Teal keret
+  doc.setDrawColor(TEAL.r, TEAL.g, TEAL.b);
+  doc.setLineWidth(frameStroke);
+  doc.rect(whiteX, whiteY, whiteW, whiteH, 'S');
+
+  // 3) Exporthoz a 2. oldal legyen aktív és legyen kisebb a betű
+  if (!page2.classList.contains('active')) {
+    page1.classList.remove('active');
+    page2.classList.add('active');
+  }
+  page2.classList.add('pdf-export'); // ideiglenesen kisebb tipó
+
+  // 4) Képkészítés (fehér háttér, CORS)
+  const element = page2;
+  const canvas = await html2canvas(element, {
+    scale: 2,
+    backgroundColor: '#ffffff',
+    useCORS: true,
+    windowWidth: element.scrollWidth,
+    windowHeight: element.scrollHeight
+  });
+
+  // Visszaállítás (ne maradjon kicsinyítve a UI)
+  page2.classList.remove('pdf-export');
+
+  // 5) Kép elhelyezése az inner fehér területen, 1 oldalra skálázva
+  const imgData = canvas.toDataURL('image/png');
+
+  // Elérhető rajzterület a fehér dobozon belül, a belső paddinget figyelembe véve
+  const availW = whiteW - innerPad * 2;
+  const availH = whiteH - innerPad * 2;
+
+  // Kép méretarányos skálázása az elérhető téglalaphoz
+  const imgWmm = availW;
+  const imgHmm = (canvas.height * imgWmm) / canvas.width;
+  let drawW = imgWmm;
+  let drawH = imgHmm;
+
+  // Ha túl magas, akkor magasság-hez igazítunk
+  if (drawH > availH) {
+    drawH = availH;
+    drawW = (canvas.width * drawH) / canvas.height;
+  }
+
+  // Középre igazítás a fehér dobozon belül
+  const imgX = whiteX + innerPad + (availW - drawW) / 2;
+  const imgY = whiteY + innerPad + (availH - drawH) / 2;
+
+  doc.addImage(imgData, 'PNG', imgX, imgY, drawW, drawH);
+
+  // (Opcionális) Lábléc – kisebb betű
+  const place = document.getElementById('placeInput')?.value || '';
+  const date  = document.getElementById('dateInput')?.value  || '';
+  if (place || date) {
+    doc.setFontSize(9);
+    doc.setTextColor(0, 0, 0);
+    doc.text(
+      `${place}${place && date ? ' • ' : ''}${date}`,
+      whiteX + innerPad,
+      whiteY + whiteH - 2 // kereten belül, alul
+    );
+  }
+
+  doc.save('Motiva_elkotlezodes.pdf');
+}
   </script>
 </body>
 </html>
